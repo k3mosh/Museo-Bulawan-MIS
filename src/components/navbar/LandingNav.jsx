@@ -12,8 +12,8 @@ const LandingNav = () => {
 
   return (
     <nav className='w-screen flex justify-center h-30   bg-transparent '>
-        <div className={`w-[140rem] mx-5 md:mx-0 h-30 border-b-2 ${isSpecialRoute? ' border-b-black' : ' border-b-white'}`} >
-          <div className='flex justify-between w-auto '>
+        <div className={`w-[140rem] 3xl:w-[180rem] mx-5 md:mx-0 h-30 border-b-2 ${isSpecialRoute? ' border-b-black' : ' border-b-white'}`} >
+          <div className='flex justify-between w-auto'>
            
             <div className='flex'>
                {/* Title and logo */}
@@ -30,20 +30,23 @@ const LandingNav = () => {
             </div>
             
             <div className={`my-auto w-auto sm:w-[40rem] flex justify-center text-4xl items-center font-semibold ${isSpecialRoute ? 'drop-shadow-none' : 'text-white drop-shadow-[1px_1px_0.5px_black]'}`}>
-              <button onClick={toggleMenu} className=" sm:hidden text-lg text-white focus:outline-none">
+              <button onClick={toggleMenu} className={`sm:hidden text-lg  focus:outline-none  ${isSpecialRoute? 'text-black':'text-white'}`}>
                 {isMenuOpen ? (
                   <i class="fa-solid fa-bars-staggered"></i>
                 ) : (
                 <i class="fa-solid fa-bars"></i>
 
                 )}
-              </button>
 
-              <div className={`fixed z-50 right-0 top-10 w-80 ${isMenuOpen ? 'block' : 'hidden'} bg-gray-800`}>
+                <div
+                  className={`fixed right-0 z-150 w-[18rem] text-left ${isMenuOpen ? 'block' : 'hidden'} ${location.pathname === '/' || location.pathname === '/home' ? 'mr-0' : 'mr-5'} bg-[#1C1B19] `}>
                 <NavLink to="/" className="block text-white px-4 py-2">Home</NavLink>
                 <NavLink to="/content" className="block text-white px-4 py-2">News & Events</NavLink>
                 <NavLink to="/about" className="block text-white px-4 py-2">About</NavLink>
               </div>
+              </button>
+
+              
           
               <div className='hidden sm:block'>
               <NavLink to="/" className='mx-4'>

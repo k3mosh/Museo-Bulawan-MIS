@@ -1,10 +1,26 @@
 import React from 'react'
+import LandingNav from '../../components/navbar/LandingNav'
 
 const Content = () => {
   return (
-    <div>
-      
+    <>
+    <div className='bg-[#1C1B19] flex flex-col gap-y-4 min-h-fit h-fit w-screen pt-7' >
+      <div className='min-h-[10%] w-screen'>
+        <LandingNav/>
+      </div>
+
+      <div className='w-screen h-[40rem] bg-cover bg-center bg-no-repeat' style={{ backgroundImage: "url('./src/assets/Fernando-Amorsolo-Women-Bathing-and-Washing Clothes-7463.png')" }}>
+
+      </div>
     </div>
+
+    <div className='bg-[#1C1B19] py-10 w-screen h-screen min-h-[79rem]'>
+      <div className='w-[130rem]  h-full bg-white mx-auto'>
+
+      </div>
+
+    </div>
+    </>
   )
 }
 

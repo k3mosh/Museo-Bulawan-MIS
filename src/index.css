@@ -46,4 +46,9 @@ html {
       font-size: 10px !important;
     }
   }
+
+
+  @theme {
+    --breakpoint-3xl: 1800px;
+  }
   
