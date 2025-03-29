@@ -15,17 +15,22 @@ const Appointment = () => {
           <span className='text-5xl'>Appointment Form</span>
         </div>
 
-        <div className='flex-col w-[140rem] 3xl:w-[180rem] mx-auto h-[200rem] flex min-h-[89%] gap-y-10 '>
+        <div className='flex-col w-[140rem] 3xl:w-[180rem] mx-auto h-[200rem] flex min-h-[89%] gap-y-10 mt-4'>
 
-          <div className='flex flex-row justify-items-start gap-5 me-auto px-20'>
+          <div className='flex w-fit gap-x-5'>
             <div className='flex mx-auto min-w-[30rem] flex-col font-[HindKochi] text-xl'>
-              <i className="text-[10rem] fa-regular fa-clock"></i>
-              <span className='font-bold'>Museo Bulawan</span>
-              <span>Open Daily 9:00am-5:00pm, Monday- Friday,</span>
+              <div className='flex items-center gap-x-3'>
+                <i className="text-3xl fa-solid fa-clock"></i>
+                <span className='font-bold'>Museo Bulawan</span>
+              </div>
+              <span className='ml-11'>Open Daily 9:00am-5:00pm, Monday- Friday,</span>
             </div>
             <div className='flex mx-auto min-w-[30rem] flex-col font-[HindKochi] text-xl'>
-              <span className='font-bold'>Museum Location</span>
-              <span>Camarines Norte Provincial Capitol Grounds, Daet Philippines</span>
+              <div className='flex items-center gap-x-3'>
+                <i class="text-3xl fa-solid fa-location-dot"></i>
+                <span className='font-bold'>Museum Location</span>
+              </div>
+              <span className='ml-9'>Camarines Norte Provincial Capitol Grounds, Daet Philippines</span>
             </div>
           </div>
           <form action="">
