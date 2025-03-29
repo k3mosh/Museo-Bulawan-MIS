@@ -72,9 +72,10 @@ const Home = () => {
                 </span>
             
                 <span className='text-9xl font-bold text-white drop-shadow-[3px_3px_0px_black] -mt-3'>
-                  BULAWAN
+                MUSEO 
+
                   <br />
-                  MUSEO 
+                  BULAWAN
                 </span>
               </div>
 
