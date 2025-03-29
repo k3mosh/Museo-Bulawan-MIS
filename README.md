@@ -20,7 +20,7 @@ The Museo Bulawan Management Information System is a system developed to comply 
 ## Installation
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/museo-bulawan.git
+   git clone https://github.com/hachisnail/Museo-Bulawan-MIS.git
    ```
 2. Navigate to the project directory:
    ```sh
