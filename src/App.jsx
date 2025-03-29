@@ -20,7 +20,7 @@ function App() {
     } else {
       const isChromium = !!window.chrome || userAgent.includes("Chromium");
       if (isChromium) {
-        document.documentElement.style.fontSize = "13.3px";
+        document.documentElement.style.fontSize = "10px";
       }
     }
   }, []);

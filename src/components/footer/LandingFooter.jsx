@@ -7,8 +7,8 @@ const LandingFooter = () => {
 
   return isLogin ? null: (
     <>
-    <div className='w-screen min-h-85 bg-[#1C1B19] py-10'>
-      <div className='w-[140rem] flex flex-col h-auto min-h-60 mx-auto '>
+    <div className='w-screen min-h-85 bg-[#1C1B19] py-10 overflow-x-hidden'>
+      <div className='max-w-[140rem] xl:max-w-[140rem] flex flex-col h-auto min-h-60 mx-auto '>
         <div className='w-full h-12 flex items-center gap-x-4 px-10 border-b-2 border-white'>
           <NavLink to="/">
             <span  className='text-white text-xl'>Home</span>

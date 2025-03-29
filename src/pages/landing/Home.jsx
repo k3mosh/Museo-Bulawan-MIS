@@ -11,7 +11,7 @@ const Home = () => {
           <LandingNav/>
         </div>
 
-        <div className='max-w-[140rem] 3xl:max-[180rem] mx-auto flex min-h-[89%] '>
+        <div className='max-w-[140rem] 3xl:max-w-[180rem] mx-auto flex min-h-[89%] '>
 
             <div className='hidden text-white w-10 sm:flex flex-col h-auto justify-around'>
               <a href="https://www.facebook.com/museobulawancn" target="_blank" rel="noopener noreferrer" className='[writing-mode:vertical-rl]'>
