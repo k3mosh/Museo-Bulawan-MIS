@@ -1,5 +1,10 @@
 @import "tailwindcss";
+@import '../node_modules/modern-normalize/modern-normalize.css';
 
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
 
 /* Hide scrollbar but keep scrolling */
@@ -32,13 +37,13 @@
   
   @-moz-document url-prefix() {
     html {
-      font-size: 12.6px  !important;
+      font-size: 10px  !important;
     }
   }
   
   @supports (-webkit-touch-callout: none) {
     html {
-      font-size: 12px !important;
+      font-size: 10px !important;
     }
   }
   

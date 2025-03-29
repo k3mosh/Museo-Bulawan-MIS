@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
+import { RouterProvider } from 'react-router-dom';
+
 import './index.css'
+import Route from './utils/route/LandingRoute';
 
 function App() {
 
@@ -11,20 +14,21 @@ function App() {
     const isBrave = typeof navigator.brave !== 'undefined';
 
     if (isOpera) {
-      document.documentElement.style.fontSize = "12px";
+      document.documentElement.style.fontSize = "10px";
     } else if (isBrave) {
-      document.documentElement.style.fontSize = "12px";
+      document.documentElement.style.fontSize = "10px";
     } else {
       const isChromium = !!window.chrome || userAgent.includes("Chromium");
       if (isChromium) {
-        document.documentElement.style.fontSize = "16px";
+        document.documentElement.style.fontSize = "13.3px";
       }
     }
   }, []);
 
   return (
     <>
-
+      <RouterProvider router={Route}/>
+      
     </>
   )
 }
