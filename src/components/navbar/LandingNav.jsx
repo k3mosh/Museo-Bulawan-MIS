@@ -39,7 +39,7 @@ const LandingNav = () => {
                 )}
               </button>
 
-              <div className={`fixed right-0 top-10 w-80 ${isMenuOpen ? 'block' : 'hidden'} bg-gray-800`}>
+              <div className={`fixed z-50 right-0 top-10 w-80 ${isMenuOpen ? 'block' : 'hidden'} bg-gray-800`}>
                 <NavLink to="/" className="block text-white px-4 py-2">Home</NavLink>
                 <NavLink to="/content" className="block text-white px-4 py-2">News & Events</NavLink>
                 <NavLink to="/about" className="block text-white px-4 py-2">About</NavLink>

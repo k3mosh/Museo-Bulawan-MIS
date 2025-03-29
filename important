@@ -1,2 +1,5 @@
 fixed base size is
 w-[140rem]
+
+for landing div content minimum size
+w-screen h-screen min-h-[79rem]
