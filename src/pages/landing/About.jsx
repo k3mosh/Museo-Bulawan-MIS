@@ -82,7 +82,7 @@ const About = () => {
                 <p>
                 The museum's name, Museo Bulawan—translated as “Golden Museum”—reflects Camarines Norte's distinction as a province historically linked to gold mining. This golden legacy resonates in the museum's exhibits and collections, which include:
                 </p>
-                <ul class="list-disc">
+                <ul className="list-disc">
                 <br />
                 <li>Numismatics: An extensive collection of coins and currencies.</li>
                 <li>Portraits of Governors: A gallery honoring the province's leaders.</li>
