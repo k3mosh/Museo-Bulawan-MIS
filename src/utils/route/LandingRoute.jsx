@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import LandingLayout from '../../components/layout/LandingLayout';
-import About from '../../pages/landing/ABOUT';
+import About from '../../pages/landing/About';
 import Appointment from '../../pages/landing/Appointment';
 import Content from '../../pages/landing/Content';
 import Form from '../../pages/landing/Form';
