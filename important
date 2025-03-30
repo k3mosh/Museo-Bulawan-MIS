@@ -1,5 +1,14 @@
 fixed base size is
 w-[140rem]
 
-for landing div content minimum size
+for parent div content minimum size for h screen size is fixed
 w-screen h-screen min-h-[79rem]
+
+for parent div content minimum size for h screen size not fixed
+w-screen h-suto min-h-[79rem]
+
+for child div use (for h is expandable)
+max-w-[140rem] 3xl:max-w-[180rem] min-h-full h-auto
+
+for child div use (for h not expandable)
+max-w-[140rem] 3xl:max-w-[180rem] min-h-[79rem] h-screen

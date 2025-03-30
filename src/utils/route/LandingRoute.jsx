@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import LandingLayout from '../../components/layout/LandingLayout';
-import About from '../../pages/landing/ABOUT';
+import About from '../../pages/landing/About';
 import Appointment from '../../pages/landing/Appointment';
 import Content from '../../pages/landing/Content';
 import Form from '../../pages/landing/Form';
@@ -16,7 +16,6 @@ const LandingRoute = createBrowserRouter ([
     {path: '/', element: <LandingLayout />, 
         children: [
             {index: true, element: <Home />},
-            { path: '*', element: <Home/>},
             { path: 'home', element: <Home /> },
             { path: 'about', element: <About /> },
             { path: 'content', element: <Content /> },
@@ -27,10 +26,10 @@ const LandingRoute = createBrowserRouter ([
         ],
      },
      {
-        path: '/admin', element: (
+        path: '/admin/', element: (
             <PrivateRoute>
               <AdminLayout />
-           </PrivateRoute>
+             </PrivateRoute>
           ),
           children: AdminRoutes
      }

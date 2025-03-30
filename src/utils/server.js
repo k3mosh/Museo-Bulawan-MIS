@@ -1,21 +1,29 @@
 import express from 'express';
-import mysql from 'mysql';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import { sequelize } from './database.js';
+import authRoutes from './route/authRoutes.js';
 
 const app = express();
+
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true
+}));
+app.use(cookieParser());
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'msb_db',
-});
+app.use('/api/auth', authRoutes);
 
-db.connect(err => {
-  if (err) throw err;
-  console.log('MySQL Connected...');
-});
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync(); 
+    console.log('Database connected and models synchronized');
+    app.listen(5000, () => console.log('Server running on port 5000'));
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+};
 
-app.listen(5000, () => console.log('Server running on port 5000'));
+startServer();

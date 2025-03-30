@@ -12,7 +12,7 @@ import User from "../../pages/admin/User"
 const AdminRoutes = [
 
     { index: true, element: <Navigate to='dashboard' replace /> },
-    { path: '*', element: <Dashboard/> },
+    // { path: '*', element: <Dashboard/> },
     { path: 'dashboard', element: <Dashboard /> },
     { path: 'acquisition', element: <Acquisition /> },
     { path: 'appointment', element: <Appointment /> },
