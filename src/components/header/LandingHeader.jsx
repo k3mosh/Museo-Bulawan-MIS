@@ -43,7 +43,7 @@ const LandingHeader = () => {
             </div>
           )}
           <NavLink to="/login" className="mx-2 my-auto drop-shadow-[1px_1px_1px_black]">
-            <span className={`${isScrolled ? 'text-white' : isSpecialRoute ? 'text-black' : 'text-white'} text-xs my-auto cursor-pointer`}>
+            <span className={` ${location.pathname === '/login' ? 'hidden' : ''}  ${isScrolled ? 'text-white' : isSpecialRoute ? 'text-black' : 'text-white'} text-xs my-auto cursor-pointer`}>
               Login
             </span>
           </NavLink>
