@@ -14,7 +14,7 @@ const About = () => {
     </div>
 
     <div className='w-screen h-screen min-h-[79rem]'>
-
+        <div className='max-w-[145rem] min-w-[145rem] '></div>
     </div>
     </>
   )
