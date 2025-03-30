@@ -14,7 +14,7 @@ const About = () => {
     </div>
 
       <div className='w-screen h-auto min-h-[79rem] bg-black'>
-       <div className='max-[140rem] xl:max-w-[140rem] 3xl:[180rem] h-auto min-h-[79rem] mx-auto bg-amber-800'>
+       <div className='max-[140rem] xl:max-w-[140rem] 3xl:max-w-[180rem] h-auto min-h-[79rem] mx-auto bg-amber-800'>
           <div className='flex flex-col sm:flex-row'>
             <span className='w-full sm:w-1/2  h-full bg-amber-200'>left message</span>
             <span className='w-full sm:w-1/2 h-full bg-amber-600'>right message</span>
