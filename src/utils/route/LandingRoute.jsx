@@ -16,7 +16,6 @@ const LandingRoute = createBrowserRouter ([
     {path: '/', element: <LandingLayout />, 
         children: [
             {index: true, element: <Home />},
-            { path: '*', element: <Home/>},
             { path: 'home', element: <Home /> },
             { path: 'about', element: <About /> },
             { path: 'content', element: <Content /> },
@@ -27,10 +26,10 @@ const LandingRoute = createBrowserRouter ([
         ],
      },
      {
-        path: '/admin', element: (
+        path: '/admin/', element: (
             <PrivateRoute>
               <AdminLayout />
-           </PrivateRoute>
+             </PrivateRoute>
           ),
           children: AdminRoutes
      }

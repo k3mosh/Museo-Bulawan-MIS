@@ -2,9 +2,9 @@ import React from 'react'
 
 const AdminHeader = () => {
   return (
-    <div>
-      
-    </div>
+    <header className='w-full h-20 bg-black'>
+
+    </header>
   )
 }
 

@@ -32,9 +32,9 @@ const LandingNav = () => {
             <div className={`my-auto w-auto sm:w-[40rem] flex justify-center text-4xl items-center font-semibold ${isSpecialRoute ? 'drop-shadow-none' : 'text-white drop-shadow-[1px_1px_0.5px_black]'}`}>
               <button onClick={toggleMenu} className={`sm:hidden text-lg  focus:outline-none  ${isSpecialRoute? 'text-black':'text-white'}`}>
                 {isMenuOpen ? (
-                  <i class="fa-solid fa-bars-staggered"></i>
+                  <i className="fa-solid fa-bars-staggered"></i>
                 ) : (
-                <i class="fa-solid fa-bars"></i>
+                <i className="fa-solid fa-bars"></i>
 
                 )}
 

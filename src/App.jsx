@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom';
-
 import './index.css'
 import Route from './utils/route/LandingRoute';
 
