@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const AdminNav = () => {
   const navigate = useNavigate();
-  const linkClasses = "w-full flex flex-row justify-start bg-[#1C1B19] items-center gap-3 rounded-2xl pl-2 h-[60px] cursor-pointer";
+  const linkClasses = "w-fit sm:w-full flex flex-row justify-start bg-[#1C1B19] items-center gap-3 rounded-2xl p-2 h-[60px] cursor-pointer";
   const activeClasses = "bg-white text-black"; 
 
   const handleLogout = async () => {
@@ -49,13 +49,16 @@ const AdminNav = () => {
   }
   
   return (
-    <div className='bg-[#1C1B19] h-full w-full flex flex-col justify-between'>
-      <div className='h-auto w-full font-hind-kochi text-2xl font-bold flex flex-col gap-y-4'>
-        <NavLink to="/admin/dashboard" className={({ isActive }) => `${linkClasses} ${isActive ? activeClasses : "text-white"}`}>
+    <div className='bg-[#1C1B19] h-full min-w-full flex flex-col items-center justify-between'>
+      <div className='h-auto min-h-[58rem] w-fit sm:w-full font-hind-kochi text-2xl font-bold flex flex-col gap-y-4'>
+        <NavLink to="/admin/dashboard" className={({ isActive }) => `relative group ${linkClasses} ${isActive ? activeClasses : "text-white"}`}>
           {({ isActive }) => (
             <>
               <img src="/src/assets/dashboard_icon.png" alt="dashboard" className={`h-auto w-[40px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
-              <span>Dashboard</span>
+              <span className='hidden sm:block'>Dashboard</span>
+              <span class="absolute  left-full mr-2 hidden group-hover:flex bg-gray-800 sm:text-transparent sm:bg-transparent text-white text-2xl rounded py-1 px-2 w-max">
+                Dashboard
+              </span>
             </>
           )}
         </NavLink>
@@ -64,7 +67,7 @@ const AdminNav = () => {
           {({ isActive }) => (
             <>
               <img src="/src/assets/donation.png" alt="donation" className={`h-auto w-[40px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
-              <span>Acquisition</span>
+              <span className='hidden sm:block'>Acquisition</span>
             </>
           )}
         </NavLink>
@@ -73,7 +76,7 @@ const AdminNav = () => {
           {({ isActive }) => (
             <>
               <img src="/src/assets/artifact.png" alt="artifact" className={`h-auto w-[40px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
-              <span>Artifact</span>
+              <span className='hidden sm:block'>Artifact</span>
             </>
           )}
         </NavLink>
@@ -82,7 +85,7 @@ const AdminNav = () => {
           {({ isActive }) => (
             <>
               <img src="/src/assets/appointment.png" alt="appointment" className={`h-auto w-[40px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
-              <span>Appointment</span>
+              <span className='hidden sm:block'>Appointment</span>
             </>
           )}
         </NavLink>
@@ -91,7 +94,7 @@ const AdminNav = () => {
           {({ isActive }) => (
             <>
               <img src="/src/assets/article.png" alt="article" className={`h-auto w-[40px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
-              <span>Article</span>
+              <span className='hidden sm:block'>Article</span>
             </>
           )}
         </NavLink>
@@ -102,7 +105,7 @@ const AdminNav = () => {
               {({ isActive }) => (
                 <>
                   <img src="/src/assets/article.png" alt="logs" className={`h-auto w-[40px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
-                  <span>Logs</span>
+                  <span className='hidden sm:block'>Logs</span>
                 </>
               )}
             </NavLink>
@@ -111,7 +114,7 @@ const AdminNav = () => {
               {({ isActive }) => (
                 <>
                   <img src="/src/assets/article.png" alt="user" className={`h-auto w-[40px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
-                  <span>User</span>
+                  <span className='hidden sm:block'>User</span>
                 </>
               )}
             </NavLink>
@@ -121,7 +124,7 @@ const AdminNav = () => {
 
       <button onClick={handleLogout} className="font-hind-kochi text-2xl font-bold w-full flex flex-row justify-center items-center gap-3 text-white cursor-pointer hover:bg-red-900 transition p-3 rounded-2xl">
         <img src="/src/assets/logout.png" alt="logout" className="h-auto w-[40px]" />
-        <span>Logout</span>
+        <span className='hidden sm:block'>Logout</span>
       </button>
     </div>
   );

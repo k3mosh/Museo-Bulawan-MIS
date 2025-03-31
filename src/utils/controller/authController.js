@@ -83,47 +83,49 @@ export const logout = async (req, res) => {
 };
 
 
-
 export const autoLogout = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader) {
-    // No token provided; continue to next middleware (or return 401)
     return res.status(401).json({ message: 'No token provided' });
   }
 
   const token = authHeader.split(' ')[1];
 
-  // Verify token using callback to catch expiration
   jwt.verify(token, JWT_SECRET, async (err, decoded) => {
     if (err) {
       if (err.name === 'TokenExpiredError') {
-        // Token expired: decode token (ignoring expiration) to get user id
+        // Decode token manually to get user info
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.id) {
           try {
             const user = await User.findByPk(decodedToken.id);
             if (user) {
-              // Find the active login log for the user and mark it ended
+              // Find active login log for the user
               const loginLog = await LoginLog.findOne({
                 where: { user_id: user.id, end: null },
                 order: [['start', 'DESC']],
               });
+
               if (loginLog) {
-                await loginLog.update({ end: new Date() });
+                await loginLog.update({ end: new Date() }); // Set logout time
               }
+
               // Update user status to inactive
               await user.update({ status: 'inactive', modified_date: new Date() });
+
+              console.log(`User ${user.id} auto-logged out due to token expiration.`);
             }
           } catch (updateError) {
             console.error('Error during auto logout update:', updateError);
           }
         }
-        return res.status(401).json({ message: 'Session expired, auto logged out.' });
+        return res.status(401).json({ message: 'Session expired, you have been logged out automatically.' });
       } else {
         return res.status(401).json({ message: 'Unauthorized: ' + err.message });
       }
     }
-    // If token is valid, attach decoded info to req.user and continue
+
     req.user = decoded;
     next();
   });
