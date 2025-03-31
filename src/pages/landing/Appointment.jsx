@@ -33,10 +33,103 @@ const Appointment = () => {
               <span className='ml-9'>Camarines Norte Provincial Capitol Grounds, Daet Philippines</span>
             </div>
           </div>
-          <form action="">
 
+          <div className='w-fit mx-3 bg-[#EAEADA] h-fit p-10'>
+            <form className='flex flex-col gap-8 text-lg md:text-xl'>
 
-          </form>
+              {/* Name */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center'>
+                <label className='font-bold'>Name <span className='text-red-500'>*</span></label>
+                <input type='text' placeholder='First Name' required className='px-6 py-3 rounded-full border col-span-1' />
+                <input type='text' placeholder='Last Name' required className='px-6 py-3 rounded-full border col-span-2' />
+              </div>
+
+              {/* Email */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center'>
+                <label className='font-bold'>Email <span className='text-red-500'>*</span></label>
+                <input type='email' placeholder='example@gmail.com' required className='col-span-3 px-6 py-3 rounded-full border' />
+              </div>
+
+              {/* Phone Number */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center'>
+                <label className='font-bold'>Phone Number</label>
+                <input type='tel' placeholder='+6309123456789' className='col-span-3 px-6 py-3 rounded-full border' />
+              </div>
+
+              {/* Province and City */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center'>
+                <label className='font-bold'>Province <span className='text-red-500'>*</span></label>
+                <input type='text' defaultValue='Camarines Norte' required className='px-6 py-3 rounded-full border' />
+
+                <label className='font-bold md:text-right'>City <span className='text-red-500'>*</span></label>
+                <input type='text' placeholder='City' required className='px-6 py-3 rounded-full border' />
+              </div>
+
+              {/* Barangay and Street */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center'>
+                <label className='font-bold'>Barangay <span className='text-red-500'>*</span></label>
+                <input type='text' placeholder='Barangay' required className='px-6 py-3 rounded-full border' />
+
+                <label className='font-bold md:text-right'>Street</label>
+                <input type='text' placeholder='Street' className='px-6 py-3 rounded-full border' />
+              </div>
+
+              {/* Organization */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center'>
+                <label className='font-bold'>Organization</label>
+                <input type='text' placeholder='School/Institution/etc' className='col-span-3 px-6 py-3 rounded-full border' />
+              </div>
+
+              {/* Purpose of Visit */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-start'>
+                <label className='font-bold'>Purpose of Visit <span className='text-red-500'>*</span></label>
+                <select required className='col-span-3 px-6 py-3 rounded-full border'>
+                  <option value="">Choose Purpose</option>
+                  <optgroup label="Educational Purposes">
+                    <option>Research</option>
+                    <option>Thesis or Dissertation Work</option>
+                    <option>School Field Trip</option>
+                    <option>Workshops or Classes</option>
+                  </optgroup>
+                  <optgroup label="Professional Engagements">
+                    <option>Interviews</option>
+                    <option>Collaboration Meetings</option>
+                    <option>Photography or Media Projects</option>
+                    <option>Conservation Consultation</option>
+                    <option>Donations</option>
+                    <option>Others</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              {/* Population Count */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center'>
+                <label className='font-bold'>Population Count <span className='text-red-500'>*</span></label>
+                <input type='number' min='1' required className='col-span-3 px-6 py-3 rounded-full border' />
+              </div>
+
+              {/* Preferred Date */}
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-start'>
+                <label className='font-bold'>Select your preferred Date <span className='text-red-500'>*</span></label>
+                <input type='date' required className='col-span-3 px-6 py-3 rounded-full border' />
+              </div>
+
+              {/* Additional Notes */}
+              <div className='flex flex-col gap-2'>
+                <label className='font-bold'>Additional Notes</label>
+                <textarea rows='6' placeholder='Additional Notes' className='px-6 py-4 rounded-2xl border resize-none' />
+              </div>
+
+              {/* Submit Button */}
+              <div className='flex justify-end'>
+                <button type='submit' className='bg-[#524433] text-white px-10 py-3 rounded-full hover:bg-[#3e3428] transition'>
+                  Submit
+                </button>
+              </div>
+
+            </form>
+          </div>
+
         </div>
 
       </div>
