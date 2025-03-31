@@ -20,13 +20,15 @@ const About = () => {
           <div className='flex flex-col sm:flex-row mt-[10rem]'>
             
             <span className='w-full sm:w-2/5  h-full m-[2rem]'>
-              <p className=" max-w-full h-auto items-end text-justify">
-              The Museo Bulawan, also known as the Community Museum of Camarines Norte, embodies the rich cultural and historical essence of the province. Its origins trace back to 1995, when the construction of a new neo-classical provincial capitol building provided a fitting backdrop for the establishment of a museum. The Greco-Roman architecture of the building inspired a vision of timeless grandeur, making it an ideal setting to house artifacts and exhibits that celebrate the province's heritage.
+            <div className=" max-w-full h-auto items-end text-justify">
+             <p>              The Museo Bulawan, also known as the Community Museum of Camarines Norte, embodies the rich cultural and historical essence of the province. Its origins trace back to 1995, when the construction of a new neo-classical provincial capitol building provided a fitting backdrop for the establishment of a museum. The Greco-Roman architecture of the building inspired a vision of timeless grandeur, making it an ideal setting to house artifacts and exhibits that celebrate the province's heritage.
                 <img src="../src/assets/Bulawan-Museum-14 1.png" alt="About Us" className="mt-6 w-full h-auto rounded-lg shadow-lg" />
               </p>
+
+              </div>
             </span>
             <span className='w-full sm:w-3/5 h-full m-[2rem] text-justify'>
-                <h1 className='text-[4rem] font-bold'>Lorem ipsum dolor sit amet. Sit maxime delectus et amet itaque rem esse perferendis et ratione accusantium non natus rerum non similique pariatur. 
+                <h1 className='text-[4rem] font-bold'>"A museum is a bridge that connects the past to the present, inspiring the future."
                   </h1>
                   <br />
                   <br />
@@ -48,14 +50,14 @@ const About = () => {
         <div className='flex flex-col sm:flex-row mt-[10rem] text-justify'>
             {/* 2nd Part */}
           <span className='w-full sm:w-1/2  h-full m-[2rem] '>
-          <p>
+          <div>
               <h1 className='text-[4rem] font-bold mb-[6rem]'>“Heritage is not what we inherit from the past; it is what we preserve for the future.”</h1>
               <img src="../src/assets/455363415_812761527719886_1195461782753847821_n.png" alt="About Us" className="mt-6 w-full h-auto rounded-lg shadow-lg" />
 
-           </p> 
+           </div> 
            </span>
            <span className='w-full sm:w-1/2 h-full m-[2rem] mt-[13.5rem] '>
-              <p>
+              <div>
                 <h1 className='font-bold'>Expansion and Transformation</h1>
                 <br />
                 The new location facilitated significant advancements in museum management, including systematic techniques in documentation, research, preservation, and exhibition. Enhanced marketing and promotional efforts further broadened the museum's reach, attracting a diverse audience of local residents and travelers.
@@ -64,7 +66,7 @@ const About = () => {
                 <span className='text-[15rem] font-bold text-black float-left leading-none mr-4'>O</span>
                 <p className='mt-[6.8rem]'>ver time, the museum's popularity and collections grew, outstripping the capacity of its original location. The year 2000 marked a pivotal moment in its history when the museum was relocated to a larger building adjacent to the provincial capitol. This move addressed the need for a more spacious venue, enabling improved collection displays and a more comfortable experience for visitors.
                 </p>
-              </p>
+              </div>
             </span>
 
         </div>
@@ -100,6 +102,56 @@ const About = () => {
         </div>
 
         </div>
+        <div>
+        <div className='flex flex-col sm:flex-row mt-[3rem] text-justify'>
+           
+           <span className='w-full sm:w-3/5  h-full m-[2rem] '>
+           <h1 className='text-[5.3rem] font-bold mr-[2.5rem]'>
+            In addition to these exhibits, the museum hosts periodic events and activities designed to engage children and adults alike, further solidifying its role as a cornerstone of cultural education and community engagement.
+           </h1>
+            </span>
+            <span className='w-full sm:w-2/5 h-full m-[2rem] flex justify-center items-center'>
+              <div className='ml-[2rem]'>
+                <h1 className='text-[4.3rem] font-bold'>
+                  A Living Heritage
+                  </h1>
+                <p className='text-[3.1rem] '>
+                  Today, Museo Bulawan stands not just as a repository of artifacts but as a dynamic institution that bridges the past and present. It continues to inspire pride and curiosity among its visitors while contributing to the province's tourism appeal. As it moves forward, the museum remains committed to its mission of preserving and showcasing the golden heritage of Camarines Norte, ensuring that future generations can connect with their roots and celebrate their identity.
+                  </p>
+              </div>
+             </span>
+ 
+         </div>
+          
+        </div>
+
+        {/* 4th part */}
+        <div >
+        <div
+  className="w-full h-[63rem] bg-contain bg-center bg-no-repeat flex items-center justify-center text-white text-center px-8"
+  style={{
+    backgroundImage:
+      "url('./src/assets/8900f8_0ff4146c815c45f78852a9574ae753d8~mv2 1.png')",
+  }}
+>
+  <div className='w-[140rem]'>
+    <h1 className="text-[5rem] font-bold mb-[3rem]">Vision</h1>
+    <p className="text-[2.4rem] text-center leading-[4rem]">
+      Museo Bulawan is the leading and the most viewer-friendly community
+      museum that serves as the nerve center for education and communication of
+      the rich cultural, artistic, and natural heritage and history of
+      Camarines Norte and the ultimate medium for preservation and exhibition
+      of significant objects that strengthen the values of the people and
+      deepen their patriotism and sense of identity.
+    </p>
+  </div>
+</div>
+
+
+        </div>
+
+      
+        
       </div>
     </div>
     <div/>

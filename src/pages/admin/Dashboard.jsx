@@ -8,8 +8,8 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className='w-full h-screen bg-white pt-24 flex'>
-        <div className='bg-[#1C1B19] w-1/6 h-full py-20 px-10'>
+      <div className='w-screen min-h-[79.8rem] h-screen bg-white flex pt-[7rem]'>
+        <div className='bg-[#1C1B19] w-auto min-h-full h-auto'>
           <AdminNav />
         </div>
       </div>

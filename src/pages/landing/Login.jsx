@@ -36,7 +36,7 @@ const Login = () => {
 
 
   return (
-    <div className="w-auto z mx-auto flex flex-col items-center justify-center pt-7 h-screen bg-[#1C1B19] overflow-hidden">
+    <div className="w-auto z mx-auto flex flex-col items-center justify-center pt-7 min-h-screen bg-[#1C1B19] overflow-hidden">
       <div className="text-left w-screen fixed top-10 left-10">
         <Link to="/" className="text-white hover:text-blue-300 text-sm font-medium">
           <i className="fa-solid fa-arrow-left"></i> &nbsp;&nbsp; Return to homepage
