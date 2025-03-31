@@ -7,12 +7,11 @@ const LoginLog = sequelize.define('LoginLog', {
     autoIncrement: true,
     primaryKey: true,
   },
-  user_id: {
+  credential_id: { // Changed from user_id
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      // Use the table name string to avoid importing User and causing a circular dependency.
-      model: 'users', 
+      model: 'credentials', // Updated to reference credentials
       key: 'id',
     },
     onDelete: 'CASCADE',
