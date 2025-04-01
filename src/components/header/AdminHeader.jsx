@@ -7,7 +7,7 @@ const AdminHeader = () => {
               <div className="h-12 w-full flex justify-between items-center px-3 px-9">
                   <div className="h-full w-auto flex justify-center items-center gap-x-1.5">
                       <img src="/LOGO.png" alt="Museo Bulawan Logo" className="h-full"></img>
-                      <div className="bg-[#FFFFFF] rounded-2xl h-full w-1.5"></div>
+                      <div className="bg-[#FFFFFF] rounded-2xl h-full w-1"></div>
                       <div className="h-12 w-auto flex flex-col justify-center leading-tight">
                           <a className="w-full text-[24px] font-bold text-justify tracking-wider">MUSEO BULAWAN</a>
                           <a className="w-full text-[12px] font-bold text-justify">MANAGEMENT INFORMATION SYSTEM</a>

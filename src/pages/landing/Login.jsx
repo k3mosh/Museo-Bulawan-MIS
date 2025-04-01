@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, ScrollRestoration } from 'react-router-dom';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,13 +36,15 @@ const Login = () => {
 
 
   return (
-    <div className="w-auto z mx-auto flex flex-col items-center justify-center pt-7 min-h-screen bg-[#1C1B19] overflow-hidden">
-      <div className="text-left w-screen fixed top-10 left-10">
+    <div className="w-auto  z mx-auto flex flex-col items-center justify-center pt-7 h-screen min-h-screen bg-[#1C1B19] overflow-hidden">
+      <ScrollRestoration />
+      
+      <div className="text-left w-screen fixed top-10 left-10 overflow-hidden">
         <Link to="/" className="text-white hover:text-blue-300 text-sm font-medium">
           <i className="fa-solid fa-arrow-left"></i> &nbsp;&nbsp; Return to homepage
         </Link>
       </div>
-      <div className="w-full h-fit max-w-md">
+      <div className="w-full h-fit max-w-md overflow-hidden">
         <div className="mx-auto">
           <img src="LOGO.png" alt="Logo" className="w-60 mx-auto" />
         </div>
