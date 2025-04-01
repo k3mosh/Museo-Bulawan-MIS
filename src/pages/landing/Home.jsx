@@ -1,11 +1,14 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import LandingNav from '../../components/navbar/LandingNav'
+import { ScrollRestoration } from 'react-router-dom'
 
 const Home = () => {
   return (
 
     <>
+      <ScrollRestoration />
+
       <div className='bg-cover bg-center bg-no-repeat  min-h-[79rem] h-screen w-screen pt-7' style={{ backgroundImage: "url('/src/assets/06-AfternoonMealOfTheWorker 1.png')" }}>
         <div className='min-h-[10%] w-screen'>
           <LandingNav />

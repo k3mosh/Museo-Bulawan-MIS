@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LandingNav from '../../components/navbar/LandingNav';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { ScrollRestoration } from 'react-router-dom';
 
 const datePickerCustomStyles = `
   /* Overall datepicker */
@@ -78,6 +79,8 @@ const Appointment = () => {
 
   return (
     <>
+      <ScrollRestoration />
+
       {/* Inject custom datepicker styles */}
       <style>{datePickerCustomStyles}</style>
 
@@ -214,7 +217,7 @@ const Appointment = () => {
                 <label className="md:col-span-3 text-lg md:text-xl font-bold">
                   Purpose of Visit <span className="text-red-500">*</span>
                 </label>
-                <div className="md:col-span-9 flex items-center">
+                <div className="md:col-span-9 gap-x-3 flex items-center">
                   <select
                     required
                     className="px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg w-full"
@@ -241,7 +244,7 @@ const Appointment = () => {
                   <button
                     onClick={togglePurposeInfo}
                     type="button"
-                    className="ml-3 w-10 h-10 flex items-center justify-center border border-black rounded-full text-2xl font-bold hover:bg-gray-200"
+                    className=" w-10 h-10 flex items-center justify-center border border-black rounded-full text-2xl font-bold hover:bg-gray-200"
                     title="View purpose details"
                   >
                     ?

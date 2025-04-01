@@ -20,7 +20,7 @@ const LandingHeader = () => {
 
   
 
-  return  (
+  return   (
       <>
       
       <header className={`w-full fixed z-50 transition-all duration-300 ${isScrolled ? 'bg-[#1C1B19] shadow-lg' : 'bg-transparent shadow-none'}`}>

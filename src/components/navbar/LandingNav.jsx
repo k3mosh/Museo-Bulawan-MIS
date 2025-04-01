@@ -39,7 +39,7 @@ const LandingNav = () => {
                 )}
 
                 <div
-                  className={`fixed right-0 z-150 w-[18rem] text-left ${isMenuOpen ? 'block' : 'hidden'} ${location.pathname === '/' || location.pathname === '/home' ? 'mr-0' : 'mr-5'} bg-[#1C1B19] `}>
+                  className={`fixed right-0 z-150 w-[18rem] text-left ${isMenuOpen ? 'block' : 'hidden'}  bg-[#1C1B19] `}>
                 <NavLink to="/" className="block text-white px-4 py-2">Home</NavLink>
                 <NavLink to="/content" className="block text-white px-4 py-2">News & Events</NavLink>
                 <NavLink to="/about" className="block text-white px-4 py-2">About</NavLink>
