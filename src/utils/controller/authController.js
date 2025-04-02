@@ -40,7 +40,7 @@ export const login = async (req, res) => {
       position: credential.position,
     };
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '4h' });
     return res.status(200).json({ token });
   } catch {
     return res.status(500).json({ message: 'Server error' });
