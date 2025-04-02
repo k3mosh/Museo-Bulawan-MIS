@@ -15,9 +15,9 @@ const About = () => {
       </div>
     </div>
 
-      <div className='w-screen h-auto min-h-[79rem] mx-uto font-hina'>
-       <div className='max-w-[140rem]  3xl:max-w-[180rem] h-auto min-h-[79rem] mx-auto text-[3rem]'>
-          <div className='flex flex-col sm:flex-row  mt-[10rem]'>
+      <div className='w-screen h-auto min-h-[79rem] mx-auto font-hina'>
+       <div className='max-w-[140rem] 3xl:max-w-[180rem] h-auto min-h-[79rem] mx-auto text-[3rem]'>
+          <div className='flex flex-col sm:flex-row mt-[10rem]'>
             
             <span className='w-full sm:w-2/5  h-full m-auto sm:m-[2rem]'>
             <div className=" max-w-full h-auto items-end text-justify">
@@ -124,7 +124,7 @@ const About = () => {
 
         {/* 4th part */}
         <div>
-        <div className="w-full h-[63rem] bg-contain bg-center bg-no-repeat flex items-center justify-center text-white text-center px-8"
+        <div className="w-screen sm:w-full h-auto sm:h-[63rem] bg-cover bg-center bg-no-repeat flex items-center justify-center text-white text-center px-8 my-[4rem] sm:my-auto"
             style={{
               backgroundImage:
                 "url('./src/assets/8900f8_0ff4146c815c45f78852a9574ae753d8~mv2 1.png')",
@@ -193,7 +193,7 @@ const About = () => {
               <div>
                 <div className="w-full h-auto  flex items-center justify-center text-center px-8 bg-[#1C1B19] ">
                   <div className='w-[140rem] mt-[10rem]'>
-                    <img src="../src/assets/467396235_122120510066524881_2018490976163991958_n 2.png" alt="Abel C. Icatlo" className='w-[30rem] h-auto mx-auto'/>
+                    <img src="../src/assets/IMG_2751_pp_JPG 1 (1).png" alt="Abel C. Icatlo" className='w-[30rem] h-auto mx-auto'/>
                         <h1 className="text-[5rem] font-bold mt-[2rem] mb-[2rem] text-[#FCE6BC]">Abel C. Icatlo</h1>
                           <h1 className="text-[3rem] mb-[3rem] text-[#FCE6BC]">Museum Curator</h1>
                             
