@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import LandingNav from '../../components/navbar/LandingNav';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import useAddressLogic from '../../components/function/AddressHook';
+import { ScrollRestoration } from 'react-router-dom';
 
+// OPTIONAL custom datepicker styling
 const datePickerCustomStyles = `
-  /* Overall datepicker */
   .react-datepicker {
     font-family: 'HindKochi', sans-serif;
     border: 1px solid #ccc;
@@ -14,8 +16,6 @@ const datePickerCustomStyles = `
   .react-datepicker__triangle {
     display: none;
   }
-
-  /* Header - month/year */
   .react-datepicker__header {
     background-color: #fff;
     border-bottom: 1px solid #ccc;
@@ -29,8 +29,6 @@ const datePickerCustomStyles = `
     font-weight: bold;
     margin-bottom: 0;
   }
-
-  /* Nav buttons */
   .react-datepicker__navigation--previous,
   .react-datepicker__navigation--next {
     top: 15px;
@@ -41,8 +39,6 @@ const datePickerCustomStyles = `
   .react-datepicker__navigation-icon::before {
     border-color: #524433;
   }
-
-  /* Day names + days */
   .react-datepicker__day-name,
   .react-datepicker__day {
     width: 2rem;
@@ -63,11 +59,128 @@ const datePickerCustomStyles = `
   }
 `;
 
+/**
+ * Inline typed dropdown subcomponent with a black "✖".
+ * This handles:
+ *  - Searching/filtering by typed input
+ *  - Clicking an option to select
+ *  - Clearing the selection with a black "✖"
+ *  - Disabling if desired
+ */
+function TypedDropdown({
+  placeholder,
+  options,
+  selectedItem,
+  onChange,
+  disabled = false
+}) {
+  const [inputText, setInputText] = useState(selectedItem?.name || '');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const wrapperRef = useRef(null);
+
+  // Update inputText if selectedItem changes from outside
+  useEffect(() => {
+    setInputText(selectedItem?.name || '');
+  }, [selectedItem]);
+
+  // Close dropdown if user clicks outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelect = (item) => {
+    onChange(item);
+    setShowDropdown(false);
+  };
+
+  const handleClear = () => {
+    onChange(null);
+    setInputText('');
+    setShowDropdown(false);
+  };
+
+  // Filter options based on typed input
+  const filteredOptions = options.filter((o) =>
+    o.name.toLowerCase().includes(inputText.toLowerCase())
+  );
+
+  return (
+    <div ref={wrapperRef} className="relative w-full">
+      <div
+        className={`flex border-2 border-black rounded-2xl px-4 py-3 
+          ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+      >
+        <input
+          className="outline-none flex-grow placeholder-gray-500 text-base md:text-lg disabled:cursor-not-allowed"
+          placeholder={placeholder}
+          value={inputText}
+          disabled={disabled}
+          onChange={(e) => {
+            setInputText(e.target.value);
+            if (!disabled) {
+              setShowDropdown(true);
+            }
+          }}
+          onFocus={() => !disabled && setShowDropdown(true)}
+        />
+        {selectedItem && !disabled && (
+          <button
+            type="button"
+            className="ml-2 text-black font-bold"
+            onClick={handleClear}
+          >
+            X
+          </button>
+        )}
+      </div>
+
+      {showDropdown && !disabled && (
+        <ul className="absolute z-10 mt-1 w-full max-h-48 overflow-auto bg-white border border-gray-400 shadow-md rounded-md">
+          {filteredOptions.length ? (
+            filteredOptions.map((o) => (
+              <li
+                key={o.code}
+                className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleSelect(o)}
+              >
+                {o.name}
+              </li>
+            ))
+          ) : (
+            <li className="px-3 py-2 text-gray-500">No results</li>
+          )}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 const Appointment = () => {
+  // States for your form
   const [selectedDate, setSelectedDate] = useState(null);
   const [purpose, setPurpose] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [showPurposeInfo, setShowPurposeInfo] = useState(false);
+
+  // Using the custom hook for addresses
+  const {
+    provinces,
+    cities,
+    barangays,
+    selectedProvince,
+    setSelectedProvince,
+    selectedCity,
+    setSelectedCity,
+    selectedBarangay,
+    setSelectedBarangay
+  } = useAddressLogic();
+
   const togglePurposeInfo = () => setShowPurposeInfo(!showPurposeInfo);
 
   const isTimeRequired = (purp) =>
@@ -78,7 +191,9 @@ const Appointment = () => {
 
   return (
     <>
-      {/* Inject custom datepicker styles */}
+      <ScrollRestoration />
+
+      {/* Optional datepicker styling */}
       <style>{datePickerCustomStyles}</style>
 
       <div className="w-screen h-full pt-7">
@@ -98,9 +213,7 @@ const Appointment = () => {
                 <i className="text-4xl md:text-5xl fa-solid fa-clock"></i>
                 <span className="font-bold">Museo Bulawan</span>
               </div>
-              <span className="ml-9">
-                Open Daily 9:00am-5:00pm, Monday-Friday
-              </span>
+              <span className="ml-9">Open Daily 9:00am-5:00pm, Monday-Friday</span>
             </div>
             <div className="flex flex-col font-[HindKochi] text-2xl md:text-3xl">
               <div className="flex items-center gap-x-3">
@@ -139,7 +252,7 @@ const Appointment = () => {
                 />
               </div>
 
-              {/* Email and Phone */}
+              {/* Email & Phone */}
               <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
                 <label className="md:col-span-3 text-lg md:text-xl font-bold">
                   Email <span className="text-red-500">*</span>
@@ -168,39 +281,52 @@ const Appointment = () => {
                 />
               </div>
 
-              {/* Province / City */}
+              {/* Province, City, Barangay - typed search */}
               <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
+                {/* Province */}
                 <label className="md:col-span-3 text-lg md:text-xl font-bold">
                   Province <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  defaultValue="Camarines Norte"
-                  required
-                  className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
-                />
+                <div className="md:col-span-4">
+                  <TypedDropdown
+                    placeholder="Type or choose Province"
+                    options={provinces}
+                    selectedItem={selectedProvince}
+                    onChange={setSelectedProvince}
+                  />
+                </div>
+
+                {/* City */}
                 <label className="md:col-span-2 text-lg md:text-xl font-bold">
-                  City <span className="text-red-500">*</span>
+                  City/Municipality <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="City"
-                  required
-                  className="md:col-span-3 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
-                />
+                <div className="md:col-span-3">
+                  <TypedDropdown
+                    placeholder="Type or choose City"
+                    options={cities}
+                    selectedItem={selectedCity}
+                    onChange={setSelectedCity}
+                    disabled={!selectedProvince} // disable if no province selected
+                  />
+                </div>
               </div>
 
-              {/* Barangay / Street */}
               <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
+                {/* Barangay */}
                 <label className="md:col-span-3 text-lg md:text-xl font-bold">
                   Barangay <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="Barangay"
-                  required
-                  className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
-                />
+                <div className="md:col-span-4">
+                  <TypedDropdown
+                    placeholder="Type or choose Barangay"
+                    options={barangays}
+                    selectedItem={selectedBarangay}
+                    onChange={setSelectedBarangay}
+                    disabled={!selectedCity} // disable if no city selected
+                  />
+                </div>
+
+                {/* Street */}
                 <label className="md:col-span-2 text-lg md:text-xl font-bold">Street</label>
                 <input
                   type="text"
@@ -214,7 +340,7 @@ const Appointment = () => {
                 <label className="md:col-span-3 text-lg md:text-xl font-bold">
                   Purpose of Visit <span className="text-red-500">*</span>
                 </label>
-                <div className="md:col-span-9 flex items-center">
+                <div className="md:col-span-9 gap-x-3 flex items-center">
                   <select
                     required
                     className="px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg w-full"
@@ -241,7 +367,7 @@ const Appointment = () => {
                   <button
                     onClick={togglePurposeInfo}
                     type="button"
-                    className="ml-3 w-10 h-10 flex items-center justify-center border border-black rounded-full text-2xl font-bold hover:bg-gray-200"
+                    className=" w-10 h-10 flex items-center justify-center border border-black rounded-full text-2xl font-bold hover:bg-gray-200"
                     title="View purpose details"
                   >
                     ?
@@ -258,18 +384,10 @@ const Appointment = () => {
                         </span>
                       </div>
                       <ol className="list-decimal ml-8 mb-6 text-base md:text-lg">
-                        <li>
-                          <strong>Research:</strong> Accessing archives or materials.
-                        </li>
-                        <li>
-                          <strong>Thesis / Dissertation:</strong> Consulting artifacts.
-                        </li>
-                        <li>
-                          <strong>School Field Trips:</strong> Coordinating visits for classes.
-                        </li>
-                        <li>
-                          <strong>Workshops or Classes:</strong> Organizing classes or art/history workshops.
-                        </li>
+                        <li><strong>Research:</strong> Accessing archives or materials.</li>
+                        <li><strong>Thesis / Dissertation:</strong> Consulting artifacts.</li>
+                        <li><strong>School Field Trips:</strong> Coordinating visits for classes.</li>
+                        <li><strong>Workshops or Classes:</strong> Organizing classes or art/history workshops.</li>
                       </ol>
 
                       <div className="mb-5 flex items-center">
@@ -281,21 +399,11 @@ const Appointment = () => {
                         </span>
                       </div>
                       <ol className="list-decimal ml-8 text-base md:text-lg">
-                        <li>
-                          <strong>Interviews:</strong> Meeting museum staff or curators.
-                        </li>
-                        <li>
-                          <strong>Collaboration Meetings:</strong> Joint projects or exhibits.
-                        </li>
-                        <li>
-                          <strong>Photography / Media Projects:</strong> Photo shoots or filming.
-                        </li>
-                        <li>
-                          <strong>Conservation Consultation:</strong> Seeking advice/services.
-                        </li>
-                        <li>
-                          <strong>Donations:</strong> Offering items or funds to the museum.
-                        </li>
+                        <li><strong>Interviews:</strong> Meeting museum staff or curators.</li>
+                        <li><strong>Collaboration Meetings:</strong> Joint projects or exhibits.</li>
+                        <li><strong>Photography / Media Projects:</strong> Photo shoots or filming.</li>
+                        <li><strong>Conservation Consultation:</strong> Seeking advice/services.</li>
+                        <li><strong>Donations:</strong> Offering items or funds to the museum.</li>
                       </ol>
                     </div>
                   )}
@@ -315,7 +423,7 @@ const Appointment = () => {
                 />
               </div>
 
-              {/* Preferred Date & (May) Time */}
+              {/* Preferred Date & Time */}
               <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
                 <label className="md:col-span-3 text-lg md:text-xl font-bold">
                   Preferred Date <span className="text-red-500">*</span>

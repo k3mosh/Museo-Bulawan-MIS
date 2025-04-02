@@ -51,8 +51,10 @@ const AdminNav = () => {
     }
   }
   
-  const First_name = localStorage.getItem('first_name') || "";
-  const Last_name = localStorage.getItem('last_name') || "";
+  const First_name = (localStorage.getItem('first_name') || "").toUpperCase();
+  const Last_name = (localStorage.getItem('last_name') || "").toUpperCase();
+  
+  
   const Position = localStorage.getItem('position');
 
   const firstInitial = First_name.charAt(0).toUpperCase();
@@ -77,7 +79,7 @@ const AdminNav = () => {
                 <div className="absolute group-hover:flex-col left-full ml-2 hidden group-hover:flex bg-gray-800 sm:text-transparent sm:bg-transparent text-white text-2xl rounded py-1 px-2 w-max">
                   <span className='text-sm font-semibold sm:text-transparent text-[#949494]'>{Position}</span>
                   <span>
-                    {Last_name}&nbsp;{First_name}
+                   {First_name}&nbsp;{Last_name}
                   </span>
                 </div>
           <div className='sm:w-[15rem] flex flex-col justify-end gap-y-4 h-fit'>
