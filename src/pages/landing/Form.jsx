@@ -1,7 +1,7 @@
 
+import { ScrollRestoration } from 'react-router-dom';
 import LandingNav from '../../components/navbar/LandingNav'
 import React, { useState } from 'react';
-
 const Form = () => {
   const [formType, setFormType] = useState("donation"); // Default to Donation Form
   return (

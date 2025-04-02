@@ -45,7 +45,7 @@ const LandingFooter = () => {
                 </span>
               </div>
               <div className=' h-[5rem] flex items-center justify-center w-full max-w-[20rem]'>
-                <NavLink to='/form' className='w-[17rem] flex items-center justify-center font-semibold bg-white h-[4rem]'>
+                <NavLink to='/support' className='w-[17rem] flex items-center justify-center font-semibold bg-white h-[4rem]'>
                   <span className='text-3xl'>   
                     Contribute
                   </span>

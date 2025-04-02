@@ -83,9 +83,11 @@ const Home = () => {
             </div>
 
             <div className='w-fit h-fit text-2xl flex gap-x-5 ml-11 my-10 sm:my-20'>
+              <a href="#learn_more">
               <button className="w-48 h-16 bg-white flex items-center justify-center font-medium text-black transition duration-300 hover:shadow-lg cursor-pointer outline-3 outline-white">
                 Learn More
               </button>
+              </a>
               <NavLink to='/appointment'>
                 <button className="w-48 h-16 bg-transparent flex items-center justify-center outline-3 outline-white text-2xl font-medium text-white transition duration-300 hover:bg-white hover:text-black cursor-pointer">
                   BOOK A VISIT
@@ -137,7 +139,7 @@ const Home = () => {
 
       </div>
 
-      <div className='w-screen h-screen min-h-[79rem]'>
+      <div id='learn_more' className='w-screen h-screen min-h-[79rem]'>
 
       </div>
 
