@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+
 const AdminNav = () => {
   const navigate = useNavigate();
   const linkClasses = "w-fit sm:w-full h-fit py-4 flex flex-row justify-start bg-[#1C1B19] items-center gap-3 rounded-2xl p-2 h-[60px] cursor-pointer";
-  const activeClasses = "bg-white text-black"; 
+  const activeClasses = "bg-white text-black";
 
   const handleLogout = async () => {
     const token = localStorage.getItem('token');
@@ -14,7 +15,7 @@ const AdminNav = () => {
       navigate('/login');
       return;
     }
-  
+
     try {
       await axios.post(
         'http://localhost:5000/api/auth/logout',
@@ -26,40 +27,32 @@ const AdminNav = () => {
     } catch (error) {
       console.error('Logout error:', error.response ? error.response.data : error.message);
     } finally {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
+      localStorage.clear();  // Clears all localStorage items in one go.
       navigate('/login');
     }
   };
 
   const token = localStorage.getItem('token');
-  let role = 'unknown', first_name = 'unknown',last_name = 'unknown',position  = 'unknown';
+  let role = 'unknown', first_name = 'unknown', last_name = 'unknown', position = 'unknown';
+
+  // Decode the token only if it exists
   if (token) {
     try {
       const decodedToken = jwtDecode(token);
       role = decodedToken.role || 'unknown';
-      first_name = decodedToken.first_name || 'unkown';
-      last_name = decodedToken.last_name || 'unkown';
-      position = decodedToken.position || 'unkown';
-
-      localStorage.setItem('position', position);
-      localStorage.setItem('first_name', first_name);
-      localStorage.setItem('last_name', last_name);
-      localStorage.setItem('role', role);
+      first_name = decodedToken.first_name || 'unknown';
+      last_name = decodedToken.last_name || 'unknown';
+      position = decodedToken.position || 'unknown';
     } catch (error) {
       console.error('Error decoding token:', error);
     }
   }
-  
-  const First_name = (localStorage.getItem('first_name') || "").toUpperCase();
-  const Last_name = (localStorage.getItem('last_name') || "").toUpperCase();
-  
-  
-  const Position = localStorage.getItem('position');
 
-  const firstInitial = First_name.charAt(0).toUpperCase();
-  const lastInitial = Last_name.charAt(0).toUpperCase();
+  // First and last name initials for avatar background color
+  const firstInitial = first_name.charAt(0).toUpperCase();
+  const lastInitial = last_name.charAt(0).toUpperCase();
 
+  // Mapping of initials to background colors
   const colorMap = {
     A: "#FF6666", B: "#FF9933", C: "#FFD700", D: "#66CC66", E: "#0099CC",
     F: "#9933CC", G: "#FF3399", H: "#6666FF", I: "#00CC99", J: "#FF6600",
@@ -69,7 +62,8 @@ const AdminNav = () => {
     Z: "#33CCCC"
   };
 
-  const bgColor = colorMap[firstInitial];
+  // Determine the background color based on the first initial
+  const bgColor = colorMap[firstInitial] || "#FFFFFF"; 
 
   return (
     <div className='bg-[#1C1B19] h-full gap-y-10 justify-around w-fit sm:min-w-[20rem] flex flex-col items-center'>
@@ -77,9 +71,9 @@ const AdminNav = () => {
 
         <div className=' relative group w-full py-4 h-fit flex justify-center items-end border-b-1 border-[#373737]'>
                 <div className="absolute group-hover:flex-col left-full ml-2 hidden group-hover:flex bg-gray-800 sm:text-transparent sm:bg-transparent text-white text-2xl rounded py-1 px-2 w-max">
-                  <span className='text-sm font-semibold sm:text-transparent text-[#949494]'>{Position}</span>
+                  <span className='text-sm font-semibold sm:text-transparent text-[#949494]'>{position}</span>
                   <span>
-                   {First_name}&nbsp;{Last_name}
+                   {first_name.toUpperCase()}&nbsp;{last_name.toUpperCase()}
                   </span>
                 </div>
           <div className='sm:w-[15rem] flex flex-col justify-end gap-y-4 h-fit'>
@@ -89,8 +83,8 @@ const AdminNav = () => {
               </div>
             </div>
             <div className='w-full hidden sm:flex h-fit flex-col gap-y-2'>
-              <span className='text-sm font-semibold text-[#949494]'>{Position}</span>
-              <span className='text-2xl max-w-full font-bold text-white whitespace-nowrap truncate'>{First_name}&nbsp;{Last_name}</span>
+              <span className='text-sm font-semibold text-[#949494]'>{position}</span>
+              <span className='text-2xl max-w-full font-bold text-white whitespace-nowrap truncate'>{first_name.toUpperCase()}&nbsp;{last_name.toUpperCase()}</span>
             </div>
             
           </div>

@@ -24,6 +24,7 @@ const Login = () => {
 
       if (response.status === 200) {
         localStorage.setItem('token', response.data.token);
+        //document.cookie = `2ken=${ response.data.token}; path=/; max-age=${7 * 24 * 60 * 60}; secure; HttpOnly; SameSite=Strict`;
         navigate('/admin/dashboard');
       }
     } catch (err) {
