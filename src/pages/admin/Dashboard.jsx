@@ -32,17 +32,17 @@ const Dashboard = () => {
                   </div>
 
                   <div className='px-4 w-full max-h-[33em] flex mt-5 md:min-h-[30em] bg-blue-200 '>
-                    <div className='flex flex-col h-full sm:flex sm:flex-col md:flex md:flex-row w-full gap-4'>
+                    <div className='flex flex-col h-full sm:flex sm:flex-col md:flex md:flex-row w-full gap-4 md:gap-10'>
 
-                      <div className='flex gap-3 h-[14em] w-full sm:max-w-full md:max-w-1/2'>
+                      <div className='flex gap-3 h-[14em] w-full sm:max-w-full md:max-w-1/2 md:h-full'>
 
-                        <div className='w-full ' >
-                          <div className='bg-white h-full p-3 flex flex-col items-start justify-start shadow-lg shadow-gray-400'>
-                            <span className='text-3xl'>Expected Visitor</span>
-                            <span className='text-xl ml-4'>1603</span>
+                        <div className='w-full h-full' >
+                          <div className='bg-white h-full p-3 flex flex-col items-start justify-start shadow-lg shadow-gray-400 md:h-[30em] md:p-5 md:gap-4'>
+                            <span className='text-3xl md:text-5xl md:font-semibold'>Expected Visitor</span>
+                            <span className='text-xl ml-4 md:text-4xl'>1603</span>
                             <div className='w-full h-full flex flex-col justify-center items-center '>
-                               <span className='text-5xl'>80%</span>
-                               <span className='text-2xl'>Present Visitors</span>
+                               <span className='text-5xl md:text-6xl'>80%</span>
+                               <span className='text-2xl md:text-4xl'>Present Visitors</span>
                             </div>
                           </div>                       
                         </div>
@@ -51,39 +51,39 @@ const Dashboard = () => {
                           <div className='flex flex-col w-full h-full gap-2 '>
                             <div className='w-full h-1/2 bg-black p-2 flex flex-col shadow-lg'>
                               <div className="w-full h-full flex flex-col justify-start items-center">
-                                <div className="w-full h-auto flex justify-start items-center gap-x-3">
-                                  <div className="h-full w-[55%] flex flex-col justify-center items-center text-white font-bold text-center">
-                                    <span className="w-full h-1/3 text-3xl flex items-center justify-center">Present</span>
-                                    <span className="w-full h-2/3 text-5xl flex items-center justify-center">1520</span>
+                                <div className="w-full h-auto flex justify-start items-center gap-x-3 md:h-full ">
+                                  <div className="h-full w-[55%] flex flex-col justify-center items-center text-white font-bold text-center md:pl-10">
+                                    <span className="w-full h-1/3 text-2xl flex items-center justify-center md:text-6xl">Present</span>
+                                    <span className="w-full h-2/3 text-4xl flex items-center justify-center md:text-6xl">1520</span>
                                   </div>
                                   <div className="h-full w-[60%] flex items-end justify-start pb-2 text-[#D5FFCB]">
-                                    <span className="w-full font-bold flex items-center gap-1 text-lg">
+                                    <span className="w-full font-bold flex items-center gap-1 text-lg md:text-4xl md:pl-10">
                                       +2.3%
                                       <i className="fas fa-arrow-up text-base"></i>
                                     </span>
                                   </div>
                                 </div>
                                 <div className="w-full h-1/5 text-[#EAC39C] font-bold flex items-center justify-center">
-                                  <span className="w-full flex items-center justify-start pl-1">Compared to last month (1486)</span>
+                                  <span className="w-full flex items-center justify-start pl-1 text-md md:text-4xl  md:pl-8">Compared to last month (1486)</span>
                                 </div>
                               </div>
                             </div>
                             <div className='w-full h-1/2 bg-black p-2 flex flex-col shadow-lg'>
                               <div className="w-full h-full flex flex-col justify-start items-center">
-                                <div className="w-full h-auto flex justify-start items-center gap-x-3 ">
-                                  <div className="h-full w-[55%] flex flex-col justify-center items-center text-white font-bold text-center">
-                                    <span className="w-full h-1/3 text-3xl flex items-center justify-center">Absent</span>
-                                    <span className="w-full h-2/3 text-5xl flex items-center justify-center">83</span>
+                                <div className="w-full h-auto flex justify-start items-center gap-x-3 md:h-full">
+                                  <div className="h-full w-[55%] flex flex-col justify-center items-center text-white font-bold text-center md:pl-10 ">
+                                    <span className="w-full h-1/3 text-2xl flex items-center justify-center md:text-6xl">Absent</span>
+                                    <span className="w-full h-2/3 text-4xl flex items-center justify-center md:text-6xl">83</span>
                                   </div>
-                                  <div className="h-full w-[60%] flex items-end justify-start pb-2 text-[#FF3A3A] ">
-                                    <span className="w-full font-bold flex items-center gap-1 text-lg">
-                                      +3.164%
+                                  <div className="h-full w-[60%] flex items-end justify-start pb-2 text-[#FF3A3A]">
+                                    <span className="w-full font-bold flex items-center gap-1 text-lg md:text-4xl md:pl-10">
+                                      +3.614%
                                       <i className="fas fa-arrow-up text-base"></i>
                                     </span>
                                   </div>
                                 </div>
                                 <div className="w-full h-1/5 text-[#EAC39C] font-bold flex items-center justify-center">
-                                <span className="w-full flex items-center justify-start pl-1">Compared to last month (80)</span>
+                                  <span className="w-full flex items-center justify-start pl-1 text-md md:text-4xl md:pl-8">Compared to last month (80)</span>
                                 </div>
                               </div>
                             </div>
@@ -92,8 +92,8 @@ const Dashboard = () => {
 
                       </div>
 
-                      <div className='flex flex-col h-[14em] w-full sm:max-w-full p-3 gap-2 bg-black'>
-                       <span className='text-3xl font-bold text-white'>Appointment Rate</span>
+                      <div className='flex flex-col h-[14em] w-full sm:max-w-full p-3 gap-2 bg-black md:h-[30em] md:gap-5 md:p-4'>
+                       <span className='text-3xl font-bold text-white md:text-5xl'>Appointment Rate</span>
                        <div className='h-full w-full bg-white rounded-lg'>
                         
                        </div>
@@ -102,9 +102,9 @@ const Dashboard = () => {
                   </div>
 
                   <div className='flex flex-col max-h-[33em] sm:flex sm:flex-col md:flex md:flex-row w-full gap-4 px-4 mt-4  md:min-h-[30em] bg-yellow-200'>
-                    <div className='w-full h-[19em] flex  gap-2 sm:gap-3 '>
-                      <div className='w-[20em] flex gap-3 sm:w-[26em] ' >
-                          <div className='w-[9em] flex flex-col gap-3 text-white sm:min-w-[11em]'>
+                    <div className='w-full h-[19em] flex  gap-2 sm:gap-3 md:h-[28em] md:w-full'>
+                      <div className='w-[20em] flex gap-3 sm:w-[26em] md:w-2/3' >
+                          <div className='w-[9em] flex flex-col gap-3 text-white sm:min-w-[11em] md:w-[20em]'>
                             <div className='flex flex-col w-full h-1/2 bg-black rounded-xl p-2 justify-start items-start gap-4 '>
                               <span className='text-xl w-full sm:text-2xl'> Present </span>
                               <span className='text-4xl self-center sm:text-5xl'>593</span>
