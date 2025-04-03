@@ -16,49 +16,53 @@ const Dashboard = () => {
           <div className='w-full h-full p-7'>
             <div className='w-full flex flex-col xl:flex-row h-1/2'>
             <div className="xl:w-1/2 w-full flex gap-x-2 p-2 sm:h-full h-1/2">
-              <div className='h-full min-w-[18rem] md:min-w-[25rem] lg:min-w-[35rem] rounded-lg'> 
+              <div className='shadow-lg shadow-gray-600  h-full min-w-[18rem] md:min-w-[25rem] lg:min-w-[35rem] rounded-lg bg-teal-200'> 
 
               </div>
 
               <div className='w-full flex-col px-2 gap-y-4 flex h-full'>
                 {/* visiors, present, absent */}
-                <div className='w-full h-full rounded-lg'>
+                <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-teal-400'>
 
                 </div>
 
-                <div className='w-full h-full rounded-lg'>
+                <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-teal-800'>
 
                 </div>
               </div>
             </div>
             <div className="xl:w-1/2 w-full p-2 sm:h-full h-1/2">
               {/* appointment rate */}
-              <div className='w-full h-full rounded-lg'>
+              <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-[#1C1B19]'>
 
               </div>
             </div>
           </div>
             <div className='w-full flex flex-col xl:flex-row h-1/2'>
+
              <div className="xl:w-1/2 w-ful gap-x-2 flex p-2 sm:h-full h-1/2">
              {/* present, approved visits, qouta */}
               <div className='w-full flex  h-full'>
                 <div className='min-w-[12rem] lg:min-w-[23rem] flex flex-col p-2 gap-y-2 h-full'>
-                  <div className='h-1/2 w-full rounded-lg'> 
+                  <div className='shadow-lg shadow-gray-600  h-1/2 w-full rounded-lg bg-amber-200'> 
+
+
+
 
                   </div>
-                  <div className='h-1/2 w-full rounded-lg'> 
+                  <div className='shadow-lg shadow-gray-600  h-1/2 w-full rounded-lg bg-amber-500'> 
 
 
                   </div>
                 </div>
                 <div className='w-full flex flex-col p-2 gap-y-2 h-full'>
                 <div className='h-1/2 pt-4 pr-4 w-full'> 
-                  <div className='w-full h-full rounded-lg'>
+                  <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-amber-700'>
                     
                   </div>
                 </div>
                 <div className='h-1/2 pt-4 pr-4 w-full'> 
-                  <div className='w-full h-full rounded-lg'>
+                  <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-amber-900'>
                       
                   </div>
 
@@ -126,11 +130,11 @@ const Dashboard = () => {
               <div className='w-1/2 flex flex-col justify-around h-full p-2'>
               <span className='text-2xl sm:text-6xl font-semibold'>Walk-Ins</span>
               <div className='w-full h-fit gap-y-4 flex flex-col'>
-              <button className='shadow-lg shadow-gray-600  w-full flex items-center justify-between px-5 sm:px-10  border-3 rounded-lg h-[4rem] sm:h-[8rem]'>
+              <button className='cursor-pointer shadow-lg shadow-gray-600  w-full flex items-center justify-between px-5 sm:px-10  border-3 rounded-lg h-[4rem] sm:h-[8rem]'>
                 <span className='sm:text-4xl text-2xl font-semibold'>Appointment</span>
                 <i class="fa-regular fa-square-plus text-2xl sm:text-5xl"></i>
               </button>
-              <button className='shadow-lg shadow-gray-600  w-full flex items-center justify-between px-5 sm:px-10 border-3 rounded-lg h-[4rem] sm:h-[8rem]'>
+              <button className='cursor-pointer shadow-lg shadow-gray-600  w-full flex items-center justify-between px-5 sm:px-10 border-3 rounded-lg h-[4rem] sm:h-[8rem]'>
                 <span className='sm:text-4xl text-2xl font-semibold'>Donation</span>
                 <i class="fa-regular fa-square-plus text-2xl sm:text-5xl"></i>
               </button>   
