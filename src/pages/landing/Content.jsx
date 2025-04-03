@@ -61,6 +61,11 @@ const itemsData = {
   ]
 };
 
+const municipalities = [
+  "Basud", "Capalonga", "Daet", "Jose Panganiban", "Labo",
+  "Mercedes", "Paracale", "San Lorenzo Ruiz", "San Vicente", "Santa Elena", "Talisay", "Vinzons"
+];
+
 const Content = () => {
   return (
     <>
@@ -85,11 +90,17 @@ const Content = () => {
               <option value="">Category</option>
             </select>
             <select className="border px-4 sm:px-6 py-3 rounded-md w-[25%] sm:w-[30%] md:w-[35%] lg:w-[40%] h-13 text-lg">
-              <option value="">Municipality</option>
+              <option value="" disabled selected>Municipality</option>
+              {municipalities.map((municipality, index) => (
+                <option key={index} value={municipality}>
+                  {municipality}
+                </option>
+              ))}
             </select>
-            <button className="bg-black text-white px-6 py-3 rounded-md text-lg w-[15%] sm:w-[18%] md:w-[20%] h-13 cursor-pointer hover:bg-white hover:text-black hover:border-2 hover:border-black">
+            <button className="bg-black text-white px-6 py-3 rounded-md text-lg w-[15%] sm:w-[18%] md:w-[20%] h-13 cursor-pointer border-2 border-transparent hover:bg-white hover:text-black hover:border-black">
               Search
             </button>
+
           </div>
         </div>
       </div>
