@@ -14,8 +14,8 @@ const Dashboard = () => {
           </div>
       
           <div className='w-full h-full p-10 md:p-10'>
-              <div className='min-h-[65em] w-full flex flex-col max-w-[90vw] transition-all duration-300 md:h-full md:gap-3'>
-                  <div className='h-auto flex justify-between w-auto px-4 py-2'>
+              <div className='min-h-[65em] w-full flex flex-col max-w-[90vw] transition-all duration-300 md:max-h-[70em] md:gap-3'>
+                  <div className='h-auto flex justify-between w-auto px-4 py-2 '>
                     <div className='text-5xl font-bold md:text-6xl'>
                       Dashboard
                     </div>
@@ -31,7 +31,7 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  <div className='px-4 w-full max-h-[33em] flex mt-5 md:min-h-[38em] bg-blue-200 '>
+                  <div className='px-4 w-full max-h-[33em] flex mt-5 md:min-h-[35em] bg-blue-200 '>
                     <div className='flex flex-col h-full sm:flex sm:flex-col md:flex md:flex-row w-full gap-4'>
 
                       <div className='flex gap-3 h-[14em] w-full sm:max-w-full md:max-w-1/2'>
@@ -101,7 +101,7 @@ const Dashboard = () => {
                       </div>
                   </div>
 
-                  <div className='flex flex-col max-h-[33em] sm:flex sm:flex-col md:flex md:flex-row w-full gap-4 px-4 mt-4  md:min-h-[38em] bg-yellow-200'>
+                  <div className='flex flex-col max-h-[33em] sm:flex sm:flex-col md:flex md:flex-row w-full gap-4 px-4 mt-4  md:min-h-[35em] bg-yellow-200'>
                     <div className='w-full h-[19em] flex  gap-2 sm:gap-3 '>
                       <div className='w-[20em] flex gap-3 sm:w-[26em] ' >
                           <div className='w-[9em] flex flex-col gap-3 text-white sm:min-w-[11em]'>
