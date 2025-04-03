@@ -14,7 +14,7 @@ const Dashboard = () => {
           </div>
       
           <div className='w-full h-full p-10 md:p-10'>
-              <div className='h-full w-full flex flex-col max-w-[90vw] transition-all duration-300 md:h-full md:gap-3'>
+              <div className='min-h-[65em] w-full flex flex-col max-w-[90vw] transition-all duration-300 md:h-full md:gap-3'>
                   <div className='h-auto flex justify-between w-auto px-4 py-2'>
                     <div className='text-5xl font-bold md:text-6xl'>
                       Dashboard
@@ -31,10 +31,10 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  <div className='px-4 w-full h-auto flex mt-5 md:min-h-[38em] bg-blue-200 '>
+                  <div className='px-4 w-full max-h-[34em] flex mt-5 md:min-h-[38em] bg-blue-200 '>
                     <div className='flex flex-col h-full sm:flex sm:flex-col md:flex md:flex-row w-full gap-4'>
 
-                      <div className='flex gap-3 h-[18em] w-full sm:max-w-full md:max-w-1/2'>
+                      <div className='flex gap-3 h-[16em] w-full sm:max-w-full md:max-w-1/2'>
 
                         <div className='w-full ' >
                           <div className='bg-white h-full p-3 flex flex-col items-start justify-start shadow-lg shadow-gray-400'>
@@ -92,7 +92,7 @@ const Dashboard = () => {
 
                       </div>
 
-                      <div className='flex flex-col h-[20em] w-full sm:max-w-full p-3 gap-2 bg-black'>
+                      <div className='flex flex-col h-[16em] w-full sm:max-w-full p-3 gap-2 bg-black'>
                        <span className='text-3xl font-bold text-white'>Appointment Rate</span>
                        <div className='h-full w-full bg-white rounded-lg'>
                         
@@ -101,7 +101,7 @@ const Dashboard = () => {
                       </div>
                   </div>
 
-                  <div className='flex flex-col sm:flex sm:flex-col md:flex md:flex-row w-full gap-4 px-4 mt-4  md:min-h-[38em] bg-yellow-200'>
+                  <div className='flex flex-col max-h-[34em] sm:flex sm:flex-col md:flex md:flex-row w-full gap-4 px-4 mt-4  md:min-h-[38em] bg-yellow-200'>
                     <div className='w-full h-[19em] flex  gap-2 sm:gap-3 '>
                       <div className='w-[20em] flex gap-3 sm:w-[26em] ' >
                           <div className='w-[9em] flex flex-col gap-3 text-white sm:min-w-[11em]'>
