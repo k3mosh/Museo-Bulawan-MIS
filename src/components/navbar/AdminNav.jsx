@@ -66,7 +66,7 @@ const AdminNav = () => {
   const bgColor = colorMap[firstInitial] || "#FFFFFF"; 
 
   return (
-    <div className='bg-[#1C1B19] h-full gap-y-10 justify-around w-fit sm:min-w-[20rem] flex flex-col items-center'>
+    <div  className='bg-[#1C1B19]   min-h-full gap-y-10 justify-around w-fit sm:min-w-[20rem] flex flex-col items-center'>
       <div className=' w-full h-fit flex flex-col gap-y-[5rem]'>
 
         <div className=' relative group w-full py-4 h-fit flex justify-center items-end border-b-1 border-[#373737]'>
@@ -96,7 +96,7 @@ const AdminNav = () => {
           <NavLink to="/admin/dashboard" className={({ isActive }) => `relative group ${linkClasses} ${isActive ? activeClasses : "text-white"}`}>
             {({ isActive }) => (
               <>
-                <img src="/src/assets/dashboard_icon.png" alt="dashboard" className={`h-auto w-[25px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
+                <img  src="/src/assets/dashboard_icon.png" alt="dashboard" className={`h-auto w-[25px] filter brightness-1 ${isActive ? "invert-1" : "invert"}`} />
                 <span className='hidden sm:block'>Dashboard</span>
                 <span className="absolute  left-full ml-8 hidden group-hover:flex bg-gray-800 sm:text-transparent sm:bg-transparent text-white text-2xl rounded py-1 px-2 w-max">
                   Dashboard
