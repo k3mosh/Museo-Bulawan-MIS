@@ -17,11 +17,11 @@ const Dashboard = () => {
             
             <div className='w-full flex flex-col xl:flex-row h-1/2 '>
             <div className="xl:w-1/2 w-full flex gap-x-2 p-2 sm:h-full h-1/2">
-              <div className='shadow-lg shadow-gray-600  h-full min-w-[18rem] md:min-w-[25rem] xl:min-w-[35rem] rounded-lg bg-white flex flex-col p-4 gap-2'> 
-                <span className='text-3xl font-semibold'>Expected Visitors</span>
-                <span className='text-2xl pl-4'>1603</span>
+              <div className='shadow-lg shadow-gray-600  h-full min-w-[18rem] md:min-w-[25rem] xl:min-w-[35rem] rounded-lg bg-white flex flex-col p-4 gap-2 md:gap-4'> 
+                <span className='text-3xl font-semibold xl:text-6xl'>Expected Visitors</span>
+                <span className='text-2xl pl-4 xl:text-5xl'>1603</span>
                 <div className='h-full w-full flex flex-col justify-center items-center'>
-                <span className='text-3xl xl:text-6xl font-bold tracking-widest'>80%</span>
+                <span className='text-3xl xl:text-6xl font-bold tracking-widest '>80%</span>
                 <span className='text-xl xl:text-2xl racking-tight'>Present Visitors</span>
                 </div>
               </div>
@@ -30,45 +30,45 @@ const Dashboard = () => {
                 {/* visiors, present, absent */}
                 <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-black'>
                   <div className='p-4 w-full h-full flex flex-col gap-2'>
-                      <div className='w-full h-full flex gap-2'>
-                          <div className='w-full flex flex-col text-white justify-center px-2'>
-                            <span className='text-xl xl:text-2xl font-bold'>Present</span>
-                            <span className='text-2xl xl:text-4xl font-bold'>1520</span>
+                      <div className='w-full h-full flex gap-2  md:px-16 md:justify-center'>
+                          <div className='w-full flex flex-col text-white justify-center px-2 md:justify-start md:gap-5'>
+                            <span className='text-xl xl:text-6xl font-bold'>Present</span>
+                            <span className='text-2xl xl:text-8xl font-bold h-full '>1520</span>
                           </div>
                           <div className="  flex items-end justify-start  text-[#D5FFCB]">
-                            <span className="font-bold flex items-center gap-1 text-sm xl:text-lg">
+                            <span className="font-bold flex items-center gap-1 text-sm xl:text-4xl">
                               +2.3%
-                              <i className="fas fa-arrow-up text-base"></i>
+                              <i className="fas fa-arrow-up text-base xl:text-3xl"></i>
                             </span>
                           </div>
                       </div>
-                          <span className='text-[#EAC39C] font-bold text-sm '> Compared to last month (1486)</span>
+                          <span className='text-[#EAC39C] font-bold text-sm md:text-4xl'> Compared to last month (1486)</span>
                     </div>  
                 </div>
 
                 <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-black'>
                   <div className='p-4 w-full h-full flex flex-col gap-2'>
-                      <div className='w-full h-full flex gap-2'>
-                          <div className='w-full flex flex-col text-white justify-center px-2'>
-                            <span className='text-xl xl:text-2xl font-bold'>Present</span>
-                            <span className='text-2xl xl:text-4xl font-bold'>1520</span>
+                      <div className='w-full h-full flex gap-2  md:px-16 md:justify-center'>
+                          <div className='w-full flex flex-col text-white justify-center px-2 md:justify-start md:gap-5'>
+                            <span className='text-xl xl:text-6xl font-bold'>Present</span>
+                            <span className='text-2xl xl:text-8xl font-bold h-full '>1520</span>
                           </div>
                           <div className="  flex items-end justify-start  text-[#D5FFCB]">
-                            <span className="font-bold flex items-center gap-1 text-sm xl:text-lg">
+                            <span className="font-bold flex items-center gap-1 text-sm xl:text-4xl">
                               +2.3%
-                              <i className="fas fa-arrow-up text-base"></i>
+                              <i className="fas fa-arrow-up text-base xl:text-3xl"></i>
                             </span>
                           </div>
                       </div>
-                          <span className='text-[#EAC39C] font-bold text-sm '> Compared to last month (1486)</span>
+                          <span className='text-[#EAC39C] font-bold text-sm md:text-4xl'> Compared to last month (1486)</span>
                     </div>  
                 </div>
               </div>
             </div>
             <div className="xl:w-1/2 w-full p-2 sm:h-full h-1/2">
               {/* appointment rate */}
-              <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-[#1C1B19] flex flex-col p-5 gap-3'>
-                <span className='text-3xl font-bold text-white'>Appointment Rate</span>
+              <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-[#1C1B19] flex flex-col p-5 gap-3 md:gap-6 md:p-10'>
+                <span className='text-3xl font-bold text-white md:text-5xl'>Appointment Rate</span>
                 <div className='bg-white h-full w-full rounded-xl'>
 
                 </div>
