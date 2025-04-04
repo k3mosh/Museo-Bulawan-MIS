@@ -32,7 +32,7 @@ const Dashboard = () => {
                   <div className='p-4 w-full h-full flex flex-col gap-2'>
                       <div className='w-full h-full flex gap-2  md:px-16 md:justify-center'>
                           <div className='w-full flex flex-col text-white justify-center px-2 md:justify-start md:gap-5'>
-                            <span className='text-xl xl:text-6xl font-bold'>Present</span>
+                            <span className='text-xl xl:text-2xl font-bold'>Present</span>
                             <span className='text-2xl xl:text-8xl font-bold h-full '>1520</span>
                           </div>
                           <div className="  flex items-end justify-start  text-[#D5FFCB]">
@@ -42,7 +42,7 @@ const Dashboard = () => {
                             </span>
                           </div>
                       </div>
-                          <span className='text-[#EAC39C] font-bold text-sm md:text-4xl'> Compared to last month (1486)</span>
+                          <span className='text-[#EAC39C] font-bold text-sm md:text-3xl'> Compared to last month (1486)</span>
                     </div>  
                 </div>
 
@@ -50,7 +50,7 @@ const Dashboard = () => {
                   <div className='p-4 w-full h-full flex flex-col gap-2'>
                       <div className='w-full h-full flex gap-2  md:px-16 md:justify-center'>
                           <div className='w-full flex flex-col text-white justify-center px-2 md:justify-start md:gap-5'>
-                            <span className='text-xl xl:text-6xl font-bold'>Present</span>
+                            <span className='text-xl xl:text-2xl font-bold'>Present</span>
                             <span className='text-2xl xl:text-8xl font-bold h-full '>1520</span>
                           </div>
                           <div className="  flex items-end justify-start  text-[#D5FFCB]">
@@ -60,7 +60,7 @@ const Dashboard = () => {
                             </span>
                           </div>
                       </div>
-                          <span className='text-[#EAC39C] font-bold text-sm md:text-4xl'> Compared to last month (1486)</span>
+                          <span className='text-[#EAC39C] font-bold text-sm md:text-3xl'> Compared to last month (1486)</span>
                     </div>  
                 </div>
               </div>
