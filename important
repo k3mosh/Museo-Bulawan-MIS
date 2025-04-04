@@ -12,3 +12,16 @@ max-w-[140rem] 3xl:max-w-[180rem] min-h-full h-auto
 
 for child div use (for h not expandable)
 max-w-[140rem] 3xl:max-w-[180rem] min-h-[79rem] h-screen
+
+<div className="relative">
+              <input
+                type="text"
+                placeholder="Enter Keyword"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-4 pr-10 py-2 w-64 text-black border border-black rounded-lg shadow-sm outline-none"
+              />
+              <i className="fa-solid fa-magnifying-glass absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"></i>
+            </div>
+
+            
