@@ -1,9 +1,121 @@
 
 import { ScrollRestoration } from 'react-router-dom';
 import LandingNav from '../../components/navbar/LandingNav'
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import useAddressLogic from '../../components/function/AddressHook';
+
+function TypedDropdown({
+  placeholder,
+  options,
+  selectedItem,
+  onChange,
+  disabled = false
+}) {
+  const [inputText, setInputText] = useState(selectedItem?.name || '');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const wrapperRef = useRef(null);
+
+  // Update inputText if selectedItem changes from outside
+  useEffect(() => {
+    setInputText(selectedItem?.name || '');
+  }, [selectedItem]);
+
+  // Close dropdown if user clicks outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelect = (item) => {
+    onChange(item);
+    setShowDropdown(false);
+  };
+
+  const handleClear = () => {
+    onChange(null);
+    setInputText('');
+    setShowDropdown(false);
+  };
+
+  // Filter options based on typed input
+  const filteredOptions = options.filter((o) =>
+    o.name.toLowerCase().includes(inputText.toLowerCase())
+  );
+
+  return (
+    <div ref={wrapperRef} className="relative w-full">
+      <div
+        className={`flex border-2 border-black rounded-2xl px-4 py-3 
+          ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+      >
+        <input
+          className="outline-none flex-grow placeholder-gray-500 text-base md:text-lg disabled:cursor-not-allowed"
+          placeholder={placeholder}
+          value={inputText}
+          disabled={disabled}
+          onChange={(e) => {
+            setInputText(e.target.value);
+            if (!disabled) {
+              setShowDropdown(true);
+            }
+          }}
+          onFocus={() => !disabled && setShowDropdown(true)}
+        />
+        {selectedItem && !disabled && (
+          <button
+            type="button"
+            className="ml-2 text-black font-bold"
+            onClick={handleClear}
+          >
+            X
+          </button>
+        )}
+      </div>
+
+      {showDropdown && !disabled && (
+        <ul className="absolute z-10 mt-1 w-full max-h-48 overflow-auto bg-white border border-gray-400 shadow-md rounded-md">
+          {filteredOptions.length ? (
+            filteredOptions.map((o) => (
+              <li
+                key={o.code}
+                className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleSelect(o)}
+              >
+                {o.name}
+              </li>
+            ))
+          ) : (
+            <li className="px-3 py-2 text-gray-500">No results</li>
+          )}
+        </ul>
+      )}
+    </div>
+  );
+}
+  
 const Form = () => {
   const [formType, setFormType] = useState("donation"); // Default to Donation Form
+
+
+  // Using the custom hook for addresses
+  const {
+    provinces,
+    cities,
+    barangays,
+    selectedProvince,
+    setSelectedProvince,
+    selectedCity,
+    setSelectedCity,
+    selectedBarangay,
+    setSelectedBarangay
+  } = useAddressLogic();
+
+
   return (
     <>
       <ScrollRestoration />
@@ -47,31 +159,27 @@ const Form = () => {
           <div>
             <div className="px-6 p-3 bg-white rounded-md shadow-lg mt-3 mb-5 " >
                 <span className='text-4xl'>Tell Us About Yourself.</span>
-                <div className="grid grid-cols-12 items-center gap-4 mt-6">
-                    <label htmlFor="firstName" className="col-span-3 text-xl font-bold">
+                    <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
+                        <label className="md:col-span-3 text-lg md:text-xl font-bold">
                         Name <span className="text-red-500">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="firstName" 
-                        name="firstName" 
-                        placeholder="First Name" 
+                        </label>
+                        <input
+                        type="text"
+                        placeholder="First Name"
                         required
-                        className="col-span-4 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                    />
-                    <input 
-                        type="text" 
-                        id="lastName" 
-                        name="lastName" 
-                        placeholder="Last Name" 
+                        className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
+                        />
+                        <input
+                        type="text"
+                        placeholder="Last Name"
                         required
-                        className="col-span-4 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                    />
+                        className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
+                        />
                 </div>
                 {/* Age and Gender Section */}
                 <div className="grid grid-cols-12 items-center gap-4 mt-6 ">
                     {/* Age Input */}
-                    <label htmlFor="age" className="col-span-3 text-xl font-bold">
+                    <label htmlFor="age" className="col-span-2 md:col-span-3 text-xl font-bold">
                         Age <span className="text-red-500">*</span>
                     </label>
                     <input 
@@ -82,12 +190,12 @@ const Form = () => {
                         pattern="\d*" 
                         inputmode="numeric"
                         required
-                        className="col-span-2 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                        className="col-span-3 md:col-span-2 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
                     />
 
 
                     {/* Gender Selection */}
-                    <label className="col-span-2 text-xl font-bold pl-12">Sex</label>
+                    <label className="col-span-2 text-xl font-bold text-center">Sex</label>
                     <div className="col-span-5 flex gap-6">
                         <label className="inline-flex items-center">
                             <input type="radio" name="sex" id="male" value="male" className="form-radio" />
@@ -97,107 +205,91 @@ const Form = () => {
                             <input type="radio" name="sex" id="female" value="female" className="form-radio" />
                             <span className="ml-2">Female</span>
                         </label>
-                        <label className="inline-flex items-center">
-                            <input type="radio" name="sex" id="others" value="others" className="form-radio" />
-                            <span className="ml-2">Others</span>
-                        </label>
+                        
                     </div>
                 </div>
 
                 {/* Contact Information Section */}
-                <div className="grid grid-cols-12 items-center gap-4 mt-6">
-                    <label htmlFor="email" className="col-span-3 text-xl font-bold">
-                        Email <span className="text-red-500">*</span>
-                    </label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        placeholder="example@gmail.com" 
-                        required
-                        className="col-span-4 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                    />
-
-                    <label htmlFor="phone" className="col-span-2 text-xl font-bold">
-                        Phone <span className="text-red-500">*</span>
-                    </label>
-                    <input 
-                        type="tel" 
-                        id="phone" 
-                        name="phone" 
-                        placeholder="+6309123456789" 
-                        required
-                        className="col-span-3 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                    />
-                </div>
-
-                {/* Organization Section */}
-                <div className="grid grid-cols-12 items-center gap-4 mt-6">
-                    <label htmlFor="organization" className="col-span-3 text-xl font-bold">Organization</label>
-                    <input 
-                        type="text" 
-                        id="organization" 
-                        name="organization" 
-                        placeholder="School/Institution/etc"
-                        className="col-span-9 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                    />
-                </div>
-
-                {/* Address Section */}
-                <h3 className="text-3xl font-semibold mt-6">Where do you live</h3>
-
-                <div className="grid grid-cols-12 items-center gap-4 mt-6">
-                    <label htmlFor="province" className="col-span-3 text-xl font-bold">
-                        Province <span className="text-red-500">*</span>
-                    </label>
-                    <select 
-                        id="province" 
-                        name="province" 
-                        required
-                        className="col-span-4 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                    >
-                        <option value="" disabled selected>Select Province</option>
-                        <option value="camarines-norte">Camarines Norte</option>
-                        <option value="province-1">Province 1</option>
-                        <option value="province-2">Province 2</option>
-                        <option value="province-3">Province 3</option>
-                    </select>
-
-                    <label htmlFor="city" className="col-span-2 text-xl font-bold">
-                        City <span className="text-red-500">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="city" 
-                        name="city" 
-                        placeholder="City" 
-                        required
-                        className="col-span-3 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                    />
-                </div>
-
-            <div className="grid grid-cols-12 items-center gap-4 mt-6">
-                <label htmlFor="barangay" className="col-span-3 text-xl font-bold">
-                    Barangay <span className="text-red-500">*</span>
+                <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 mt-6">
+                <label className="md:col-span-3 text-xl md:text-xl font-bold">
+                  Email <span className="text-red-500">*</span>
                 </label>
-                <input 
-                    type="text" 
-                    id="barangay" 
-                    name="barangay" 
-                    placeholder="Barangay" 
-                    required
-                    className="col-span-4 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                <input
+                  type="email"
+                  placeholder="example@gmail.com"
+                  required
+                  className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
                 />
+                <label className="md:col-span-2 text-lg md:text-xl font-bold">Phone</label>
+                <input
+                  type="tel"
+                  placeholder="+6309123456789"
+                  className="md:col-span-3 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
+                />
+              </div>
 
-                <label htmlFor="street" className="col-span-2 text-xl font-bold">Street</label>
-                <input 
-                    type="text" 
-                    id="street" 
-                    name="street" 
-                    placeholder="Street"
-                    className="col-span-3 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                 {/* Organization */}
+              <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 mt-6">
+                <label className="md:col-span-3 text-lg md:text-xl font-bold">Organization</label>
+                <input
+                  type="text"
+                  placeholder="School/Institution/etc"
+                  className="md:col-span-9 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
                 />
-            </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 mt-6">
+                {/* Province */}
+                <label className="md:col-span-3 text-lg md:text-xl font-bold">
+                  Province <span className="text-red-500">*</span>
+                </label>
+                <div className="md:col-span-4">
+                  <TypedDropdown
+                    placeholder="Type or choose Province"
+                    options={provinces}
+                    selectedItem={selectedProvince}
+                    onChange={setSelectedProvince}
+                  />
+                </div>
+
+                {/* City */}
+                <label className="md:col-span-2 text-lg md:text-xl font-bold">
+                  City/Municipality <span className="text-red-500">*</span>
+                </label>
+                <div className="md:col-span-3">
+                  <TypedDropdown
+                    placeholder="Type or choose City"
+                    options={cities}
+                    selectedItem={selectedCity}
+                    onChange={setSelectedCity}
+                    disabled={!selectedProvince} // disable if no province selected
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 mt-6">
+                {/* Barangay */}
+                <label className="md:col-span-3 text-lg md:text-xl font-bold">
+                  Barangay <span className="text-red-500">*</span>
+                </label>
+                <div className="md:col-span-4">
+                  <TypedDropdown
+                    placeholder="Type or choose Barangay"
+                    options={barangays}
+                    selectedItem={selectedBarangay}
+                    onChange={setSelectedBarangay}
+                    disabled={!selectedCity} // disable if no city selected
+                  />
+                </div>
+
+                {/* Street */}
+                <label className="md:col-span-2 text-lg md:text-xl font-bold">Street</label>
+                <input
+                  type="text"
+                  placeholder="Street"
+                  className="md:col-span-3 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
+                />
+              </div>
 
                 
             </div>
@@ -207,7 +299,7 @@ const Form = () => {
                     <div className="p-3 bg-white rounded-md shadow-lg">
                         <span className="text-3xl font-semibold mb-8">Lending Details</span>
                         <div>
-                            <div className="grid grid-cols-12 items-center gap-4 mt-6">
+                            <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
                                 <label htmlFor="loanDuration" className="col-span-3 text-xl font-bold">
                                     Proposed duration of the loan? <span className="text-red-500">*</span>
                                 </label>
@@ -226,7 +318,7 @@ const Form = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-12 items-center gap-4 mt-6">
+                            <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
                                 <label htmlFor="loanDuration" className="col-span-3 text-xl font-bold">
                                 Specific conditions or requirements for the display or handling of the artifact? <span className="text-red-500">*</span>
                                 </label>
@@ -243,7 +335,7 @@ const Form = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-12 items-center gap-4 mt-6">
+                            <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
                                 <label htmlFor="loanDuration" className="col-span-3 text-xl font-bold">
                                 Specific liability concerns or requirements you have regarding the artifact? <span className="text-red-500">*</span>
                                 </label>
@@ -260,7 +352,7 @@ const Form = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-12 items-center gap-4 mt-6">
+                            <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
                                 <label htmlFor="loanDuration" className="col-span-3 text-xl font-bold">
                                 Reason for lending. <span className="text-red-500">*</span>
                                 </label>
@@ -287,7 +379,7 @@ const Form = () => {
         <h3 className="text-3xl font-semibold mb-8">About the Artifact</h3>
 
         {/* Title/Name Section */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
             <label htmlFor="artifactTitle" className="col-span-3 text-xl font-bold">
                 Title/Name of the Artifact <span className="text-red-500">*</span>
             </label>
@@ -302,7 +394,7 @@ const Form = () => {
         </div>
 
         {/* Artifact Description */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
             <label htmlFor="artifactDescription" className="col-span-3 text-xl font-bold">
                 Artifact Description <span className="text-red-500">*</span>
             </label>
@@ -316,22 +408,21 @@ const Form = () => {
         </div>
 
         {/* Acquisition Details */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
-            <label htmlFor="acquisition" className="col-span-3 text-xl font-bold">
-                How and where did you acquire the artifact? <span className="text-red-500">*</span>
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
+            <label htmlFor="artifactDescription" className="col-span-3 text-xl font-bold">
+               How and where did you acquire the artifact? <span className="text-red-500">*</span>
             </label>
-            <input 
-                type="text" 
-                id="acquisition" 
-                name="acquisition" 
+            <textarea 
+                id="artifactDescription" 
+                name="artifactDescription" 
                 placeholder="Acquisition Details" 
                 required
-                className="col-span-9 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                className="col-span-9 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm h-32 resize-none"
             />
         </div>
 
         {/* Additional Information */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
             <label htmlFor="additionalInfo" className="col-span-3 text-xl font-bold">
                 Additional Information
             </label>
@@ -344,7 +435,7 @@ const Form = () => {
         </div>
 
         {/* Narrative or Story */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
             <label htmlFor="narrative" className="col-span-3 text-xl font-bold">
                 Brief Narrative or Story
             </label>
@@ -357,8 +448,8 @@ const Form = () => {
         </div>
 
         {/* Images of the Artifact */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
-            <label htmlFor="artifact_img" className="col-span-3 text-xl font-bold">
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
+            <label htmlFor="artifact_img" className="col-span-5 text-xl font-bold md:col-span-3">
                 Images of the Artifact <span className="text-red-500">*</span>
             </label>
             <input 
@@ -366,13 +457,13 @@ const Form = () => {
                 id="artifact_img" 
                 name="artifact_img" 
                 multiple
-                className="col-span-9 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                className="col-span-7 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm md:col-span-9"
             />
         </div>
 
         {/* Relevant Documentation */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
-            <label htmlFor="documentation" className="col-span-3 text-xl font-bold">
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
+            <label htmlFor="documentation" className="col-span-5 text-xl font-bold md:col-span-3 ">
                 Relevant Documentation
             </label>
             <input 
@@ -380,13 +471,13 @@ const Form = () => {
                 id="documentation" 
                 name="documentation" 
                 multiple
-                className="col-span-9 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                className="col-span-7 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm md:col-span-9"
             />
         </div>
 
         {/* Related Images */}
-        <div className="grid grid-cols-12 items-center gap-4 mb-6">
-            <label htmlFor="related_img" className="col-span-3 text-xl font-bold">
+        <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
+            <label htmlFor="related_img" className="col-span-5 text-xl font-bold md:col-span-3">
                 Any Related Images
             </label>
             <input 
@@ -394,7 +485,7 @@ const Form = () => {
                 id="related_img" 
                 name="related_img" 
                 multiple
-                className="col-span-9 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                className="col-span-7 px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm md:col-span-9"
             />
         </div>
 
