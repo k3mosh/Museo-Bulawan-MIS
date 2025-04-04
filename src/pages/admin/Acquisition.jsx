@@ -13,7 +13,7 @@ const Acquisition = () => {
           <div className='w-full h-full flex flex-col xl:flex-row gap-y-5 xl:gap-y-0 xl:gap-x-5 '>
             <div className='min-w-[34rem] h-full flex flex-col gap-y-7'>
               {/* info bar */}
-              <div className='w-full max-w-[35rem] h-[5rem] py-2 flex justify-between'>
+              <div className='w-full max-w-[35rem] min-h-[5rem] py-2 flex justify-between'>
                 <button className='px-4 h-full border-2 rounded-lg cursor-pointer'>
                   <span className='text-2xl font-semibold'>Form</span>
                 </button>
@@ -73,9 +73,13 @@ const Acquisition = () => {
 
             </div>
             
-            <div className='w-full h-full bg-amber-950'>
+            <div className='w-full h-full flex flex-col overflow-x-scroll overflow-y-scroll'>
               {/* table */}
-
+              <div className='w-full min-h-[5rem] items-center'>
+                <button className='px-2 py-2 rounded-md border-2'>
+                  <i class="fa-regular fa-calendar text-3xl"></i>
+                </button>
+              </div>
 
               </div>
             

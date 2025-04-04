@@ -28,40 +28,30 @@ const Dashboard = () => {
 
               <div className='w-full flex-col px-2 gap-y-4 flex h-full'>
                 {/* visiors, present, absent */}
-                <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-black'>
-                  <div className='p-4 w-full h-full flex flex-col gap-2'>
-                      <div className='w-full h-full flex gap-2  md:px-16 md:justify-center'>
-                          <div className='w-full flex flex-col text-white justify-center px-2 md:justify-start md:gap-5'>
-                            <span className='text-xl xl:text-2xl font-bold'>Present</span>
-                            <span className='text-2xl xl:text-8xl font-bold h-full '>1520</span>
-                          </div>
-                          <div className="  flex items-end justify-start  text-[#D5FFCB]">
-                            <span className="font-bold flex items-center gap-1 text-sm xl:text-4xl">
-                              +2.3%
-                              <i className="fas fa-arrow-up text-base xl:text-3xl"></i>
-                            </span>
-                          </div>
-                      </div>
-                          <span className='text-[#EAC39C] font-bold text-sm md:text-3xl'> Compared to last month (1486)</span>
-                    </div>  
+                <div className='shadow-lg shadow-gray-600 flex flex-col w-full h-full px-2 xl:px-5 py-2 xl:py-8 rounded-lg bg-black'>
+                  <span className='text-xm xl:text-4xl text-white font-bold'>Present</span>
+                  <div className='w-full h-full flex items-center justify-center'>
+                    
+                    <div className='w-fit h-fit flex gap-x-2 items-end'>
+                    <span className='text-xl xl:text-6xl text-white font-bold'>1520</span> 
+
+                    <span className='text-[#D5FFCB] text-xs xl:text-2xl'>3.2% <i class="fa-solid fa-arrow-up"></i></span>
+                    </div>
+                  </div>
+                  <span className='text-sm xl:text-2xl text-[#EAC39C]'>Compared to last month (1486)</span>
                 </div>
 
-                <div className='shadow-lg shadow-gray-600  w-full h-full rounded-lg bg-black'>
-                  <div className='p-4 w-full h-full flex flex-col gap-2'>
-                      <div className='w-full h-full flex gap-2  md:px-16 md:justify-center'>
-                          <div className='w-full flex flex-col text-white justify-center px-2 md:justify-start md:gap-5'>
-                            <span className='text-xl xl:text-2xl font-bold'>Present</span>
-                            <span className='text-2xl xl:text-8xl font-bold h-full '>1520</span>
-                          </div>
-                          <div className="  flex items-end justify-start  text-[#D5FFCB]">
-                            <span className="font-bold flex items-center gap-1 text-sm xl:text-4xl">
-                              +2.3%
-                              <i className="fas fa-arrow-up text-base xl:text-3xl"></i>
-                            </span>
-                          </div>
-                      </div>
-                          <span className='text-[#EAC39C] font-bold text-sm md:text-3xl'> Compared to last month (1486)</span>
-                    </div>  
+                <div className='shadow-lg shadow-gray-600 flex flex-col w-full h-full px-2 xl:px-5 py-2 xl:py-8 rounded-lg bg-black'>
+                  <span className='text-xm xl:text-4xl text-white font-bold'>Present</span>
+                  <div className='w-full h-full flex items-center justify-center'>
+                    
+                    <div className='w-fit h-fit flex gap-x-2 items-end'>
+                    <span className='text-xl xl:text-6xl text-white font-bold'>1520</span> 
+
+                    <span className='text-[#D5FFCB] text-xs xl:text-2xl'>3.2% <i class="fa-solid fa-arrow-up"></i></span>
+                    </div>
+                  </div>
+                  <span className='text-sm xl:text-2xl text-[#EAC39C]'>Compared to last month (1486)</span>
                 </div>
               </div>
             </div>
