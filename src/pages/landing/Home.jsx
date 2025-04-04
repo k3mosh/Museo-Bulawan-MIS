@@ -146,7 +146,7 @@ const Home = () => {
                 <div className='h-[65em] w-full flex flex-col xl:flex-row gap-10 items-center justify-end '>
                     <div className='xl:w-1/2 w-full h-[22em] flex flex-col pt-14 gap-3 px-4 xl:h-auto'>
                       <span className="text-3xl font-hina">
-                        <span className="text-4xl font-semibold xl:text-6xl">Museo Bulawan</span>, <span className='text-5xl leading-snug tracking-wider'>known as the “Golden Museum,” is the leading and the most viewer-friendly community museum that serves as the nerve center for education and communication of the rich cultural, artistic and natural heritage and history of Camarines Norte, the ultimate medium for preservation, exhibition of significant objects that strengthen the values of the people and deepen their patriotism and sense of identity.</span>
+                        <span className="text-4xl font-semibold xl:text-6xl">Museo Bulawan</span>, <span className='xl:text-5xl leading-snug xl:tracking-wider'>known as the “Golden Museum,” is the leading and the most viewer-friendly community museum that serves as the nerve center for education and communication of the rich cultural, artistic and natural heritage and history of Camarines Norte, the ultimate medium for preservation, exhibition of significant objects that strengthen the values of the people and deepen their patriotism and sense of identity.</span>
                       </span>
 
                         <span className='text-2xl'>Learn More <i class="fa-solid fa-arrow-right "></i> </span>
