@@ -42,7 +42,7 @@ const Dashboard = () => {
                             </span>
                           </div>
                       </div>
-                          <span className='text-[#EAC39C] font-bold text-sm md:text-3xl'> Compared to last month (1486)</span>
+                          <span className='text-[#EAC39C] font-bold text-sm md:text-2xl'> Compared to last month (1486)</span>
                     </div>  
                 </div>
 
@@ -60,7 +60,7 @@ const Dashboard = () => {
                             </span>
                           </div>
                       </div>
-                          <span className='text-[#EAC39C] font-bold text-sm md:text-3xl'> Compared to last month (1486)</span>
+                          <span className='text-[#EAC39C] font-bold text-sm md:text-2xl'> Compared to last month (1486)</span>
                     </div>  
                 </div>
               </div>
