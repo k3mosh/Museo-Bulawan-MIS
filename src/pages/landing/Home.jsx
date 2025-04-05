@@ -306,6 +306,61 @@ const Home = () => {
               </div>
           </div>
       </div>
+
+      <div className='w-screen h-screen min-h-[79rem]'>
+        <div className='w-full h-full py-12  '>
+          <div className='w-full h-full xl:px-120 px-12'>
+            <div className='w-full h-full flex flex-col'>
+
+              <div className='w-full h-1/2 py-3 px-20 flex flex-col gap-6 xl:flex-row '>
+                  <div className='w-full h-1/2 xl:h-full bg-no-repeat bg-cover bg-center p-5' style={{ backgroundImage: "url('./src/assets/img_1.png')" }}>
+                      <div className='w-full h-full  outline-2 outline-white'></div>
+                  </div>
+                  <div className='w-full h-1/2 xl:h-full xl:flex xl:items-end'>
+                      <div className='w-full h-full xl:h-4/5 flex flex-col gap-2 items-center justify-center xl:flex xl:justify-start xl:items-start'>
+                        <div className='w-full min-h-[6em] flex items-center justify-center xl:h-[10em] xl:justify-start'>
+                          <span className='text-5xl font-bold xl:text-6xl'>VISIT US!</span>
+                        </div>
+                        <div className='w-full min-h-[9em] flex items-center  xl:h-[10em]'>
+                          <span className='text-2xl xl:text-4xl leading-snug'>Explore the treasures of Museo Bulawan! Plan your visit today by booking a tour or schedule an appointment for research, interviews, and more.</span>
+                        </div>
+                        <div className='w-full min-h-[4em] flex items-center justify-center  xl:h-[10em] xl:justify-start'>
+                          <div className='w-78 min-h-10 flex items-center justify-center outline-2 outline-black rounded-lg bg-white xl:h-16 xl:w-90'>
+                              <span className='text-2xl xl:text-3xl'>BOOK AN APPOINTMENT </span>
+                          </div>
+                        </div>
+                       
+                      </div>
+                  </div>
+              </div>
+              
+              <div className='w-full h-1/2 py-3 px-20 flex flex-col gap-6 xl:flex-row'>
+                <div className='w-full h-1/2 xl:h-full xl:order-2 bg-no-repeat bg-cover bg-center p-5' style={{ backgroundImage: "url('./src/assets/img_2.png')" }}>
+                    <div className='w-full h-full  outline-2 outline-white'></div>
+                </div>
+
+                <div className='w-full h-1/2 xl:h-full xl:order-1 '>
+                <div className='w-full h-full xl:h-4/5 flex flex-col gap-2 items-center justify-center xl:flex xl:justify-start xl:items-end'>
+                        <div className='w-full min-h-[6em] flex items-center justify-center xl:h-[10em] xl:justify-end'>
+                          <span className='text-5xl font-bold xl:text-6xl text-center'>YOUR SUPPORT MATTERS</span>
+                        </div>
+                        <div className='w-full min-h-[9em] flex items-center justify-center xl:h-[10em]'>
+                          <span className='text-2xl xl:text-4xl leading-snug xl:text-end'>Help us preserve and celebrate our heritage! Contribute to Museo Bulawan by donating or lending artifacts to enrich our collection and share history with future generations</span>
+                        </div>
+                        <div className='w-full min-h-[4em] flex items-center justify-center  xl:h-[10em] xl:justify-end'>
+                          <div className='w-40 min-h-10 flex items-center justify-center outline-2 outline-black rounded-lg bg-white xl:h-16 xl:w-60'>
+                              <span className='text-2xl xl:text-4xl'>SUPPORT </span>
+                          </div>
+                        </div>
+                       
+                      </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
