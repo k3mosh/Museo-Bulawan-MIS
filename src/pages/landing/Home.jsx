@@ -227,13 +227,13 @@ const Home = () => {
                             <div className='w-3/5 h-full'>
                               <div className='w-full h-full flex flex-col gap-2 py-3'>
                                 <div className='w-full min-h-[5em] flex items-center xl:min-h-[8em]'>
-                                    <span className='text-3xl font-bold text-white xl:text-5xl'> THE TITLE OF THE EVENT WILL BE PLACED HERE</span>
+                                    <span className='text-3xl font-bold text-white xl:text-4xl'> THE TITLE OF THE EVENT WILL BE PLACED HERE</span>
                                 </div>
                                 <div className='w-full min-h-[3em] flex items-center xl:min-h-[5em]'>
                                     <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
                                 </div>
                                 <div className='w-full min-h-[7em] xl:max-h-[14em]'>
-                                    <span className='text-2xl text-white xl:text-5xl '>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                    <span className='text-2xl text-white xl:text-4xl '>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
                                 </div>      
                               </div>
                             </div>
@@ -264,7 +264,7 @@ const Home = () => {
                                     <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
                                 </div>
                                 <div className='w-full min-h-[7em] xl:max-h-[14em]'>
-                                    <span className='text-2xl text-white xl:text-5xl'>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                    <span className='text-2xl text-white xl:text-4xl'>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
                                 </div>      
                               </div>
                             </div>
@@ -293,7 +293,7 @@ const Home = () => {
                                     <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
                                 </div>
                                 <div className='w-full min-h-[7em] xl:max-h-[14em]'>
-                                    <span className='text-2xl text-white xl:text-5xl '>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                    <span className='text-2xl text-white xl:text-4xl '>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
                                 </div>      
                               </div>
                             </div>
