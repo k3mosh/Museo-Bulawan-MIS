@@ -167,6 +167,145 @@ const Home = () => {
       <div className='w-screen h-screen min-h-[79rem]'>
 
       </div>
+
+      <div className='w-screen h-screen min-h-[89rem] xl:min-h-[79rem]'>
+          <div className='w-full h-full py-24 px-4 bg-black xl:px-14 xl:py-26'>
+              <div className='w-full h-full flex flex-col'>
+                  <div className='w-full max-h-[3em]  flex text-2xl justify-between pr-9'>
+                  <div className='flex items-center gap-2 px-4'> <h1 className='w-10 h-0.5 bg-[#63635C]'></h1><span className='text-2xl text-[#63635C]'> DON'T MISS</span></div>
+
+                      <span className='text-2xl text-white'>See all Events <i class="fa-solid fa-arrow-right text-white"></i> </span>
+                  </div>
+                  <div className='w-full max-h-[8em] py-4 xl:min-h-[6em] flex items-center'>
+                    <span className='text-5xl font-hina font-semibold text-white xl:text-7xl'>News & Events</span>
+                  </div>
+
+                  <div className='w-full h-full flex flex-col px-8 py-3 gap-2 xl:gap-8'>
+
+                    <div className='h-1/2 w-full flex flex-col  xl:flex-row gap-4 xl:gap-8'>
+                      <div className='w-full h-1/2   xl:h-full'>
+                        <div className='w-full h-full  flex justify-start items-center'>
+                          <div className='w-full h-full flex gap-3 xl:gap-7'>
+                            <div className='w-2/5 h-full'>
+                              <div className='w-full h-full'>
+                                <img
+                                  src="./src/assets/nae_img_1.png"
+                                  alt=""
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            </div>
+                            <div className='w-3/5 h-full'>
+                              <div className='w-full h-full flex flex-col gap-2 py-3'>
+                                <div className='w-full min-h-[5em] flex items-center xl:min-h-[8em]'>
+                                    <span className='text-3xl font-bold text-white xl:text-5xl'> THE TITLE OF THE EVENT WILL BE PLACED HERE</span>
+                                </div>
+                                <div className='w-full min-h-[3em] flex items-center xl:min-h-[5em]'>
+                                    <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
+                                </div>
+                                <div className='w-full min-h-[7em] xl:max-h-[14em]'>
+                                    <span className='text-2xl text-white xl:text-5xl xl:leading-normal'>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                </div>      
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className='w-full h-1/2   xl:h-full'>
+                        <div className='w-full h-full  flex justify-start items-center'>
+                          <div className='w-full h-full flex gap-3 xl:gap-7'>
+                            <div className='w-2/5 h-full'>
+                              <div className='w-full h-full'>
+                                <img
+                                  src="./src/assets/nae_img_2.png"
+                                  alt=""
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            </div>
+                            <div className='w-3/5 h-full'>
+                              <div className='w-full h-full flex flex-col gap-2 py-3'>
+                                <div className='w-full min-h-[5em] flex items-center xl:min-h-[8em]'>
+                                    <span className='text-3xl font-bold text-white xl:text-5xl'> THE TITLE OF THE EVENT WILL BE PLACED HERE</span>
+                                </div>
+                                <div className='w-full min-h-[3em] flex items-center xl:min-h-[5em]'>
+                                    <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
+                                </div>
+                                <div className='w-full min-h-[7em] xl:max-h-[14em]'>
+                                    <span className='text-2xl text-white xl:text-5xl xl:leading-normal'>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                </div>      
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='h-1/2 w-full flex flex-col  xl:flex-row gap-4 xl:gap-8'>
+                      <div className='w-full h-1/2  xl:h-full'>
+                        <div className='w-full h-full  flex justify-start items-center'>
+                          <div className='w-full h-full flex gap-3 xl:gap-7'>
+                            <div className='w-2/5 h-full'>
+                              <div className='w-full h-full'>
+                                <img
+                                  src="./src/assets/nae_img_3.png"
+                                  alt=""
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            </div>
+                            <div className='w-3/5 h-full'>
+                              <div className='w-full h-full flex flex-col gap-2 py-3'>
+                                <div className='w-full min-h-[5em] flex items-center xl:min-h-[8em]'>
+                                    <span className='text-3xl font-bold text-white xl:text-5xl'> THE TITLE OF THE EVENT WILL BE PLACED HERE</span>
+                                </div>
+                                <div className='w-full min-h-[3em] flex items-center xl:min-h-[5em]'>
+                                    <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
+                                </div>
+                                <div className='w-full min-h-[7em] xl:max-h-[14em]'>
+                                    <span className='text-2xl text-white xl:text-5xl xl:leading-normal'>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                </div>      
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className='w-full h-1/2   xl:h-full'>
+                        <div className='w-full h-full flex justify-start items-center'>
+                          <div className='w-full h-full flex gap-3 xl:gap-7'>
+                            <div className='w-2/5 h-full'>
+                              <div className='w-full h-full'>
+                                <img
+                                  src="./src/assets/nae_img_4.png"
+                                  alt=""
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            </div>
+                            <div className='w-3/5 h-full'>
+                              <div className='w-full h-full flex flex-col gap-2 py-3'>
+                                <div className='w-full min-h-[5em] flex items-center xl:min-h-[8em]'>
+                                    <span className='text-3xl font-bold text-white xl:text-5xl'> THE TITLE OF THE EVENT WILL BE PLACED HERE</span>
+                                </div>
+                                <div className='w-full min-h-[3em] flex items-center xl:min-h-[5em]'>
+                                    <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
+                                </div>
+                                <div className='w-full min-h-[7em] xl:max-h-[14em]'>
+                                    <span className='text-2xl text-white xl:text-5xl xl:leading-normal'>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                </div>      
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+
+              </div>
+          </div>
+      </div>
     </>
   )
 }
