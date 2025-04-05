@@ -169,7 +169,7 @@ const Home = () => {
       </div>
 
       <div className='w-screen h-screen min-h-[89rem] xl:min-h-[79rem]'>
-          <div className='w-full h-full py-24 px-4 bg-black xl:px-14 xl:py-26'>
+          <div className='w-full h-full py-24 px-4 bg-black xl:px-12 xl:py-26'>
               <div className='w-full h-full flex flex-col'>
                   <div className='w-full max-h-[3em]  flex text-2xl justify-between pr-9'>
                   <div className='flex items-center gap-2 px-4'> <h1 className='w-10 h-0.5 bg-[#63635C]'></h1><span className='text-2xl text-[#63635C]'> DON'T MISS</span></div>
@@ -204,7 +204,7 @@ const Home = () => {
                                     <span className='text-xl font-semibold text-[#787878] xl:text-3xl'>Month DD, YYYY</span>  
                                 </div>
                                 <div className='w-full min-h-[7em] xl:max-h-[14em]'>
-                                    <span className='text-2xl text-white xl:text-5xl '>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
+                                    <span className='text-2xl text-white xl:text-4xl '>Brief description of the event will be placed here. Brief description of the event will be placed here</span>
                                 </div>      
                               </div>
                             </div>
