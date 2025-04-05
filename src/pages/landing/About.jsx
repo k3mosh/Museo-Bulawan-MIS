@@ -293,7 +293,7 @@ const About = () => {
                   <h1 className="text-[4rem] mb-[3rem] text-[#FCE6BC]">A Message From The Museum Curator's</h1>
                     <h1 className="text-[5rem] font-bold mb-[3rem] text-[#FCE6BC]">Mr. Abel C. Icatlo</h1>
                       <img src="../src/assets/467396235_122120510066524881_2018490976163991958_n 2.png" alt="Abel C. Icatlo" className='w-[30rem] h-auto mx-auto'/>
-                      <p className="w-auto  h-full text-[2.4rem] text-center leading-[4rem] text-white mx-auto mt-[5rem] mb-[10rem]">
+                      <p className="w-auto  h-full text-[2.4rem] text-center leading-[4rem] text-white mx-auto sm:mx-[25rem] mt-[5rem] mb-[10rem]">
                             Through the pages of history we saw the searing revolutionary fire of the nationalist heroes of Camarines Norte who convulsed in a determined uprising in Daet in April 1898 and later established the First Rizal Monument in December of that year. The seeds of freedom sown by the local heroes of this Province engendered an awakened nation and a people who were wont to pay the price of freedom. Through the wars and dictatorship, the people of Camarines Norte seasoned the challenges with perseverance and fortitude.
                             Museo Bulawan, which is a community museum, attempts to capture the rich panorama of struggle of the Local people. History aside, Museo Bulawan, showcases as well the exquisite treasure of this province which is gold. Actually, bulawan is a Filipino word for gold and it is said that Camarines Norte is a province that sits in a mound of gold.
                             Not only does the Provincial Government of Camarines Norte mind itself on the material development of the people but more so, it strives to zero in on the software of social and economic development which is the cultural, ethical and moral upliftment of the people. And there is no other way by which this can be effectively done except through the powerful tool of culture and arts.
@@ -307,14 +307,14 @@ const About = () => {
             {/* 7th part */}
             <div>
               <img src="../src/assets/8900f8_517f4f9ec7054b88a23b301bf31d6596~mv2 1.png" alt="" />
-                <div className='w-auto text-center mt-[3rem] '>
-                  <h1 className='text-[5rem] mb-[3rem] font-bold'>
+                <div className='w-auto text-center my-[5rem] '>
+                  <h1 className='text-[5rem] mb-[2rem] font-bold'>
                     Key People
                   </h1>
                   <h2 className='font-bold'>
                     Pure Professionalism
                   </h2>
-                  <p className='w-auto  mx-auto m-[2rem]'>
+                  <p className='w-auto mx-auto sm:mx-[20rem] m-[2rem]'>
                     Our dedicated team of experienced professionals are always on the ball, utilizing their unique skills and passion to move the work of Museum. We’re always pushing ourselves to stay ahead of the curve and striving to perfect our programs. Meet some of our incredible employees below.
                   </p>
                 </div>

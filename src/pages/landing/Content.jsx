@@ -1,6 +1,7 @@
 import React from 'react';
 import LandingNav from '../../components/navbar/LandingNav';
 import { ScrollRestoration } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const itemsData = {
   "items": [
@@ -108,8 +109,12 @@ const Content = () => {
       <div className="bg-[#1C1B19] min-h-screen py-15">
         <div className="w-full px-4 mx-auto flex justify-around">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 gap-x-20">
-            {itemsData.items.map((item, index) => (
-              <div key={index} className="flex flex-col items-center text-center">
+          {itemsData.items.map((item, index) => (
+              <Link
+                key={index}
+                to={`/article`} // Replace with actual ID or slug if available
+                className="flex flex-col items-center text-center hover:opacity-90 transition duration-300"
+              >
                 <img
                   src={item.image}
                   alt={`Event ${index + 1}`}
@@ -124,8 +129,9 @@ const Content = () => {
                 <p className="text-gray-300 text-base mt-1">
                   {item.date}
                 </p>
-              </div>
+              </Link>
             ))}
+
           </div>
         </div>
       </div>

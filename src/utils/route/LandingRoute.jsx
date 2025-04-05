@@ -10,6 +10,7 @@ import Login from '../../pages/landing/Login';
 import PrivateRoute from '../middleware/PrivateRoute';
 import AdminLayout from '../../components/layout/AdminLayout';
 import AdminRoutes from './AdminRoutes';
+import Article from '../../pages/landing/Article';
 
 const LandingRoute = createBrowserRouter ([
 
@@ -24,6 +25,7 @@ const LandingRoute = createBrowserRouter ([
             { path: 'form', element: <Form /> },
             { path: 'login', element: <Login /> },
             { path: 'support', element: <Support /> },
+            { path: 'article', element: <Article /> },
         ],
      },
      {
