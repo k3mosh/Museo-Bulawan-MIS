@@ -9,7 +9,7 @@ const Article = () => {
           <AdminNav />
         </div>
         <div className='w-full min-h-full h-full flex flex-col gap-y-10 px-7 pb-7 pt-[4rem] overflow-scroll'>
-          <span className=' text-5xl font-semibold'>Articles</span>
+          <span className=' text-5xl font-semibold'>Article Management</span>
           <div className='w-full h-full flex flex-col xl:flex-row gap-y-5 xl:gap-y-0 xl:gap-x-5 '>
             <div className='min-w-[34rem] h-full flex flex-col gap-y-7'>
               {/* info bar */}
@@ -123,104 +123,102 @@ const Article = () => {
                 </div>
                 
               </div>
-              <div className='w-full min-w-[94rem] h-auto flec flex-col'>
+              <div className='w-full min-w-[94rem] h-auto flec flex-col border-t-1 border-t-gray-400'>
                 {/* table data */}
 
                 
                 <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>02-19-2024</span>
                   </div>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>Olivia Harper</span>
 
                   </div>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>Perlas ng silanganan</span>
 
                   </div>
-                  <div className='  px-4 py-4  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
                     <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
 
                   </div>
-                  <div className='  px-4 py-4  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
                     <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
 
                   </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
                     <span className='w-full truncate'>02-19-2024</span>
-                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center border-t-gray-400 '>
+                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
                       <i class=" fa-solid fa-pen-to-square cursor-pointer"></i>
                       <i class="fa-solid fa-trash cursor-pointer"></i>
                       <i class="fa-solid fa-bars cursor-pointer"></i>
 
-                  </div>
+                    </div>
 
                   </div>
                   
                 </div>
-
                 <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>02-19-2024</span>
                   </div>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>Olivia Harper</span>
 
                   </div>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>Perlas ng silanganan</span>
 
                   </div>
-                  <div className='  px-4 py-4  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
                     <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
 
                   </div>
-                  <div className='  px-4 py-4  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
                     <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
 
                   </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
                     <span className='w-full truncate'>02-19-2024</span>
-                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center border-t-gray-400 '>
+                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
                       <i class=" fa-solid fa-pen-to-square cursor-pointer"></i>
                       <i class="fa-solid fa-trash cursor-pointer"></i>
                       <i class="fa-solid fa-bars cursor-pointer"></i>
 
-                  </div>
+                    </div>
 
                   </div>
                   
                 </div>
-
-                <div className='min-w-[94rem] text-xl font-semibold h-fit grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>02-19-2024</span>
                   </div>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>Olivia Harper</span>
 
                   </div>
-                  <div className='  px-4 pt-1 pb-3  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
                     <span>Perlas ng silanganan</span>
 
                   </div>
-                  <div className='  px-4 py-4  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
                     <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
 
                   </div>
-                  <div className='  px-4 py-4  border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
                     <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
 
                   </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-t-1 border-t-gray-400 cols-span-1'>
+                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
                     <span className='w-full truncate'>02-19-2024</span>
-                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center border-t-gray-400 '>
+                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
                       <i class=" fa-solid fa-pen-to-square cursor-pointer"></i>
                       <i class="fa-solid fa-trash cursor-pointer"></i>
                       <i class="fa-solid fa-bars cursor-pointer"></i>
 
-                  </div>
+                    </div>
 
                   </div>
                   

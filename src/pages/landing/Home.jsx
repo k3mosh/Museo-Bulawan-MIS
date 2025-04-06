@@ -317,7 +317,7 @@ const Home = () => {
                       <div className='w-full h-full  outline-2 outline-white'></div>
                   </div>
                   <div className='w-full h-1/2 xl:h-full xl:flex xl:items-end'>
-                      <div className='w-full h-full xl:h-4/5 flex flex-col gap-2 items-center justify-center xl:flex xl:justify-start xl:items-start'>
+                      <div className='w-full h-full xl:h-fit gap-y-5 flex flex-col gap-2 items-center justify-center xl:flex xl:justify-start xl:items-start'>
                         <div className='w-full min-h-[6em] flex items-center justify-center xl:h-[10em] xl:justify-start'>
                           <span className='text-5xl font-bold xl:text-6xl'>VISIT US!</span>
                         </div>
@@ -340,7 +340,7 @@ const Home = () => {
                 </div>
 
                 <div className='w-full h-1/2 xl:h-full xl:order-1 '>
-                <div className='w-full h-full xl:h-4/5 flex flex-col gap-2 items-center justify-center xl:flex xl:justify-start xl:items-end'>
+                <div className='w-full h-full xl:h-fit gap-y-5 flex flex-col gap-2 items-center justify-center xl:flex xl:justify-start xl:items-end'>
                         <div className='w-full min-h-[6em] flex items-center justify-center xl:h-[10em] xl:justify-end'>
                           <span className='text-5xl font-bold xl:text-6xl text-center'>YOUR SUPPORT MATTERS</span>
                         </div>
