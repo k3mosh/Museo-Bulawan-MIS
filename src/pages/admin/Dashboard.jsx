@@ -116,14 +116,14 @@ const Dashboard = () => {
                 </span>
                 <div className="flex-1 flex flex-col justify-center items-center">
                   {/* Donut Chart container */}
-                  <div className="relative w-full h-full sm:w-[80%] sm:h-[80%]">
+                  <div className="relative sm:w-full sm:h-full w-[80%] h-[80%]">
                     <Doughnut data={donutData} options={donutOptions} />
                     {/* Centered Text in Donut */}
                     <div className="absolute inset-0 flex flex-col justify-center items-center">
                       <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-widest">
                         80%
                       </span>
-                      <span className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mt-2">
+                      <span className="text-xs sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mt-2">
                         Present Visitors
                       </span>
                     </div>
@@ -163,7 +163,7 @@ const Dashboard = () => {
                 <span className='text-3xl font-bold text-white md:text-5xl'>Appointment Rate</span>
                 <div className='bg-white h-full w-full rounded-xl p-3 md:p-6'>
                   {/* Bar chart here */}
-                  <div className='w-full h-full'>
+                  <div className='w-full sm:h-full h-[8rem]'>
                     <Bar data={barData} options={barOptions} />
                   </div>
                 </div>

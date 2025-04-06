@@ -5,7 +5,7 @@ import { NavLink, useLocation  } from 'react-router-dom';
 const LandingHeader = () => {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
-  const isSpecialRoute = location.pathname === '/form' || location.pathname === '/about' || location.pathname === '/appointment' || location.pathname === '/support';
+  const isSpecialRoute = location.pathname === '/form' || location.pathname === '/about' || location.pathname === '/appointment' || location.pathname === '/support' ||  /^\/article\/[^/]+$/.test(location.pathname);
   const isLogin = location.pathname === '/login';
 
   const handleScroll = () => {
@@ -34,7 +34,7 @@ const LandingHeader = () => {
               <NavLink to="/" className="mx-2">
                 <span className="text-white text-xs my-auto cursor-pointer">Home</span>
               </NavLink>
-              <NavLink to="/news&events" className="mx-2">
+              <NavLink to="/content" className="mx-2">
                 <span className="text-white text-xs my-auto cursor-pointer">News & Events</span>
               </NavLink>
               <NavLink to="/about" className="mx-2">

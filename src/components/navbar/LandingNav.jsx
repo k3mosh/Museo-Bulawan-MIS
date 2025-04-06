@@ -1,9 +1,10 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useState } from 'react';
 
 const LandingNav = () => {
 
-  const isSpecialRoute = location.pathname === '/form' || location.pathname === '/about' || location.pathname === '/appointment' || location.pathname === '/support';
+  const location = useLocation();
+  const isSpecialRoute = location.pathname === '/form' || location.pathname === '/about' || location.pathname === '/appointment' || location.pathname === '/support' ||  /^\/article\/[^/]+$/.test(location.pathname);;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
