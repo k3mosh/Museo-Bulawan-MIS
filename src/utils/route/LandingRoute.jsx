@@ -25,7 +25,8 @@ const LandingRoute = createBrowserRouter ([
             { path: 'form', element: <Form /> },
             { path: 'login', element: <Login /> },
             { path: 'support', element: <Support /> },
-            { path: 'article', element: <Article /> },
+            { path: 'article/:id', element: <Article /> },
+
         ],
      },
      {

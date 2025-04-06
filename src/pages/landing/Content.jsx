@@ -112,7 +112,7 @@ const Content = () => {
           {itemsData.items.map((item, index) => (
               <Link
                 key={index}
-                to={`/article`} // Replace with actual ID or slug if available
+                to={`/article/${index}`} // Replace with actual ID or slug if available
                 className="flex flex-col items-center text-center hover:opacity-90 transition duration-300"
               >
                 <img
