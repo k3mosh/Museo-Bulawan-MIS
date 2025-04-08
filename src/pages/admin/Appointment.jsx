@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AdminNav from '../../components/navbar/AdminNav'
+import CustomDatePicker from '../../components/function/CustomDatePicker'
 
 const Appointment = () => {
+  // 1) Keep track of the selected date
+  const [selectedDate, setSelectedDate] = useState(new Date())
+
   return (
     <>
       <div className='w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]'>
@@ -9,7 +13,7 @@ const Appointment = () => {
           <AdminNav />
         </div>
         <div className='w-full min-h-full h-full flex flex-col gap-y-10 px-7 pb-7 pt-[4rem] overflow-scroll'>
-          <span className=' text-5xl font-semibold'>Appointments</span>
+          <span className='text-5xl font-semibold'>Appointments</span>
           <div className='w-full h-full flex flex-col xl:flex-row gap-y-5 xl:gap-y-0 xl:gap-x-5 '>
             <div className='min-w-[34rem] h-full flex flex-col gap-y-7'>
               {/* info bar */}
@@ -17,10 +21,10 @@ const Appointment = () => {
                 <button className='px-4 h-full border-1 border-gray-500 rounded-lg cursor-pointer'>
                   <span className='text-2xl font-semibold'>Forms</span>
                 </button>
-                <button className='px-4 h-full border-1 border-gray-500  rounded-lg cursor-pointer'>
+                <button className='px-4 h-full border-1 border-gray-500 rounded-lg cursor-pointer'>
                   <span className='text-2xl font-semibold'>Attendance</span>
                 </button>
-                <button className='px-4 h-full border-1 border-gray-500  rounded-lg cursor-pointer'>
+                <button className='px-4 h-full border-1 border-gray-500 rounded-lg cursor-pointer'>
                   <span className='text-2xl font-semibold'>Visitor Records</span>
                 </button>
               </div>
@@ -70,20 +74,39 @@ const Appointment = () => {
             <div className='w-full h-full flex flex-col gap-y-7 overflow-x-scroll overflow-y-scroll'>
               {/* table */}
               <div className='min-w-[94rem] min-h-[5rem] py-2 flex items-center gap-x-2'>
-                {/* toolbar */}
-                <button className='px-3 h-full rounded-lg border-1 border-gray-500  cursor-pointer'>
-                  <i className="text-gray-500 fa-regular fa-calendar text-4xl"></i>
-                </button>
+                {/* 2) Use CustomDatePicker instead of the plain button */}
+                <div className='flex-shrink-0'>
+                  <CustomDatePicker
+                    selected={selectedDate}
+                    onChange={(date) => setSelectedDate(date)}
+                    popperPlacement="bottom-start"
+                    popperClassName="z-50"
+                    customInput={
+                      <button className='px-3 h-16 rounded-lg border-1 border-gray-500 cursor-pointer'>
+                        <i className="text-gray-500 fa-regular fa-calendar text-4xl"></i>
+                      </button>
+                    }
+                  />
+                </div>
+
                 <div className="relative h-full min-w-[20rem]">
                   <i className="text-2xl fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"></i>
-                  <input type="text" placeholder="Search History" className="h-full pl-10 pr-3 py-2  border-1 border-gray-500 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"></input>
+                  <input
+                    type="text"
+                    placeholder="Search History"
+                    className="h-full pl-10 pr-3 py-2 border-1 border-gray-500 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div className="relative h-full min-w-48">
-                  <input type="text" placeholder="Filter..." className="pl-4 h-full text-2xl pr-8 py-2 border-1 border-gray-500  rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"></input>
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    className="pl-4 h-full text-2xl pr-8 py-2 border-1 border-gray-500 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                   <i className="cursor-pointer text-2xl fas fa-plus absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                 </div>
                 <div className="relative h-full min-w-48">
-                  <select className="appearance-none border-1 border-gray-500  h-full text-2xl rounded-lg text-gray-500 w-full py-2 pl-4 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <select className="appearance-none border-1 border-gray-500 h-full text-2xl rounded-lg text-gray-500 w-full py-2 pl-4 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option>All Actions</option>
                     <option>Action 1</option>
                     <option>Action 2</option>
@@ -97,19 +120,19 @@ const Appointment = () => {
                 <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Date</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Visitor Name</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Preferred Time</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Status</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Visitor Count</span>
                 </div>
-                <div className='text-[#727272] justify-between flex text-2xl border-l-1 pl-3  cols-span-1'>
+                <div className='text-[#727272] justify-between flex text-2xl border-l-1 pl-3 cols-span-1'>
                   <span className='my-2'>Updated</span>
                 </div>
               </div>
@@ -127,7 +150,9 @@ const Appointment = () => {
                     <span>02:30-03:59</span>
                   </div>
                   <div className='px-4 py-4 border-b-1 border-gray-400'>
-                    <span className='text-white bg-[#4CAF50] rounded-md px-4 py-1'>Confirmed</span>
+                    <span className='text-white bg-[#4CAF50] rounded-md px-4 py-1'>
+                      Confirmed
+                    </span>
                   </div>
                   <div className='px-4 py-4 border-b-1 border-gray-400'>
                     <span className='text-2xl'>10</span>
@@ -136,7 +161,7 @@ const Appointment = () => {
                     <span>02-19-2024</span>
                   </div>
                 </div>
-                {/* Repeat for other rows */}
+                {/* Further rows follow the same pattern */}
               </div>
             </div>
           </div>

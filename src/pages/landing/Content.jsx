@@ -71,9 +71,10 @@ const Content = () => {
   return (
     <>
       <ScrollRestoration />
-      <div className="bg-[#1C1B19] flex flex-col gap-y-4 min-h-fit h-fit w-screen pt-7">
+      <div className="bg-[#1C1B19] flex flex-col gap-y-4 w-screen pt-7 h-fit min-h-fit">
         <LandingNav />
-        {/* Background Image Section with Search Bar */}
+
+        {/* Background Image Section */}
         <div
           className="w-screen h-[40rem] bg-cover bg-center bg-no-repeat relative"
           style={{
@@ -81,27 +82,85 @@ const Content = () => {
               "url('./src/assets/Fernando-Amorsolo-Women-Bathing-and-Washing Clothes-7463.png')",
           }}
         >
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 sm:p-6 md:p-8 rounded-md shadow-lg w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%] flex justify-between items-center gap-2">
-            <input
-              type="text"
-              placeholder="Enter keyword"
-              className="border px-4 sm:px-6 py-3 rounded-md w-[35%] sm:w-[40%] md:w-[45%] lg:w-[50%] h-13 text-lg"
-            />
-            <select className="border px-4 sm:px-6 py-3 rounded-md w-[25%] sm:w-[30%] md:w-[35%] lg:w-[40%] h-13 text-lg">
-              <option value="">Category</option>
-            </select>
-            <select className="border px-4 sm:px-6 py-3 rounded-md w-[25%] sm:w-[30%] md:w-[35%] lg:w-[40%] h-13 text-lg">
-              <option value="" disabled selected>Municipality</option>
-              {municipalities.map((municipality, index) => (
-                <option key={index} value={municipality}>
-                  {municipality}
-                </option>
-              ))}
-            </select>
-            <button className="bg-black text-white px-6 py-3 rounded-md text-lg w-[15%] sm:w-[18%] md:w-[20%] h-13 cursor-pointer border-2 border-transparent hover:bg-white hover:text-black hover:border-black">
-              Search
-            </button>
+          {/* Centered Search Bar Overlay */}
+          <div className="absolute inset-0 flex justify-center items-center">
+            {/* Outer container with bigger width/height, bigger text */}
+            <div className="grid grid-cols-4 w-[90%] max-w-6xl h-15">
 
+              {/* 1. Keyword Input */}
+              <div className="flex items-center justify-center bg-white text-black border-r border-black">
+                <input
+                  type="text"
+                  placeholder="Enter keyword"
+                  className="w-full h-full px-4 text-4xl lg:text-5xl bg-transparent focus:outline-none"
+                />
+              </div>
+
+              {/* 2. Category Dropdown */}
+              <div className="relative flex items-center justify-center bg-white text-black border-r border-black">
+                <select className="w-full h-full px-4 text-4xl lg:text-5xl bg-transparent appearance-none focus:outline-none">
+                  <option>Category</option>
+                  {/* More options here */}
+                </select>
+                {/* Dropdown icon */}
+                <div className="pointer-events-none absolute right-2">
+                  <svg
+                    className="h-8 w-8 text-black"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* 3. Municipality Dropdown */}
+              <div className="relative flex items-center justify-center bg-white text-black border-r border-black">
+                <select className="w-full h-full px-4 text-4xl lg:text-5xl bg-transparent appearance-none focus:outline-none">
+                  <option>Municipality</option>
+                  {municipalities.map((municipality) => (
+                    <option key={municipality} value={municipality}>
+                      {municipality}
+                    </option>
+                  ))}
+                </select>
+                {/* Dropdown icon */}
+                <div className="pointer-events-none absolute right-2">
+                  <svg
+                    className="h-8 w-8 text-black"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <button
+                className="flex items-center justify-center
+             text-4xl lg:text-5xl
+             border-2 border-transparent
+             bg-black text-white
+             hover:bg-white hover:text-black
+             hover:border-black
+             transition-all duration-300
+             cursor-pointer"
+              >
+                Search
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -109,7 +168,7 @@ const Content = () => {
       <div className="bg-[#1C1B19] min-h-screen py-15">
         <div className="w-full px-4 mx-auto flex justify-around">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 gap-x-20">
-          {itemsData.items.map((item, index) => (
+            {itemsData.items.map((item, index) => (
               <Link
                 key={index}
                 to={`/article/${index}`} // Replace with actual ID or slug if available

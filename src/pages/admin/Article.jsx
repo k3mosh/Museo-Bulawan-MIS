@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AdminNav from '../../components/navbar/AdminNav'
+// 1) Import your CustomDatePicker component
+import CustomDatePicker from '../../components/function/CustomDatePicker'
 
 const Article = () => {
+  // 2) Set up a state for the selected date
+  const [selectedDate, setSelectedDate] = useState(new Date())
+
   return (
     <>
       <div className='w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]'>
@@ -9,7 +14,7 @@ const Article = () => {
           <AdminNav />
         </div>
         <div className='w-full min-h-full h-full flex flex-col gap-y-10 px-7 pb-7 pt-[4rem] overflow-scroll'>
-          <span className=' text-5xl font-semibold'>Article Management</span>
+          <span className='text-5xl font-semibold'>Article Management</span>
           <div className='w-full h-full flex flex-col xl:flex-row gap-y-5 xl:gap-y-0 xl:gap-x-5 '>
             <div className='min-w-[34rem] h-full flex flex-col gap-y-7'>
               {/* info bar */}
@@ -17,7 +22,6 @@ const Article = () => {
                 <button className='px-4 h-full border-1 border-gray-500 rounded-lg cursor-pointer'>
                   <span className='text-2xl font-semibold'>Artifact</span>
                 </button>
-                
               </div>
 
               <div className='w-full h-full flex flex-col gap-y-[5rem]'>
@@ -45,194 +49,118 @@ const Article = () => {
                     </div>
                   </div>
 
-                  <button class="cursor-pointer flex items-center justify-between w-full px-6 py-4 bg-[#6BFFD5] text-black font-medium">
+                  <button className="cursor-pointer flex items-center justify-between w-full px-6 py-4 bg-[#6BFFD5] text-black font-medium">
                     <span className='text-2xl font-semibold'>Add New Article</span>
-                    <span class="border-2 border-black rounded-full p-2 flex items-center justify-center">
-                      <i class="fas fa-plus text-xl "></i>
+                    <span className="border-2 border-black rounded-full p-2 flex items-center justify-center">
+                      <i className="fas fa-plus text-xl"></i>
                     </span>
                   </button>
-
                 </div>
-                
               </div>
-
-              
-
             </div>
-            
-            <div className=' w-full h-full flex flex-col gap-y-7 overflow-x-scroll overflow-y-scroll'>
+
+            <div className='w-full h-full flex flex-col gap-y-7 overflow-x-scroll overflow-y-scroll'>
               {/* table */}
               <div className='min-w-[94rem] min-h-[5rem] py-2 flex items-center gap-x-2'>
-                {/* toolbar */}
-                <button className='px-3 h-full rounded-lg border-1 border-gray-500  cursor-pointer'>
-                  <i class="text-gray-500 fa-regular fa-calendar text-4xl"></i>
-                </button>
+                {/* 3) Replace the static button with CustomDatePicker */}
+                <div className='flex-shrink-0'>
+                  <CustomDatePicker
+                    selected={selectedDate}
+                    onChange={(date) => setSelectedDate(date)}
+                    popperPlacement="bottom-start"
+                    popperClassName="z-50"
+                    customInput={
+                      <button className='px-3 h-16 rounded-lg border-1 border-gray-500 cursor-pointer'>
+                        <i className="text-gray-500 fa-regular fa-calendar text-4xl"></i>
+                      </button>
+                    }
+                  />
+                </div>
 
-                
-         
-
-                <div class="relative h-full min-w-[20rem]">
+                <div className="relative h-full min-w-[20rem]">
                   <i className="text-2xl fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"></i>
-                  <input type="text" placeholder="Search History" class="h-full pl-10 pr-3 py-2  border-1 border-gray-500 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"></input>
+                  <input
+                    type="text"
+                    placeholder="Search History"
+                    className="h-full pl-10 pr-3 py-2 border-1 border-gray-500 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
 
-
-                <div class="relative h-full  min-w-48">
-                  <input type="text" placeholder="Filter..." class="pl-4 h-full text-2xl pr-8 py-2 border-1 border-gray-500  rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"></input>
-                  <i class="cursor-pointer text-2xl fas fa-plus absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <div className="relative h-full min-w-48">
+                  <input
+                    type="text"
+                    placeholder="Filter..."
+                    className="pl-4 h-full text-2xl pr-8 py-2 border-1 border-gray-500 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <i className="cursor-pointer text-2xl fas fa-plus absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                 </div>
 
-                <div class="relative h-full min-w-48">
-                  <select class="appearance-none border-1 border-gray-500  h-full text-2xl rounded-lg text-gray-500 w-full py-2 pl-4 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <div className="relative h-full min-w-48">
+                  <select className="appearance-none border-1 border-gray-500 h-full text-2xl rounded-lg text-gray-500 w-full py-2 pl-4 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option>All Actions</option>
                     <option>Action 1</option>
                     <option>Action 2</option>
                   </select>
-                  <i class="text-2xl fas fa-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"></i>
+                  <i className="text-2xl fas fa-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"></i>
                 </div>
               </div>
-              
+
               <div className='min-w-[94rem] w-full font-semibold h-fit grid grid-cols-6 justify-between'>
-              {/* table headers */}
+                {/* table headers */}
                 <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Date</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
-                <span>Visitor Name</span>
-
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
+                  <span>Visitor Name</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
-                <span>Title</span>
-
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
+                  <span>Title</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
-                <span>Status</span>
-
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
+                  <span>Status</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2  cols-span-1'>
-                <span>Transfer Status</span>
-
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
+                  <span>Transfer Status</span>
                 </div>
-
-                <div className='text-[#727272] justify-between flex text-2xl border-l-1 pl-3  cols-span-1'>
-                <span className='my-2'>Updated</span>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 w-[7rem] cols-span-1'>
-                  <span>Action</span>
+                <div className='text-[#727272] justify-between flex text-2xl border-l-1 pl-3 cols-span-1'>
+                  <span className='my-2'>Updated</span>
+                  <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 w-[7rem] cols-span-1'>
+                    <span>Action</span>
+                  </div>
                 </div>
-
-                </div>
-                
-              </div>
-              <div className='w-full min-w-[94rem] h-auto flec flex-col border-t-1 border-t-gray-400'>
-                {/* table data */}
-
-                
-                <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>02-19-2024</span>
-                  </div>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>Olivia Harper</span>
-
-                  </div>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>Perlas ng silanganan</span>
-
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
-
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
-
-                  </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
-                    <span className='w-full truncate'>02-19-2024</span>
-                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
-                      <i class=" fa-solid fa-pen-to-square cursor-pointer"></i>
-                      <i class="fa-solid fa-trash cursor-pointer"></i>
-                      <i class="fa-solid fa-bars cursor-pointer"></i>
-
-                    </div>
-
-                  </div>
-                  
-                </div>
-                <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>02-19-2024</span>
-                  </div>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>Olivia Harper</span>
-
-                  </div>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>Perlas ng silanganan</span>
-
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
-
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
-
-                  </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
-                    <span className='w-full truncate'>02-19-2024</span>
-                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
-                      <i class=" fa-solid fa-pen-to-square cursor-pointer"></i>
-                      <i class="fa-solid fa-trash cursor-pointer"></i>
-                      <i class="fa-solid fa-bars cursor-pointer"></i>
-
-                    </div>
-
-                  </div>
-                  
-                </div>
-                <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>02-19-2024</span>
-                  </div>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>Olivia Harper</span>
-
-                  </div>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>Perlas ng silanganan</span>
-
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
-
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
-
-                  </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
-                    <span className='w-full truncate'>02-19-2024</span>
-                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
-                      <i class=" fa-solid fa-pen-to-square cursor-pointer"></i>
-                      <i class="fa-solid fa-trash cursor-pointer"></i>
-                      <i class="fa-solid fa-bars cursor-pointer"></i>
-
-                    </div>
-
-                  </div>
-                  
-                </div>
-                 
-                  
-                
               </div>
 
+              <div className='w-full min-w-[94rem] h-auto flex flex-col border-t-1 border-t-gray-400'>
+                {/* table data rows */}
+                <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
+                  <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 cols-span-1'>
+                    <span>02-19-2024</span>
+                  </div>
+                  <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 cols-span-1'>
+                    <span>Olivia Harper</span>
+                  </div>
+                  <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 cols-span-1'>
+                    <span>Perlas ng silanganan</span>
+                  </div>
+                  <div className='px-4 py-4 border-b-1 border-gray-400 cols-span-1'>
+                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
+                  </div>
+                  <div className='px-4 py-4 border-b-1 border-gray-400 cols-span-1'>
+                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
+                  </div>
+                  <div className='pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
+                    <span className='w-full truncate'>02-19-2024</span>
+                    <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
+                      <i className='fa-solid fa-pen-to-square cursor-pointer'></i>
+                      <i className='fa-solid fa-trash cursor-pointer'></i>
+                      <i className='fa-solid fa-bars cursor-pointer'></i>
+                    </div>
+                  </div>
+                </div>
+                {/* Additional table rows can follow here */}
+              </div>
             </div>
-            
           </div>
-
-          
         </div>
       </div>
     </>

@@ -1,63 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import LandingNav from '../../components/navbar/LandingNav';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import CustomDatePicker from '../../components/function/CustomDatePicker';
 import useAddressLogic from '../../components/function/AddressHook';
 import { ScrollRestoration } from 'react-router-dom';
-
-// OPTIONAL custom datepicker styling
-const datePickerCustomStyles = `
-  .react-datepicker {
-    font-family: 'HindKochi', sans-serif;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-  }
-  .react-datepicker__triangle {
-    display: none;
-  }
-  .react-datepicker__header {
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    padding-bottom: 8px;
-  }
-  .react-datepicker__current-month {
-    font-size: 1.25rem;
-    color: #524433;
-    font-weight: bold;
-    margin-bottom: 0;
-  }
-  .react-datepicker__navigation--previous,
-  .react-datepicker__navigation--next {
-    top: 15px;
-    line-height: 1.7;
-    border: none;
-    outline: none;
-  }
-  .react-datepicker__navigation-icon::before {
-    border-color: #524433;
-  }
-  .react-datepicker__day-name,
-  .react-datepicker__day {
-    width: 2rem;
-    line-height: 2rem;
-    margin: 0.2rem;
-    color: #3e3428;
-    font-weight: 600;
-  }
-  .react-datepicker__day--today {
-    border: 1px solid #524433;
-    border-radius: 4px;
-  }
-  .react-datepicker__day--selected,
-  .react-datepicker__day--keyboard-selected {
-    background-color: #524433;
-    color: #fff;
-    border-radius: 4px;
-  }
-`;
 
 /**
  * Inline typed dropdown subcomponent with a black "✖".
@@ -193,9 +138,6 @@ const Appointment = () => {
     <>
       <ScrollRestoration />
 
-      {/* Optional datepicker styling */}
-      <style>{datePickerCustomStyles}</style>
-
       <div className="w-screen h-full pt-7">
         <LandingNav />
 
@@ -306,7 +248,7 @@ const Appointment = () => {
                     options={cities}
                     selectedItem={selectedCity}
                     onChange={setSelectedCity}
-                    disabled={!selectedProvince} // disable if no province selected
+                    disabled={!selectedProvince}
                   />
                 </div>
               </div>
@@ -322,7 +264,7 @@ const Appointment = () => {
                     options={barangays}
                     selectedItem={selectedBarangay}
                     onChange={setSelectedBarangay}
-                    disabled={!selectedCity} // disable if no city selected
+                    disabled={!selectedCity}
                   />
                 </div>
 
@@ -384,10 +326,18 @@ const Appointment = () => {
                         </span>
                       </div>
                       <ol className="list-decimal ml-8 mb-6 text-base md:text-lg">
-                        <li><strong>Research:</strong> Accessing archives or materials.</li>
-                        <li><strong>Thesis / Dissertation:</strong> Consulting artifacts.</li>
-                        <li><strong>School Field Trips:</strong> Coordinating visits for classes.</li>
-                        <li><strong>Workshops or Classes:</strong> Organizing classes or art/history workshops.</li>
+                        <li>
+                          <strong>Research:</strong> Accessing archives or materials.
+                        </li>
+                        <li>
+                          <strong>Thesis / Dissertation:</strong> Consulting artifacts.
+                        </li>
+                        <li>
+                          <strong>School Field Trips:</strong> Coordinating visits for classes.
+                        </li>
+                        <li>
+                          <strong>Workshops or Classes:</strong> Organizing classes or art/history workshops.
+                        </li>
                       </ol>
 
                       <div className="mb-5 flex items-center">
@@ -399,11 +349,21 @@ const Appointment = () => {
                         </span>
                       </div>
                       <ol className="list-decimal ml-8 text-base md:text-lg">
-                        <li><strong>Interviews:</strong> Meeting museum staff or curators.</li>
-                        <li><strong>Collaboration Meetings:</strong> Joint projects or exhibits.</li>
-                        <li><strong>Photography / Media Projects:</strong> Photo shoots or filming.</li>
-                        <li><strong>Conservation Consultation:</strong> Seeking advice/services.</li>
-                        <li><strong>Donations:</strong> Offering items or funds to the museum.</li>
+                        <li>
+                          <strong>Interviews:</strong> Meeting museum staff or curators.
+                        </li>
+                        <li>
+                          <strong>Collaboration Meetings:</strong> Joint projects or exhibits.
+                        </li>
+                        <li>
+                          <strong>Photography / Media Projects:</strong> Photo shoots or filming.
+                        </li>
+                        <li>
+                          <strong>Conservation Consultation:</strong> Seeking advice/services.
+                        </li>
+                        <li>
+                          <strong>Donations:</strong> Offering items or funds to the museum.
+                        </li>
                       </ol>
                     </div>
                   )}
@@ -429,7 +389,7 @@ const Appointment = () => {
                   Preferred Date <span className="text-red-500">*</span>
                 </label>
                 <div className="md:col-span-4">
-                  <DatePicker
+                  <CustomDatePicker
                     selected={selectedDate}
                     onChange={(date) => setSelectedDate(date)}
                     placeholderText="Select your preferred date"
