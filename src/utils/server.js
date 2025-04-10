@@ -15,6 +15,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 
+
 const startServer = async () => {
   try {
     await sequelize.authenticate();

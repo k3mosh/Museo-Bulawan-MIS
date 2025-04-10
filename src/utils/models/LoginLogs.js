@@ -7,11 +7,11 @@ const LoginLog = sequelize.define('LoginLog', {
     autoIncrement: true,
     primaryKey: true,
   },
-  credential_id: { // Changed from user_id
+  credential_id: { 
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'credentials', // Updated to reference credentials
+      model: 'credentials',
       key: 'id',
     },
     onDelete: 'CASCADE',
@@ -21,18 +21,17 @@ const LoginLog = sequelize.define('LoginLog', {
     defaultValue: DataTypes.NOW,
   },
   start: {
-    type: 'TIMESTAMP', // Use TIMESTAMP type
+    type: 'TIMESTAMP', 
     allowNull: false,
   },
   end: {
-    type: 'TIMESTAMP', // Use TIMESTAMP type
-    allowNull: true,   // Allow null so it can be set on logout
+    type: 'TIMESTAMP', 
+    allowNull: true,   
   },
 }, {
   tableName: 'login_logs',
   timestamps: false,
 });
 
-// Optionally, define associations in a centralized file after all models are imported
 
 export default LoginLog;

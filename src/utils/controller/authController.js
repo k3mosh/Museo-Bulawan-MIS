@@ -2,10 +2,12 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import Credential from '../models/Credential.js';
 import LoginLog from '../models/LoginLogs.js';
+import User from '../models/Users.js'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'hachsinail';
 
 export const login = async (req, res) => {
+  // console.log("Login endpoint hit");
   const { email, password } = req.body;
 
   try {
@@ -18,7 +20,7 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
-
+    
     const existingLog = await LoginLog.findOne({
       where: { credential_id: credential.id, end: null },
     });
@@ -29,6 +31,11 @@ export const login = async (req, res) => {
         start: new Date(),
         end: null,
       });
+    }
+
+    const user = await User.findOne({ where: { credential_id: credential.id } });
+    if (user) {
+      await user.update({ status: 'active', modified_date: new Date() });
     }
 
     const payload = {
@@ -46,6 +53,7 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 export const logout = async (req, res) => {
   try {
@@ -71,11 +79,18 @@ export const logout = async (req, res) => {
       await loginLog.update({ end: new Date() });
     }
 
+    // Set user status to inactive
+    const user = await User.findOne({ where: { credential_id: credential.id } });
+    if (user) {
+      await user.update({ status: 'inactive', modified_date: new Date() });
+    }
+
     return res.status(200).json({ message: 'User logged out successfully' });
   } catch {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 export const autoLogout = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -100,8 +115,16 @@ export const autoLogout = async (req, res, next) => {
               if (loginLog) {
                 await loginLog.update({ end: new Date() });
               }
+
+              // Set user status to inactive
+              const user = await User.findOne({ where: { credential_id: credential.id } });
+              if (user) {
+                await user.update({ status: 'inactive', modified_date: new Date() });
+              }
             }
-          } catch {}
+          } catch {
+            // Optionally log the error for debugging
+          }
         }
         return res.status(401).json({ message: 'Session expired, you have been logged out automatically.' });
       } else {

@@ -46,7 +46,7 @@ const Login = () => {
         </Link>
       </div>
       <div className="w-full h-fit max-w-md overflow-hidden">
-        <div className="mx-auto">
+        <div id='container1' className="mx-auto">
           <img src="LOGO.png" alt="Logo" className="w-60 mx-auto" />
         </div>
         <div className="mt-6">

@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database.js';
 import Credential from './Credential.js';
-import LoginLog from './LoginLogs.js';
 
 const User = sequelize.define('User', {
   id: {
