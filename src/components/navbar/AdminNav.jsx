@@ -1,12 +1,23 @@
 import React from 'react';
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import ConfirmationModal from '../modals/ConfirmationModal';
 
 const AdminNav = () => {
   const navigate = useNavigate();
   const linkClasses = "w-fit sm:w-full h-fit py-4 flex flex-row justify-start bg-[#1C1B19] items-center gap-3 rounded-2xl p-2 h-[60px] cursor-pointer";
   const activeClasses = "bg-white text-black";
+  const [showConfirmation, setConfirmation] = useState(false);
+  
+    const handleConfirmation = (result) => {
+      setConfirmation(false);
+      console.log('User confirmed?', result);
+      if(result == true){
+        handleLogout();
+      }
+    };
 
   const handleLogout = async () => {
     const token = localStorage.getItem('token');
@@ -66,7 +77,11 @@ const AdminNav = () => {
   const bgColor = colorMap[firstInitial] || "#FFFFFF"; 
 
   return (
+    <>    
+        {showConfirmation && (<ConfirmationModal title="Logout?" description="You are about to log out. All unsaved modifications will be permanently lost." icon="info" onClose={handleConfirmation} />)}
+
     <div  className='bg-[#1C1B19]   min-h-full gap-y-10 justify-around w-fit sm:min-w-[20rem] flex flex-col items-center'>
+      
       <div className=' w-full h-fit flex flex-col gap-y-[5rem]'>
 
         <div className=' relative group w-full py-4 h-fit flex justify-center items-end border-b-1 border-[#373737]'>
@@ -185,7 +200,7 @@ const AdminNav = () => {
         </div>
       </div>
 
-      <button onClick={handleLogout} className="relative group font-hind-kochi text-2xl font-bold w-[4rem] h-[4rem] sm:w-[14rem] flex flex-row justify-center items-center gap-3 text-white cursor-pointer hover:bg-red-900 transition rounded-2xl">
+      <button onClick={() => setConfirmation(true)}  className="relative group font-hind-kochi text-2xl font-bold w-[4rem] h-[4rem] sm:w-[14rem] flex flex-row justify-center items-center gap-3 text-white cursor-pointer hover:bg-red-900 transition rounded-2xl">
         <img src="/src/assets/logout.png" alt="logout" className="h-auto w-[30px]" />
         <span className='hidden sm:block'>Logout</span>
         <span className="absolute  left-full ml-8 hidden group-hover:flex bg-gray-800 sm:text-transparent sm:bg-transparent text-white text-2xl rounded py-1 px-2 w-max">
@@ -193,6 +208,8 @@ const AdminNav = () => {
               </span>
       </button>
     </div>
+    </>
+
   );
 };
 

@@ -63,19 +63,19 @@ const LandingFooter = () => {
                 Visit Us
               </span>
               <NavLink to='/about'>
-                <span className='text-2xl text-white w-fit'>
+                <span className='text-2xl underline text-white w-fit'>
                   About Us
                 </span>
               </NavLink>
 
               <NavLink to='/appointment'>
 
-              <span className='text-2xl text-white w-fit'>
+              <span className='text-2xl underline text-white w-fit'>
                 Book a Tour
               </span>
               </NavLink>
               <NavLink to='/support'>
-              <span className='text-2xl text-white w-fit'>
+              <span className='text-2xl underline text-white w-fit'>
                 Contact Us
               </span>
              </NavLink>

@@ -15,7 +15,7 @@ const Credential = sequelize.define('Credential', {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  email: {  // New email column
+  email: {  
     type: DataTypes.STRING(255),
     allowNull: false,
     unique: true,
