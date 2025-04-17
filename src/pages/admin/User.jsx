@@ -69,7 +69,7 @@ const User = () => {
   }, [])
 
 
-
+  console.log(users)
   return (
     <>
       {/* {showUser && (<UserView userId={selectedUserId} onClose={() => setShowUser(false)}/>)} */}

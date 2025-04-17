@@ -98,7 +98,7 @@ const CuratorCarousel = () => {
         <img
           src={image}
           alt={name}
-          className={`w-[30rem] h-auto mx-auto rounded-lg shadow-lg transition-all duration-700 ease-in-out ${
+          className={`w-[30rem] h-[30rem] mx-auto rounded-lg shadow-lg transition-all duration-700 ease-in-out ${
             fade ? 'opacity-100' : 'opacity-0'
           }`}
         />
@@ -314,7 +314,7 @@ const About = () => {
                   <h2 className='font-bold'>
                     Pure Professionalism
                   </h2>
-                  <p className='w-auto mx-auto sm:mx-[20rem] m-[2rem]'>
+                  <p className='w-auto mx-[2rem] sm:mx-[20rem] m-[2rem]'>
                     Our dedicated team of experienced professionals are always on the ball, utilizing their unique skills and passion to move the work of Museum. We’re always pushing ourselves to stay ahead of the curve and striving to perfect our programs. Meet some of our incredible employees below.
                   </p>
                 </div>
