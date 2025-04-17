@@ -39,8 +39,7 @@ const Appointment = sequelize.define('Appointment', {
   },
   creation_date: {
     type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW,
   },
   additional_notes: {
     type: DataTypes.TEXT,

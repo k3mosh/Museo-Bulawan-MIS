@@ -14,7 +14,7 @@ router.get('/fetchUser/:id', autoLogout, displaySpecificUser);
 router.get('/login-logs/:userId',autoLogout , getUserLoginLogs);
 
 router.post('/appointment' , createAppointment);
-router.get('/appointment', getAllAppointments);
+router.get('/appointment', autoLogout ,getAllAppointments);
 
 
 export default router;

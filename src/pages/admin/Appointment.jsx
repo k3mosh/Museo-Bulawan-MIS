@@ -5,41 +5,97 @@ import CustomDatePicker from '../../components/function/CustomDatePicker'
 import { connectWebSocket, closeWebSocket } from '../../utils/websocket'
 
 const Appointment = () => {
-  // Track selected date in date picker
   const [selectedDate, setSelectedDate] = useState(new Date())
-
-  // State to hold the fetched list of appointments
   const [appointments, setAppointments] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [modalData, setModalData] = useState(null)
+  const [approveVisit, setApproveVisit] = useState('yes')  // For the radio button in modal
 
+  const token = localStorage.getItem('token')
 
+  // Fetch appointments from server
   const fetchAppointments = async () => {
     try {
-      // Adjust URL as needed: e.g. '/api/auth/appointment'
-      const response = await axios.get('http://localhost:5000/api/auth/appointment')
+      const response = await axios.get('http://localhost:5000/api/auth/appointment', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setAppointments(response.data)
     } catch (error) {
       console.error('Error fetching appointments:', error)
     }
   }
-  // Fetch all appointments from the backend when component mounts
+
   useEffect(() => {
     fetchAppointments()
-    connectWebSocket(fetchAppointments)
+
+    const handleDataChange = () => {
+      console.log('WebSocket: Data changed, refreshing appointments...')
+      fetchAppointments()
+    }
+
+    const handleRefresh = () => {
+      console.log('WebSocket: Refresh command received, refreshing appointments...')
+      fetchAppointments()
+    }
+
+    connectWebSocket(handleDataChange, handleRefresh) // Listen for real-time changes
 
     return () => {
       closeWebSocket()
     }
   }, [])
 
+  // When a row is clicked, open the modal with that row's data
+  const handleRowClick = (appt) => {
+    if (!appt || !appt.Visitor) return
+    setModalData({
+      dateSent: appt.creation_date || 'N/A',
+      fromFirstName: appt.Visitor.first_name || 'N/A',
+      fromLastName: appt.Visitor.last_name || 'N/A',
+      email: appt.Visitor.email || 'N/A',
+      phone: appt.Visitor.phone || 'N/A',
+      purpose: appt.purpose_of_visit || 'N/A',
+      populationCount: appt.population_count || 0,
+      preferredDate: appt.preferred_date || 'N/A',
+      preferredTime: appt.preferred_time || 'N/A',
+      notes: appt.additional_notes || 'N/A',
+      organization: appt.Visitor.organization || 'N/A',
+      // Break address into separate fields for a more structured layout
+      street: appt.Visitor.street || '',
+      barangay: appt.Visitor.barangay || '',
+      city_municipality: appt.Visitor.city_municipality || '',
+      province: appt.Visitor.province || ''
+    })
+    setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setModalData(null)
+  }
+
+  const handleSend = () => {
+    // Example action when you click “Send” (could do an actual PUT/POST to your server)
+    alert('Message sent to ' + (modalData?.email || 'visitor'))
+    setShowModal(false)
+  }
+
   return (
     <>
       <div className='w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]'>
+        {/* Left Nav */}
         <div className='bg-[#1C1B19] w-auto min-h-full h-full min-w-[6rem] sm:min-w-auto'>
           <AdminNav />
         </div>
-        <div className='w-full min-h-full h-full flex flex-col gap-y-10 px-7 pb-7 pt-[4rem] overflow-scroll'>
+
+        {/* Main Content */}
+        <div className='w-full h-full flex flex-col gap-y-10 px-7 pb-7 pt-[4rem] overflow-scroll'>
           <span className='text-5xl font-semibold'>Appointments</span>
-          <div className='w-full h-full flex flex-col xl:flex-row gap-y-5 xl:gap-y-0 xl:gap-x-5 '>
+          <div className='w-full h-full flex flex-col xl:flex-row gap-y-5 xl:gap-y-0 xl:gap-x-5'>
+
+            {/* Left panel (stats, info, etc.) */}
             <div className='min-w-[34rem] h-full flex flex-col gap-y-7'>
               {/* Info bar */}
               <div className='w-full max-w-[35rem] text-gray-500 min-h-[5rem] flex py-2 gap-x-2'>
@@ -58,13 +114,13 @@ const Appointment = () => {
                 <div className='bg-[#161616] px-4 h-[5rem] flex justify-between items-center rounded-sm'>
                   <span className='text-2xl text-white font-semibold'>Total Appointments</span>
                   <div className='w-[6rem] h-[3rem] bg-[#D4DBFF] flex items-center justify-center rounded-md'>
-                    {/* Dynamically show the appointment count */}
                     <span className='text-2xl text-black font-semibold'>
                       {appointments.length}
                     </span>
                   </div>
                 </div>
 
+                {/* Example placeholders for stats */}
                 <div className='w-full h-auto flex flex-col gap-y-7'>
                   <span className='text-2xl font-semibold text-[#727272]'>January 8, 2025</span>
                   <div className='w-full h-fit flex justify-between items-center'>
@@ -95,9 +151,9 @@ const Appointment = () => {
               </div>
             </div>
 
-            {/* RIGHT SECTION WITH TABLE */}
+            {/* Right section with table */}
             <div className='w-full h-full flex flex-col gap-y-7 overflow-x-scroll overflow-y-scroll'>
-              {/* Controls above the table */}
+              {/* Controls above table */}
               <div className='min-w-[94rem] min-h-[5rem] py-2 flex items-center gap-x-2'>
                 <div className='flex-shrink-0'>
                   <CustomDatePicker
@@ -140,60 +196,53 @@ const Appointment = () => {
 
               {/* Table Header */}
               <div className='min-w-[94rem] w-full font-semibold h-fit grid grid-cols-6 justify-between'>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Date</span>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2'>
+                  Date
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Visitor Name</span>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2'>
+                  Visitor Name
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Preferred Time</span>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2'>
+                  Preferred Time
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Status</span>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2'>
+                  Status
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Visitor Count</span>
+                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2'>
+                  Visitor Count
                 </div>
-                <div className='text-[#727272] justify-between flex text-2xl border-l-1 pl-3 cols-span-1'>
-                  <span className='my-2'>Updated</span>
+                <div className='text-[#727272] flex items-center text-2xl border-l-1 pl-3'>
+                  Updated
                 </div>
               </div>
 
-              {/* Table Data (Dynamic) */}
-              <div className='w-full min-w-[94rem] h-auto flec flex-col border-t-1 border-t-gray-400'>
+              {/* Table Data */}
+              <div className='w-full min-w-[94rem] h-auto flex flex-col border-t-1 border-t-gray-400'>
                 {appointments.map((appt) => (
                   <div
                     key={appt.appointment_id}
-                    className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'
+                    className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 cursor-pointer hover:bg-gray-300'
+                    onClick={() => handleRowClick(appt)}
                   >
-                    {/* Date */}
                     <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400'>
-                      <span>{appt.preferred_date}</span>
+                      {appt.preferred_date}
                     </div>
-                    {/* Visitor Name (check if appt.Visitor exists) */}
                     <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400'>
-                      <span>
-                        {appt.Visitor?.first_name} {appt.Visitor?.last_name}
-                      </span>
+                      {appt.Visitor?.first_name} {appt.Visitor?.last_name}
                     </div>
-                    {/* Preferred Time */}
                     <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400'>
-                      <span>{appt.preferred_time}</span>
+                      {appt.preferred_time}
                     </div>
-                    {/* Status (sample: always Confirmed) */}
                     <div className='px-4 py-4 border-b-1 border-gray-400'>
                       <span className='text-white bg-[#4CAF50] rounded-md px-4 py-1'>
                         Confirmed
                       </span>
                     </div>
-                    {/* Visitor Count */}
                     <div className='px-4 py-4 border-b-1 border-gray-400'>
-                      <span className='text-2xl'>{appt.population_count}</span>
+                      {appt.population_count}
                     </div>
-                    {/* Updated (Use creation_date or any updated field) */}
-                    <div className='px-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400'>
-                      <span>{appt.creation_date}</span>
+                    <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 flex items-center'>
+                      {appt.creation_date}
                     </div>
                   </div>
                 ))}
@@ -202,6 +251,164 @@ const Appointment = () => {
           </div>
         </div>
       </div>
+
+      {/* MODAL */}
+      {showModal && modalData && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+          onClick={handleCloseModal}
+        >
+          <div
+            className="relative bg-gray-100 rounded-md shadow-lg pt-15 p-6 w-[400px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-3 right-3 text-gray-600 text-lg font-bold cursor-pointer"
+              onClick={handleCloseModal}
+            >
+              X
+            </button>
+
+            {/* Date Sent */}
+            <div className="text-right text-sm text-blue-500 mb-4">
+              {modalData.dateSent}
+            </div>
+
+            {/* Information Section */}
+            <div className="border border-gray-300 rounded-md p-4 bg-white">
+              <div className="flex mb-4">
+                <div className="font-bold w-[50px] text-gray-700">From:</div>
+                <div className="flex flex-1 flex-wrap justify-start gap-x-5">
+                  <div className="text-center">
+                    <span className="text-blue-500">
+                      {modalData.fromFirstName}
+                    </span>
+                    <div className="text-xs text-gray-500">First Name</div>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-blue-500">
+                      {modalData.fromLastName}
+                    </span>
+                    <div className="text-xs text-gray-500">Last Name</div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="mb-2">
+                <span className="font-semibold">Email:</span>{' '}
+                <span className="text-blue-500">{modalData.email}</span>
+              </p>
+              <p className="mb-2">
+                <span className="font-semibold">Phone Number:</span>{' '}
+                <span className="text-blue-500">{modalData.phone}</span>
+              </p>
+
+              <div className="flex mb-4">
+                <div className="font-semibold w-[50px] text-gray-700">Address:</div>
+                <div className="flex flex-1 flex-wrap justify-start gap-x-5">
+                  <div className="text-center">
+                    <span className="text-blue-500">{modalData.street}</span>
+                    <div className="text-xs text-gray-500">Street</div>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-blue-500">{modalData.barangay}</span>
+                    <div className="text-xs text-gray-500">Barangay</div>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-blue-500">{modalData.city_municipality}</span>
+                    <div className="text-xs text-gray-500">City/Municipality</div>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-blue-500">{modalData.province}</span>
+                    <div className="text-xs text-gray-500">Province</div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <p className="mb-2">
+                <span className="font-semibold">Purpose of Visit:</span>{' '}
+                <span className="text-blue-500">{modalData.purpose}</span>
+              </p>
+              <p className="mb-2">
+                <span className="font-semibold">Organization:</span>{' '}
+                <span className="text-blue-500">{modalData.organization}</span>
+              </p>
+              <p className="mb-2">
+                <span className="font-semibold">Population Count:</span>{' '}
+                <span className="text-blue-500">{modalData.populationCount}</span>
+              </p>
+              <p className="mb-2">
+                <span className="font-semibold">Preferred Date:</span>{' '}
+                <span className="text-blue-500">{modalData.preferredDate}</span>
+              </p>
+              <p className="mb-2">
+                <span className="font-semibold">Preferred Time:</span>{' '}
+                <span className="text-blue-500">{modalData.preferredTime}</span>
+              </p>
+              <p className="mb-2">
+                <span className="font-semibold">Notes:</span>{' '}
+                <span className="text-blue-500">{modalData.notes}</span>
+              </p>
+            </div>
+
+            <hr className="my-4" />
+
+            {/* Approve/Respond Section */}
+            <h3 className="text-lg font-bold mb-2">Respond</h3>
+            <div className="mb-4">
+              <span className="font-semibold mr-2">Approve Visit?</span>
+              <label
+                className={`border px-4 py-1 mr-2 rounded inline-flex items-center cursor-pointer ${approveVisit === 'yes' ? 'bg-green-100 border-green-400' : 'hover:bg-gray-200'
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name="approveVisit"
+                  value="yes"
+                  className="hidden"
+                  checked={approveVisit === 'yes'}
+                  onChange={() => setApproveVisit('yes')}
+                />
+                <span>Yes</span>
+              </label>
+              <label
+                className={`border px-4 py-1 rounded inline-flex items-center cursor-pointer ${approveVisit === 'no' ? 'bg-red-100 border-red-400' : 'hover:bg-gray-200'
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name="approveVisit"
+                  value="no"
+                  className="hidden"
+                  checked={approveVisit === 'no'}
+                  onChange={() => setApproveVisit('no')}
+                />
+                <span>No</span>
+              </label>
+            </div>
+
+            <label className="block mb-2 font-semibold">Leave a message</label>
+            <textarea
+              className="w-full h-24 p-2 border border-gray-400 rounded"
+              defaultValue="The only available date is December 12, 2024"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              This will automatically send to {modalData.email}
+            </p>
+
+            <div className="text-right mt-4">
+              <button
+                className="bg-[#9C7744] text-white px-5 py-2 rounded hover:opacity-90"
+                onClick={handleSend}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
