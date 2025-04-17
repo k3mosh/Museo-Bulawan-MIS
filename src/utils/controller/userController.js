@@ -39,3 +39,34 @@ export const displaySpecificUser = async (req, res) => {
       res.status(500).json({ message: 'Error fetching user.' });
     }
   };
+
+  export const getUserLoginLogs = async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      const user = await User.findOne({
+        where: { id: userId },
+        include: {
+          model: Credential,
+          include: {
+            model: LoginLog,
+            order: [['start', 'DESC']],
+          },
+        },
+      });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found.' });
+      }
+  
+      res.json({
+        userId: user.id,
+        name: `${user.Credential.first_name} ${user.Credential.last_name}`,
+        logs: user.Credential.LoginLogs,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to fetch login logs.' });
+    }
+  };
+  

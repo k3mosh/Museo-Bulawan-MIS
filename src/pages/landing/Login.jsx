@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import { Link, useNavigate, ScrollRestoration } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,6 +9,42 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // ✅ Check token on mount (localStorage or fallback_token cookie)
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const isExpired = decoded.exp < Date.now() / 1000;
+        if (!isExpired) {
+          navigate('/admin/dashboard');
+          return;
+        }
+      } catch (e) {
+        console.warn('Invalid token in localStorage');
+      }
+    }
+
+    // If no valid token in localStorage, check fallback cookie
+    const checkCookieToken = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/auth/verify-cookie', {
+          withCredentials: true,
+        });
+
+        if (res.status === 200 && res.data.token) {
+          localStorage.setItem('token', res.data.token);
+          navigate('/admin/dashboard');
+        }
+      } catch (e) {
+        // fallback token not valid or expired
+      }
+    };
+
+    checkCookieToken();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,12 +55,11 @@ const Login = () => {
       const response = await axios.post(
         'http://localhost:5000/api/auth/login',
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true } // Needed for cookie
       );
 
       if (response.status === 200) {
         localStorage.setItem('token', response.data.token);
-        //document.cookie = `2ken=${ response.data.token}; path=/; max-age=${7 * 24 * 60 * 60}; secure; HttpOnly; SameSite=Strict`;
         navigate('/admin/dashboard');
       }
     } catch (err) {
@@ -35,11 +70,10 @@ const Login = () => {
     }
   };
 
-
   return (
     <div className="w-auto  z mx-auto flex flex-col items-center justify-center pt-7 h-screen min-h-screen bg-[#1C1B19] overflow-hidden">
       <ScrollRestoration />
-      
+
       <div className="text-left w-screen fixed top-10 left-10 overflow-hidden">
         <Link to="/" className="text-white hover:text-blue-300 text-sm font-medium">
           <i className="fa-solid fa-arrow-left"></i> &nbsp;&nbsp; Return to homepage
@@ -102,4 +136,3 @@ const Login = () => {
 };
 
 export default Login;
-

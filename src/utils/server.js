@@ -97,14 +97,14 @@ wss.on('connection', (ws, req) => {
     userConnections.get(userId).add(ws);
 
     ws.on('message', (message) => {
-      console.log(`Received message from user ${userId}:`, message.toString());
+      // console.log(`Received message from user ${userId}:`, message.toString());
       if (message.toString() === 'ping') {
         ws.send('pong');
       }
     });
 
     ws.on('close', () => {
-      console.log(`Connection closed for user ${userId}`);
+      // console.log(`Connection closed for user ${userId}`);
       if (userConnections.has(userId)) {
         userConnections.get(userId).delete(ws);
         if (userConnections.get(userId).size === 0) {
@@ -114,7 +114,7 @@ wss.on('connection', (ws, req) => {
     });
 
     ws.on('error', (error) => {
-      console.error(`WebSocket error for user ${userId}:`, error);
+      // console.error(`WebSocket error for user ${userId}:`, error);
       if (userConnections.has(userId)) {
         userConnections.get(userId).delete(ws);
       }
@@ -129,38 +129,38 @@ wss.on('connection', (ws, req) => {
 });
 
 // Keep existing broadcast functions for compatibility
-export const broadcastUpdate = () => {
-  const message = 'refresh';
-  let totalSent = 0;
+// export const broadcastUpdate = () => {
+//   const message = 'refresh';
+//   let totalSent = 0;
   
-  userConnections.forEach((connections) => {
-    connections.forEach(ws => {
-      if (ws.readyState === ws.OPEN) {
-        ws.send(message);
-        totalSent++;
-      }
-    });
-  });
+//   userConnections.forEach((connections) => {
+//     connections.forEach(ws => {
+//       if (ws.readyState === ws.OPEN) {
+//         ws.send(message);
+//         totalSent++;
+//       }
+//     });
+//   });
   
-  console.log(`Broadcasted update to ${totalSent} connections`);
-};
+//   console.log(`Broadcasted update to ${totalSent} connections`);
+// };
 
-export const broadcastToUser = (userId, message = 'refresh') => {
-  if (!userConnections.has(userId)) {
-    console.log(`No active connections for user ${userId}`);
-    return;
-  }
+// export const broadcastToUser = (userId, message = 'refresh') => {
+//   if (!userConnections.has(userId)) {
+//     console.log(`No active connections for user ${userId}`);
+//     return;
+//   }
 
-  let sentCount = 0;
-  userConnections.get(userId).forEach(ws => {
-    if (ws.readyState === ws.OPEN) {
-      ws.send(message);
-      sentCount++;
-    }
-  });
+//   let sentCount = 0;
+//   userConnections.get(userId).forEach(ws => {
+//     if (ws.readyState === ws.OPEN) {
+//       ws.send(message);
+//       sentCount++;
+//     }
+//   });
   
-  console.log(`Sent update to ${sentCount}/${userConnections.get(userId).size} connections for user ${userId}`);
-};
+//   console.log(`Sent update to ${sentCount}/${userConnections.get(userId).size} connections for user ${userId}`);
+// };
 
 // Express middleware
 app.use(express.json());

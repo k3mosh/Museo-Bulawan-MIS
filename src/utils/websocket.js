@@ -1,5 +1,3 @@
-// websocket.js - Client-side implementation
-
 let socketRef = null;
 let isConnectedRef = { current: false };
 let reconnectAttempts = 0;
@@ -8,13 +6,13 @@ const baseReconnectDelay = 1000;
 
 export const connectWebSocket = (onDataChange, onRefresh) => {
   if (isConnectedRef.current && socketRef) {
-    console.log('WebSocket already connected');
+    // console.log('WebSocket already connected');
     return;
   }
 
   const token = localStorage.getItem('token');
   if (!token) {
-    console.error('No token found, unable to connect to WebSocket');
+    // console.error('No token found, unable to connect to WebSocket');
     return;
   }
 
@@ -37,7 +35,7 @@ export const connectWebSocket = (onDataChange, onRefresh) => {
       const message = JSON.parse(event.data);
       
       if (message.type === 'data-change') {
-        console.log('Data change received:', message);
+        // console.log('Data change received:', message);
         if (typeof onDataChange === 'function') {
           onDataChange(message);
         }
@@ -47,27 +45,27 @@ export const connectWebSocket = (onDataChange, onRefresh) => {
           onRefresh();
         }
       } else if (event.data === 'pong') {
-        console.log('Pong received');
+        // console.log('Pong received');
       }
     } catch (e) {
-      console.log('WebSocket message:', event.data);
+      // console.log('WebSocket message:', event.data);
     }
   };
 
   socket.onerror = (error) => {
-    console.error('WebSocket error:', error);
+    // console.error('WebSocket error:', error);
     isConnectedRef.current = false;
   };
 
   socket.onclose = (event) => {
-    console.log('WebSocket closed:', event.code, event.reason);
+    // console.log('WebSocket closed:', event.code, event.reason);
     isConnectedRef.current = false;
     
     if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
       const delay = baseReconnectDelay * Math.pow(2, reconnectAttempts);
       reconnectAttempts++;
       
-      console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttempts})`);
+      // console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttempts})`);
       setTimeout(() => connectWebSocket(onDataChange, onRefresh), delay);
     }
   };
@@ -81,7 +79,6 @@ export const closeWebSocket = () => {
   }
 };
 
-// Helper for components to ensure single connection
 let connectionPromise = null;
 export const ensureWebSocketConnection = (onDataChange, onRefresh) => {
   if (!connectionPromise) {
