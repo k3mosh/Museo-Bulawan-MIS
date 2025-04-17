@@ -12,7 +12,7 @@ router.post('/logout', logout);
 router.get('/fetchUsers', autoLogout ,displayUsers);
 router.get('/fetchUser/:id', autoLogout, displaySpecificUser);
 router.post('/appointment' , createAppointment);
-router.get('/appointment', getAllAppointments);
+router.get('/appointment', autoLogout ,getAllAppointments);
 
 
 export default router;

@@ -15,25 +15,24 @@ export const createAppointment = async (req, res) => {
       barangay,
       city_municipality,
       street,
-
-      // Appointment fields
       purpose_of_visit,
       population_count,
       preferred_date,
-      preferred_time,  // optional for some purposes
+      preferred_time,
       additional_notes
+      // Removed creation_date since it's not actually used by the front end
     } = req.body;
 
     // 1) Basic visitor checks
     if (!first_name || !last_name || !email) {
       return res.status(400).json({ message: 'Missing required visitor fields.' });
     }
-    // 2) Basic appointment checks (NOT enforcing preferred_time for all)
+    // 2) Basic appointment checks
     if (!purpose_of_visit || !population_count || !preferred_date) {
       return res.status(400).json({ message: 'Missing required appointment info.' });
     }
 
-    // 3) If we want to enforce time only for certain purposes:
+    // 3) Enforce time only for certain purposes
     const timesRequired = ['School Field Trip', 'Workshops or Classes'];
     if (timesRequired.includes(purpose_of_visit) && !preferred_time) {
       return res.status(400).json({
@@ -76,7 +75,8 @@ export const createAppointment = async (req, res) => {
       purpose_of_visit,
       population_count,
       preferred_date,
-      preferred_time,   // can be empty if not required
+      // If no preferred_time from frontend and not required, default to "Flexible"
+      preferred_time: preferred_time || 'Flexible',
       additional_notes
     });
 
@@ -93,6 +93,7 @@ export const createAppointment = async (req, res) => {
   }
 };
 
+
 // New controller to get all appointments
 export const getAllAppointments = async (req, res) => {
   try {
@@ -100,7 +101,7 @@ export const getAllAppointments = async (req, res) => {
       include: [
         {
           model: Visitor,
-          attributes: ['first_name', 'last_name']
+
         }
       ]
     });

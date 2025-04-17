@@ -156,17 +156,13 @@ const Appointment = () => {
     setShowConfirmationModal(true);
   };
 
+  // Inside your Appointment component...
   const handleSubmit = async () => {
     // Close the modal
     setShowConfirmationModal(false);
 
-    // Create the local Philippine time string:
-    const creationDatePH = new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Manila'
-    });
-
-    const finalPreferredTime = selectedTime || 'Flexible';
-
+    // We remove the front-end fallback of `selectedTime || "Flexible"`
+    // because the backend is already handling that by default.
     const payload = {
       first_name: firstName,
       last_name: lastName,
@@ -182,10 +178,9 @@ const Appointment = () => {
       preferred_date: selectedDate
         ? selectedDate.toISOString().split('T')[0]
         : null,
-      preferred_time: finalPreferredTime,
-      additional_notes: additionalNotes,
-      // Add creation date in PH time
-      creation_date: creationDatePH
+      preferred_time: selectedTime,
+      additional_notes: additionalNotes
+      // Removed creation_date since the controller no longer expects it
     };
 
     try {
@@ -194,9 +189,8 @@ const Appointment = () => {
         payload
       );
 
-      // If the server responds with 201 for success
       if (response.status === 201) {
-        // Clear fields
+        // Clear fields after successful submission
         setFirstName('');
         setLastName('');
         setEmail('');
@@ -222,6 +216,8 @@ const Appointment = () => {
       console.error('Request failed:', error);
     }
   };
+
+
 
   return (
     <>
