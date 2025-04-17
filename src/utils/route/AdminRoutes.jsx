@@ -8,12 +8,11 @@ import Artifact from "../../pages/admin/Artifact"
 import Dashboard from "../../pages/admin/Dashboard"
 import Log from "../../pages/admin/Log"
 import User from "../../pages/admin/User"
-import AdminLayout from '../../components/layout/AdminLayout';
 
 const AdminRoutes = [
 
     { index: true, element: <Navigate to='dashboard' replace /> },
-    { path: '*', element: <Dashboard/> },
+    // { path: '*', element: <Dashboard/> },
     { path: 'dashboard', element: <Dashboard /> },
     { path: 'acquisition', element: <Acquisition /> },
     { path: 'appointment', element: <Appointment /> },

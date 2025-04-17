@@ -3,11 +3,11 @@ import bcrypt from 'bcrypt';
 import Credential from '../models/Credential.js';
 import LoginLog from '../models/LoginLogs.js';
 import User from '../models/Users.js'
+import { broadcastUpdate } from '../server.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'hachsinail';
 
 export const login = async (req, res) => {
-  // console.log("Login endpoint hit");
   const { email, password } = req.body;
 
   try {
@@ -16,11 +16,18 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
+    const user = await User.findOne({ where: { credential_id: credential.id } });
+
+    // Check if account is already active
+    if (user && user.status === 'active') {
+      return res.status(403).json({ message: 'Account is already active on another session' });
+    }
+
     const isMatch = await bcrypt.compare(password, credential.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
-    
+
     const existingLog = await LoginLog.findOne({
       where: { credential_id: credential.id, end: null },
     });
@@ -33,9 +40,9 @@ export const login = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ where: { credential_id: credential.id } });
     if (user) {
       await user.update({ status: 'active', modified_date: new Date() });
+      broadcastUpdate();
     }
 
     const payload = {
@@ -49,10 +56,12 @@ export const login = async (req, res) => {
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '4h' });
     return res.status(200).json({ token });
-  } catch {
+  } catch (err) {
+    console.error('Login error:', err);
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 export const logout = async (req, res) => {
@@ -83,6 +92,7 @@ export const logout = async (req, res) => {
     const user = await User.findOne({ where: { credential_id: credential.id } });
     if (user) {
       await user.update({ status: 'inactive', modified_date: new Date() });
+      broadcastUpdate();
     }
 
     return res.status(200).json({ message: 'User logged out successfully' });
@@ -120,6 +130,7 @@ export const autoLogout = async (req, res, next) => {
               const user = await User.findOne({ where: { credential_id: credential.id } });
               if (user) {
                 await user.update({ status: 'inactive', modified_date: new Date() });
+                broadcastUpdate();
               }
             }
           } catch {

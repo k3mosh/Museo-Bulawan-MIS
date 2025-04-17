@@ -23,7 +23,6 @@ const ConfirmationModal = ({ title, description, icon, onClose }) => {
     switch (icon) {
       case 'warning':
         return <i className="fa-solid fa-triangle-exclamation text-3xl text-white"></i>
-
       case 'question':
         return <i className="fa-solid fa-question text-3xl text-white"></i>
       case 'info':
@@ -39,7 +38,8 @@ const ConfirmationModal = ({ title, description, icon, onClose }) => {
   }
 
   return (
-    <div className="w-screen h-screen fixed backdrop-blur-xs z-60 flex items-center justify-center">
+    <>
+    <div className="w-screen h-screen fixed  z-60 flex items-center justify-center">
       <div className="w-[45rem] h-fit bg-[#1C1B19] border border-[#3A3A3A] flex flex-col rounded-sm">
         {/* Header */}
         <div className="w-full min-h-15 bg-[#373737] flex justify-between">
@@ -71,6 +71,7 @@ const ConfirmationModal = ({ title, description, icon, onClose }) => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

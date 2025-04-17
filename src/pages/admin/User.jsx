@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import UserView from '../../components/modals/userView'
-import ConfirmationModal from '../../components/modals/ConfirmationModal'
 import AdminNav from '../../components/navbar/AdminNav'
+import { connectWebSocket, closeWebSocket } from '../../utils/webscoket'
 import axios from 'axios'
 
 const User = () => {
   const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [showUser, setShowUser] = useState(false);
-  
-  
+  const [selectedUserId, setSelectedUserId] = useState(null)
+  const [showUser, setShowUser] = useState(false)
+
 
   const colorMap = {
     A: '#FF6666',
@@ -41,9 +39,9 @@ const User = () => {
     Z: '#33CCCC',
   }
 
-  useEffect(() => {
-    const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token')
 
+  const fetchUsers = () => {
     axios
       .get('http://localhost:5000/api/auth/fetchUsers', {
         headers: {
@@ -52,39 +50,37 @@ const User = () => {
       })
       .then((response) => {
         setUsers(response.data)
-        setLoading(false)
       })
       .catch((error) => {
-        console.error(
-          'Error fetching users:',
-          error.response?.data || error.message
-        )
-        setLoading(false)
+        console.error('Error fetching users:', error.response?.data || error.message)
       })
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="w-full h-full flex justify-center items-center">
-        <span>Loading...</span>
-      </div>
-    )
   }
 
-  // console.log(users);
+
+
+  useEffect(() => {
+    fetchUsers()
+    connectWebSocket(fetchUsers)
+
+    return () => {
+      closeWebSocket()
+    }
+
+  }, [])
+
+
+
   return (
     <>
-      {/* <UserView /> */}
       {/* {showUser && (<UserView userId={selectedUserId} onClose={() => setShowUser(false)}/>)} */}
       {showUser && (
-  <UserView
-    key={selectedUserId}  // This will ensure the component remounts
-    userId={selectedUserId}
-    onClose={() => setShowUser(false)}
-  />
-)}
+        <UserView
+          key={selectedUserId} // This will ensure the component remounts
+          userId={selectedUserId}
+          onClose={() => setShowUser(false)}
+        />
+      )}
 
-      {/* <ConfirmationModal/> */}
 
       <div className="w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]">
         <div className="bg-[#1C1B19] w-auto min-h-full h-full min-w-[6rem] sm:min-w-auto">
@@ -114,23 +110,32 @@ const User = () => {
                   const fullName = `${user.Credential.first_name} ${user.Credential.last_name}`
                   const email = user.Credential.email
                   const status = user.status
-                  const role = user.Credential.role.charAt(0).toUpperCase() + user.Credential.role.slice(1).toLowerCase();
+                  const role =
+                    user.Credential.role.charAt(0).toUpperCase() +
+                    user.Credential.role.slice(1).toLowerCase()
                   const initials = `${user.Credential.first_name.charAt(
                     0
                   )}${user.Credential.last_name.charAt(0)}`
                   const firstInitial = initials.charAt(0)
                   const bgColor = colorMap[firstInitial] || '#FFFFFF'
 
-                  const handleUserClick = (id) => {
-                    setSelectedUserId(id);
-                    setShowUser(true);
-                  };
-                  
+                  const viewUpdate = (id) => {
+                    
+                    setSelectedUserId(id)
+                    setShowUser(true)
+                  }
 
                   return (
-                    <div key={user._id} onClick={() => handleUserClick(id)} className="hover:bg-gray-800 cursor-pointer w-full h-[5rem] flex justify-between px-4 sm:pl-20 sm:pr-10 border-b-1 border-[#373737]">
+                    <div
+                      key={user.Credential.id}
+                      onClick={() => viewUpdate(id)}
+                      className="hover:bg-gray-800 cursor-pointer w-full h-[5rem] flex justify-between px-4 sm:pl-20 sm:pr-10 border-b-1 border-[#373737]"
+                    >
                       <div className="w-fit h-full flex gap-x-2 sm:gap-x-7 items-center">
-                        <div className="w-[3rem] h-[3rem] rounded-full flex items-center justify-center" style={{backgroundColor: bgColor,}}>
+                        <div
+                          className="w-[3rem] h-[3rem] rounded-full flex items-center justify-center"
+                          style={{ backgroundColor: bgColor }}
+                        >
                           <span className="text-2xl font-semibold">
                             {initials}
                           </span>
@@ -143,12 +148,16 @@ const User = () => {
                             {email}
                           </span>
                         </div>
-                        <div className={`w-6 h-6 rounded-full ${status === 'active' ? 'bg-green-600' : 'bg-amber-50'}`}></div>
+                        <div
+                          className={`w-6 h-6 rounded-full ${
+                            status === 'active' ? 'bg-green-600' : 'bg-amber-50'
+                          }`}
+                        ></div>
                       </div>
                       <div className="w-fit gap-x-3 h-full flex items-center">
-                        <div className='w-25 h-full flex items-center justify-center'>
+                        <div className="w-25 h-full flex items-center justify-center">
                           <span className="text-xl text-white font-semibold w-full text-center py-2 rounded border bg-[#3A3A3A] border-[#A6A6A6]">
-                          {role}
+                            {role}
                           </span>
                         </div>
                         <i className="fa-solid fa-trash text-xl sm:text-3xl cursor-pointer text-[#999999]"></i>

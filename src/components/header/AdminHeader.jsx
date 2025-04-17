@@ -2,6 +2,7 @@ import React from 'react'
 
 const AdminHeader = () => {
   return (
+    <>
         <header className="bg-[#1C1B19] w-screen fixed z-50 text-white h-[7rem] flex-row justify-center items-center drop-shadow-xl shadow-gray-900/50 py-3">
           <div className="flex justify-center items-center h-full w-full">
               <div className="h-12 w-full flex justify-between items-center px-3 px-9">
@@ -30,6 +31,7 @@ const AdminHeader = () => {
           </div>
           <h1 className="bg-white h-[1px] mx-9"></h1>
       </header>
+    </>
   )
 }
 
