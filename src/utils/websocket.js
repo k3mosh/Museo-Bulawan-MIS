@@ -1,4 +1,4 @@
-// websocket.js - Client-side improvements
+// websocket.js - Client-side implementation
 
 let socketRef = null;
 let isConnectedRef = { current: false };
@@ -6,7 +6,7 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 const baseReconnectDelay = 1000;
 
-export const connectWebSocket = (onRefreshCallback) => {
+export const connectWebSocket = (onDataChange, onRefresh) => {
   if (isConnectedRef.current && socketRef) {
     console.log('WebSocket already connected');
     return;
@@ -18,7 +18,6 @@ export const connectWebSocket = (onRefreshCallback) => {
     return;
   }
 
-  // Close existing connection if any
   if (socketRef) {
     socketRef.close();
   }
@@ -30,13 +29,28 @@ export const connectWebSocket = (onRefreshCallback) => {
     isConnectedRef.current = true;
     reconnectAttempts = 0;
     socketRef = socket;
-    socket.send('ping'); // Initial ping
+    socket.send('ping');
   };
 
   socket.onmessage = (event) => {
-    console.log('WebSocket message received:', event.data);
-    if (event.data === 'refresh' && typeof onRefreshCallback === 'function') {
-      onRefreshCallback();
+    try {
+      const message = JSON.parse(event.data);
+      
+      if (message.type === 'data-change') {
+        console.log('Data change received:', message);
+        if (typeof onDataChange === 'function') {
+          onDataChange(message);
+        }
+      } else if (event.data === 'refresh') {
+        console.log('Refresh command received');
+        if (typeof onRefresh === 'function') {
+          onRefresh();
+        }
+      } else if (event.data === 'pong') {
+        console.log('Pong received');
+      }
+    } catch (e) {
+      console.log('WebSocket message:', event.data);
     }
   };
 
@@ -54,7 +68,7 @@ export const connectWebSocket = (onRefreshCallback) => {
       reconnectAttempts++;
       
       console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttempts})`);
-      setTimeout(() => connectWebSocket(onRefreshCallback), delay);
+      setTimeout(() => connectWebSocket(onDataChange, onRefresh), delay);
     }
   };
 };
@@ -67,13 +81,13 @@ export const closeWebSocket = () => {
   }
 };
 
-// Ensure single connection per client
+// Helper for components to ensure single connection
 let connectionPromise = null;
-export const ensureWebSocketConnection = (onRefreshCallback) => {
+export const ensureWebSocketConnection = (onDataChange, onRefresh) => {
   if (!connectionPromise) {
     connectionPromise = new Promise((resolve) => {
-      connectWebSocket(() => {
-        onRefreshCallback();
+      connectWebSocket(onDataChange, () => {
+        if (onRefresh) onRefresh();
         resolve();
       });
     }).finally(() => {

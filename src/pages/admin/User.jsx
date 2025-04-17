@@ -59,14 +59,23 @@ const User = () => {
 
 
   useEffect(() => {
-    fetchUsers()
-    connectWebSocket(fetchUsers)
-
+    fetchUsers();
+    const handleDataChange = () => {
+      console.log('WebSocket: Data changed, refreshing users...');
+      fetchUsers(); // Re-fetch updated user list
+    };
+  
+    const handleRefresh = () => {
+      console.log('WebSocket: Refresh command received, refreshing component...');
+      fetchUsers(); // This could be replaced with another logic if needed
+    };
+  
+    connectWebSocket(handleDataChange, handleRefresh);
+  
     return () => {
-      closeWebSocket()
-    }
-
-  }, [])
+      closeWebSocket(); // Clean up when component unmounts
+    };
+  }, []);
 
 
 
