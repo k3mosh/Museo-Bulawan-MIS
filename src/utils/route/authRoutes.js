@@ -1,6 +1,6 @@
 import express from 'express';
 import { login, logout, autoLogout  } from '../controller/authController.js';
-import { displayUsers, displaySpecificUser } from '../controller/userController.js';
+import { displayUsers, displaySpecificUser, getUserLoginLogs } from '../controller/userController.js';
 import { createAppointment, getAllAppointments } from '../controller/appointmentController.js';
 
 
@@ -11,6 +11,8 @@ router.post('/logout', logout);
 
 router.get('/fetchUsers', autoLogout ,displayUsers);
 router.get('/fetchUser/:id', autoLogout, displaySpecificUser);
+router.get('/login-logs/:userId',autoLogout , getUserLoginLogs);
+
 router.post('/appointment' , createAppointment);
 router.get('/appointment', getAllAppointments);
 

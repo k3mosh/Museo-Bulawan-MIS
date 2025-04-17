@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database.js';
+import LoginLog from '../models/LoginLogs.js'
 
 const Credential = sequelize.define('Credential', {
   id: {
@@ -51,5 +52,8 @@ const Credential = sequelize.define('Credential', {
   tableName: 'credentials',
   timestamps: false,
 });
+
+Credential.hasMany(LoginLog, { foreignKey: 'credential_id' });
+LoginLog.belongsTo(Credential, { foreignKey: 'credential_id' });
 
 export default Credential;

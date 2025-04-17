@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import Credential from '../models/Credential.js';
 import LoginLog from '../models/LoginLogs.js';
 import User from '../models/Users.js'
-import { broadcastUpdate, broadcastToUser } from '../server.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'hachsinail';
 
@@ -42,9 +41,7 @@ export const login = async (req, res) => {
 
     if (user) {
       await user.update({ status: 'active', modified_date: new Date() });
-      broadcastToUser(credential.id);
-  // Then general broadcast if needed
-      setTimeout(() => broadcastUpdate(), 100);
+
     }
 
     const payload = {
@@ -94,9 +91,7 @@ export const logout = async (req, res) => {
     const user = await User.findOne({ where: { credential_id: credential.id } });
     if (user) {
       await user.update({ status: 'inactive', modified_date: new Date() });
-      broadcastToUser(credential.id);
-  // Then general broadcast if needed
-    setTimeout(() => broadcastUpdate(), 100);
+
     }
 
     return res.status(200).json({ message: 'User logged out successfully' });
@@ -134,9 +129,7 @@ export const autoLogout = async (req, res, next) => {
               const user = await User.findOne({ where: { credential_id: credential.id } });
               if (user) {
                 await user.update({ status: 'inactive', modified_date: new Date() });
-                broadcastToUser(credential.id);
-                // Then general broadcast if needed
-                setTimeout(() => broadcastUpdate(), 100);
+
               }
             }
           } catch {
