@@ -19,29 +19,33 @@ const AdminNav = () => {
       }
     };
 
-  const handleLogout = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found');
-      navigate('/login');
-      return;
-    }
-
-    try {
-      await axios.post(
-        'http://localhost:5000/api/auth/logout',
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-    } catch (error) {
-      console.error('Logout error:', error.response ? error.response.data : error.message);
-    } finally {
-      localStorage.clear();  // Clears all localStorage items in one go.
-      navigate('/login');
-    }
-  };
+    const handleLogout = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        navigate('/login');
+        return;
+      }
+    
+      try {
+        document.cookie = 'fallback_token=; Max-Age=0; path=/; domain=' + window.location.hostname;
+    
+        await axios.post(
+          'http://localhost:5000/api/auth/logout',
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true, // Include credentials (cookies)
+          }
+        );
+      } catch (error) {
+        console.error('Logout error:', error.response ? error.response.data : error.message);
+      } finally {
+        localStorage.clear();  // Clears all localStorage items in one go.
+        navigate('/login');
+      }
+    };
+    
 
   const token = localStorage.getItem('token');
   let role = 'unknown', first_name = 'unknown', last_name = 'unknown', position = 'unknown';

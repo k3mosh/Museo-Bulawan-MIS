@@ -82,6 +82,8 @@ const Appointment = () => {
     setShowModal(false)
   }
 
+  // console.log(appointments);
+
   return (
     <>
       <div className='w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]'>

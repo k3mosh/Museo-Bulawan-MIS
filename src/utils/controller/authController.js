@@ -41,7 +41,6 @@ export const login = async (req, res) => {
 
     if (user) {
       await user.update({ status: 'active', modified_date: new Date() });
-
     }
 
     const payload = {
@@ -54,6 +53,15 @@ export const login = async (req, res) => {
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '4h' });
+
+    // ✅ Add fallback token as cookie here
+    res.cookie('fallback_token', token, {
+      httpOnly: true,
+      secure: true, // set to false if testing locally without HTTPS
+      sameSite: 'Strict',
+      maxAge: 4 * 60 * 60 * 1000 // 4 hours in ms
+    });
+
     return res.status(200).json({ token });
   } catch (err) {
     console.error('Login error:', err);
@@ -63,6 +71,7 @@ export const login = async (req, res) => {
 
 
 
+// logout controller in backend (logout.js)
 export const logout = async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
@@ -87,18 +96,25 @@ export const logout = async (req, res) => {
       await loginLog.update({ end: new Date() });
     }
 
-    // Set user status to inactive
     const user = await User.findOne({ where: { credential_id: credential.id } });
     if (user) {
       await user.update({ status: 'inactive', modified_date: new Date() });
-
     }
 
+    // ✅ Properly clear fallback_token cookie
+    res.clearCookie('fallback_token', {
+      httpOnly: true,
+      sameSite: 'Strict',
+      secure: process.env.NODE_ENV === 'production', // set to false for local dev
+    });
+
     return res.status(200).json({ message: 'User logged out successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Logout error:', err);
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 export const autoLogout = async (req, res, next) => {
@@ -125,24 +141,58 @@ export const autoLogout = async (req, res, next) => {
                 await loginLog.update({ end: new Date() });
               }
 
-              // Set user status to inactive
               const user = await User.findOne({ where: { credential_id: credential.id } });
               if (user) {
                 await user.update({ status: 'inactive', modified_date: new Date() });
-
               }
             }
           } catch {
-            // Optionally log the error for debugging
+            // Optional: log error
           }
         }
+
+        // ✅ Clear fallback token cookie
+        res.clearCookie('fallback_token', {
+          httpOnly: true,
+          sameSite: 'Strict',
+          secure: true, // false if you're testing locally without HTTPS
+        });
+
         return res.status(401).json({ message: 'Session expired, you have been logged out automatically.' });
-      } else {
-        return res.status(401).json({ message: 'Unauthorized' });
       }
+
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
     req.user = decoded;
     next();
   });
+};
+
+
+
+export const refreshToken = async (req, res) => {
+  const token = req.cookies.fallback_token;
+  if (!token) return res.status(401).json({ message: 'No fallback token found' });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return res.status(200).json({ token });
+  } catch {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
+};
+
+
+export const verifyCookie = (req, res) => {
+  const token = req.cookies.fallback_token;
+
+  if (!token) return res.status(401).json({ message: 'No cookie token found' });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    res.status(200).json({ token });
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid or expired cookie token' });
+  }
 };

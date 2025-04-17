@@ -1,62 +1,61 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import AdminLayout from '../../components/layout/AdminLayout'; 
+import axios from 'axios';
 
 const PrivateRoute = () => {
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-
-  let decoded;
-  try {
-    decoded = jwtDecode(token);
-  } catch (error) {
-    console.error("Invalid token, logging out...");
-    handleLogout();
-    return <Navigate to="/login" replace />;
-  }
-
-  const currentTime = Date.now() / 1000;
-
-  if (decoded.exp < currentTime) {
-    console.warn("Token expired, logging out...");
-    handleLogout();
-    return <Navigate to="/login" replace />;
-  }
+  const [loading, setLoading] = useState(true);
+  const [valid, setValid] = useState(false);
 
   useEffect(() => {
-    const checkTokenExpiration = () => {
-      const updatedToken = localStorage.getItem('token');
+    const checkAuth = async () => {
+      let token = localStorage.getItem('token');
+      let decoded;
 
-      if (!updatedToken) {
-        console.warn("Token removed, logging out...");
-        handleLogout();
-        return;
+      if (!token) {
+        // Try to get token from cookie
+        try {
+          const res = await axios.get('http://localhost:5000/api/auth/refresh-token', {
+            withCredentials: true
+          });
+
+          token = res.data.token;
+          localStorage.setItem('token', token);
+        } catch (err) {
+          return handleLogout();
+        }
       }
 
-      let updatedDecoded;
       try {
-        updatedDecoded = jwtDecode(updatedToken);
-      } catch (error) {
-        console.error("Invalid token after update, logging out...");
-        handleLogout();
-        return;
+        decoded = jwtDecode(token);
+      } catch (err) {
+        console.error("Invalid token, logging out...");
+        return handleLogout();
       }
 
-      if (updatedDecoded.exp < Date.now() / 1000) {
-        console.warn("Token expired after update, logging out...");
-        handleLogout();
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp < currentTime) {
+        console.warn("Token expired, logging out...");
+        return handleLogout();
       }
+
+      // Setup auto-expiry check
+      const timeLeft = decoded.exp * 1000 - Date.now();
+      setTimeout(() => {
+        console.warn("Token expired (timeout), logging out...");
+        handleLogout();
+      }, timeLeft);
+
+      setValid(true);
+      setLoading(false);
     };
 
-    const timeLeft = decoded.exp * 1000 - Date.now();
-    const timer = setTimeout(checkTokenExpiration, timeLeft);
+    checkAuth();
+  }, []);
 
-    return () => clearTimeout(timer);
-  }, [decoded.exp]);
+  if (loading) return null;
+  if (!valid) return <Navigate to="/login" replace />;
 
   return (
     <AdminLayout>
@@ -68,7 +67,7 @@ const PrivateRoute = () => {
 const handleLogout = async () => {
   try {
     const token = localStorage.getItem('token');
-    localStorage.removeItem('token'); // Remove token first
+    localStorage.removeItem('token');
 
     if (token) {
       await fetch('http://localhost:3000/api/auth/logout', {
@@ -77,6 +76,7 @@ const handleLogout = async () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
+        credentials: 'include'
       });
     }
   } catch (error) {
