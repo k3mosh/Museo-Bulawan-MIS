@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import UserView from '../../components/modals/userView'
 import AdminNav from '../../components/navbar/AdminNav'
-import { connectWebSocket, closeWebSocket } from '../../utils/webscoket'
+import { connectWebSocket, closeWebSocket } from '../../utils/websocket'
 import axios from 'axios'
 
 const User = () => {
