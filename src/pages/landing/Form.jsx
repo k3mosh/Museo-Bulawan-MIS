@@ -157,9 +157,9 @@ const Form = () => {
 
           {/* Form Sections */}
           <div>
-            <div className="px-6 p-3 bg-white rounded-md shadow-lg mt-3 mb-5 " >
+            <div className="px-6 p-3 bg-white rounded-md shadow-lg mt-3 mb-5 py-8" >
                 <span className='text-4xl'>Tell Us About Yourself.</span>
-                    <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 mt-6">
                         <label className="md:col-span-3 text-lg md:text-xl font-bold">
                         Name <span className="text-red-500">*</span>
                         </label>
@@ -167,7 +167,7 @@ const Form = () => {
                         type="text"
                         placeholder="First Name"
                         required
-                        className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
+                        className="md:col-span-5 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
                         />
                         <input
                         type="text"
@@ -296,10 +296,10 @@ const Form = () => {
 
             {/* Extra div for Lending Form */}
                 {formType === "lending" && (
-                    <div className="p-3 bg-white rounded-md shadow-lg">
+                    <div className="p-3 bg-white rounded-md shadow-lg py-8">
                         <span className="text-3xl font-semibold mb-8">Lending Details</span>
                         <div>
-                            <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
+                            <div className="grid md:grid-cols-12 items-center gap-4 mt-6 ">
                                 <label htmlFor="loanDuration" className="col-span-3 text-xl font-bold">
                                     Proposed duration of the loan? <span className="text-red-500">*</span>
                                 </label>
@@ -373,7 +373,7 @@ const Form = () => {
                 )}
 
 
-            <div className="p-3 bg-white rounded-md shadow-lg mt-3">
+            <div className="p-3 bg-white rounded-md shadow-lg mt-3 py-6 pb-10">
                 
         {/* Section Title */}
         <h3 className="text-3xl font-semibold mb-8">About the Artifact</h3>
