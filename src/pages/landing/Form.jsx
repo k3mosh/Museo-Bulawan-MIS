@@ -322,26 +322,31 @@ const Form = () => {
               </select>
             </div>
 
-          {/* Form Sections */}
-          <div>
-            <div className="px-6 p-3 bg-white rounded-md shadow-lg mt-3 mb-5 " >
-                <span className='text-4xl'>Tell Us About Yourself.</span>
-                    <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4">
-                        <label className="md:col-span-3 text-lg md:text-xl font-bold">
-                        Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                        type="text"
-                        placeholder="First Name"
-                        required
-                        className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
-                        />
-                        <input
-                        type="text"
-                        placeholder="Last Name"
-                        required
-                        className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
-                        />
+            {/* The Main Form */}
+            <form onSubmit={handleOpenConfirmation} className="mt-6 space-y-6">
+              {/* Donator Info */}
+              <div className="px-6 p-3 bg-white rounded-md shadow-lg mt-3 mb-5">
+                <span className="text-4xl">Tell Us About Yourself</span>
+                <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-4 mt-4">
+                  <label className="md:col-span-3 text-lg md:text-xl font-bold">
+                    Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    required
+                    value={firstName}
+                    onChange={handleFirstNameChange}
+                    className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    required
+                    value={lastName}
+                    onChange={handleLastNameChange}
+                    className="md:col-span-4 px-4 py-3 border-2 border-black rounded-2xl placeholder-gray-500 text-base md:text-lg"
+                  />
                 </div>
 
                 {/* Age and Sex */}
@@ -481,32 +486,31 @@ const Form = () => {
                 </div>
               </div>
 
-                
-            </div>
-
-            {/* Extra div for Lending Form */}
-                {formType === "lending" && (
-                    <div className="p-3 bg-white rounded-md shadow-lg">
-                        <span className="text-3xl font-semibold mb-8">Lending Details</span>
-                        <div>
-                            <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
-                                <label htmlFor="loanDuration" className="col-span-3 text-xl font-bold">
-                                    Proposed duration of the loan? <span className="text-red-500">*</span>
-                                </label>
-                                <div className="col-span-9">
-                                    <input 
-                                        type="text" 
-                                        id="loanDuration" 
-                                        name="loanDuration" 
-                                        placeholder="Enter duration" 
-                                        required
-                                        className="w-full px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                                    />
-                                    <p className="text-gray-500 text-sm mt-2">
-                                        Specific duration (e.g., 5 years), Month yyyy - Month dd, yyyy
-                                    </p>
-                                </div>
-                            </div>
+              {/* Lending-specific Fields */}
+              {formType === 'lending' && (
+                <div className="p-3 bg-white rounded-md shadow-lg">
+                  <span className="text-3xl font-semibold mb-8">Lending Details</span>
+                  <div>
+                    <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
+                      <label htmlFor="loanDuration" className="col-span-3 text-xl font-bold">
+                        Proposed duration of the loan? <span className="text-red-500">*</span>
+                      </label>
+                      <div className="col-span-9">
+                        <input
+                          type="text"
+                          id="loanDuration"
+                          name="loanDuration"
+                          placeholder="Enter duration"
+                          required
+                          value={durationPeriod}
+                          onChange={(e) => setDurationPeriod(e.target.value)}
+                          className="w-full px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                        />
+                        <p className="text-gray-500 text-sm mt-2">
+                          Enter something like: "3 years," or "May 2025 - May 2030"
+                        </p>
+                      </div>
+                    </div>
 
                     <div className="grid md:grid-cols-12 items-center gap-4 mt-6">
                       <label htmlFor="condition" className="col-span-3 text-xl font-bold">
@@ -565,11 +569,9 @@ const Form = () => {
                 </div>
               )}
 
-
-            <div className="p-3 bg-white rounded-md shadow-lg mt-3">
-                
-        {/* Section Title */}
-        <h3 className="text-3xl font-semibold mb-8">About the Artifact</h3>
+              {/* Artifact Details */}
+              <div className="p-3 bg-white rounded-md shadow-lg mt-3">
+                <h3 className="text-3xl font-semibold mb-8">About the Artifact</h3>
 
                 {/* Artifact Name */}
                 <div className="grid md:grid-cols-12 items-center gap-4 mb-6">
