@@ -1,4 +1,3 @@
-// cronCleanup.js
 import cron from 'node-cron';
 import { Op } from 'sequelize';
 import LoginLog from './models/LoginLogs.js';

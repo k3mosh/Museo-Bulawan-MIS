@@ -9,17 +9,24 @@ import jwt from 'jsonwebtoken';
 import User from './models/Users.js'; 
 import Credential from './models/Credential.js';
 import Appointment from './models/Appointment.js';
+import Invitation from './models/Invitation.js';
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
 
 const JWT_SECRET = process.env.JWT_SECRET || 'hachsinail';
 
 const userConnections = new Map();
 
 const setupModelHooks = () => {
-  const models = [User, Credential, Appointment];
+  const models = [User, Credential, Appointment, Invitation];
   
   models.forEach(model => {
     model.addHook('afterCreate', (instance, options) => {
@@ -130,6 +137,7 @@ app.use(cors({
   origin: 'http://localhost:5173', 
   credentials: true,
 }));
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);

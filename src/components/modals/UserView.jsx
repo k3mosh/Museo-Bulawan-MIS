@@ -49,7 +49,7 @@ const UserView = ({ userId, onClose }) => {
     fetchUsers()
   }, [userId])
 
-  console.log(loginLogs);
+  // console.log(loginLogs);
   const formatLogs = () => {
     if (!loginLogs.length) return []
   
