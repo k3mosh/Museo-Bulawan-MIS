@@ -3,13 +3,21 @@ import { NavLink } from 'react-router-dom'
 import LandingNav from '../../components/navbar/LandingNav'
 import { ScrollRestoration } from 'react-router-dom'
 
+import bgImage1 from '../../../src/assets/06-AfternoonMealOfTheWorker 1.png';
+import bgImage2 from '../../../src/assets/bghome2.png';
+import img1 from '../../../src/assets/nae_img_1.png';
+import img2 from '../../../src/assets/nae_img_2.png';
+import img3 from '../../../src/assets/nae_img_3.png';
+import img4 from '../../../src/assets/nae_img_4.png';
+import bgImage3 from '../../../src/assets/img_1.png';
+
 const Home = () => {
   return (
 
     <>
       <ScrollRestoration />
 
-      <div className='bg-cover bg-center bg-no-repeat  min-h-[79rem] h-screen w-screen pt-7' style={{ backgroundImage: "url('/src/assets/06-AfternoonMealOfTheWorker 1.png')" }}>
+      <div className='bg-cover bg-center bg-no-repeat  min-h-[79rem] h-screen w-screen pt-7' style={{ backgroundImage: `url(${bgImage1})` }}>
         <div className='min-h-[10%] w-screen'>
           <LandingNav />
         </div>
@@ -139,7 +147,7 @@ const Home = () => {
 
       </div>
 
-      <div id='learn_more' className='w-screen h-screen min-h-[79rem] bg-no-repeat bg-cover bg-center'  style={{ backgroundImage: "url('./src/assets/bghome2.png')" }}>
+      <div id='learn_more' className='w-screen h-screen min-h-[79rem] bg-no-repeat bg-cover bg-center'  style={{ backgroundImage: `url(${bgImage2})` }}>
           <div className='h-full w-full py-34'>
             <div className='h-full w-full flex flex-col xl:pl-30 xl:py-12 '>
               <div className='flex items-center gap-2 px-4'> <h1 className='w-10 h-0.5 bg-[#63635C]'></h1><span className='text-2xl text-[#63635C]'> About Museo Bulawan</span></div>
@@ -189,7 +197,7 @@ const Home = () => {
                             <div className='w-2/5 h-full'>
                               <div className='w-full h-full'>
                                 <img
-                                  src="./src/assets/nae_img_1.png"
+                                  src={img1}
                                   alt=""
                                   className="w-full h-full object-contain"
                                 />
@@ -218,7 +226,7 @@ const Home = () => {
                             <div className='w-2/5 h-full'>
                               <div className='w-full h-full'>
                                 <img
-                                  src="./src/assets/nae_img_2.png"
+                                  src={img2}
                                   alt=""
                                   className="w-full h-full object-contain"
                                 />
@@ -249,7 +257,7 @@ const Home = () => {
                             <div className='w-2/5 h-full'>
                               <div className='w-full h-full'>
                                 <img
-                                  src="./src/assets/nae_img_3.png"
+                                  src={img3}
                                   alt=""
                                   className="w-full h-full object-contain"
                                 />
@@ -278,7 +286,7 @@ const Home = () => {
                             <div className='w-2/5 h-full'>
                               <div className='w-full h-full'>
                                 <img
-                                  src="./src/assets/nae_img_4.png"
+                                  src={img4}
                                   alt=""
                                   className="w-full h-full object-contain"
                                 />
@@ -313,7 +321,7 @@ const Home = () => {
             <div className='w-full h-full flex flex-col'>
 
               <div className='w-full h-1/2 py-3 px-20 flex flex-col gap-6 xl:flex-row '>
-                  <div className='w-full h-1/2 xl:h-full bg-no-repeat bg-cover bg-center p-5' style={{ backgroundImage: "url('./src/assets/img_1.png')" }}>
+                  <div className='w-full h-1/2 xl:h-full bg-no-repeat bg-cover bg-center p-5' style={{ backgroundImage: `url(${bgImage3})` }}>
                       <div className='w-full h-full  outline-2 outline-white'></div>
                   </div>
                   <div className='w-full h-1/2 xl:h-full xl:flex xl:items-end'>
