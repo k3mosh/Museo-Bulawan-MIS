@@ -149,6 +149,9 @@ const User = () => {
     setShowUser(true);
   };
 
+
+  console.log(users)
+
   return (
     <>
       {showUser && (

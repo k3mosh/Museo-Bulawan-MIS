@@ -1,12 +1,77 @@
 import React, { useState } from 'react'
 import AdminNav from '../../components/navbar/AdminNav'
-// 1) Import your CustomDatePicker component
+import axios from "axios";
 import CustomDatePicker from '../../components/function/CustomDatePicker'
 
-const Article = () => {
-  // 2) Set up a state for the selected date
-  const [selectedDate, setSelectedDate] = useState(new Date())
 
+export default function ArticleForm() {
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [author, setAuthor] = useState("");
+  const [address, setAddress] = useState("");
+  // const [coverImage, setCoverImage] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("")
+
+;
+  const [showModal, setShowModal] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("article_category", category);
+    formData.append("description", description);
+    formData.append("user_id", 1); // hardcoded user ID for now
+    formData.append("author", author);
+    formData.append("address", address);
+    formData.append("selectedDate", selectedDate);
+    
+    // if (coverImage) formData.append("cover_image", coverImage);
+
+    console.log("Form Data:", {
+      title,
+      category,
+      description,
+      user_id: 1,
+      author,
+      address,
+      selectedDate,
+      // coverImage,
+      
+    });
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/article", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+
+      alert("Article submitted!");
+      setTitle("");
+      setCategory("");
+      setDescription("");
+      setAuthor("");
+      setAddress("");
+      setSelectedDate("");
+      // setCoverImage(null);
+      setShowModal(false);
+    } catch (error) {
+      if (error.response?.data?.message) {
+        alert("Error: " + error.response.data.message);
+      } else {
+        alert("Error submitting article.");
+      }
+      console.error(error);
+    }
+  };
+  
+  
+  
+  
   return (
     <>
       <div className='w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]'>
@@ -49,12 +114,15 @@ const Article = () => {
                     </div>
                   </div>
 
-                  <button className="cursor-pointer flex items-center justify-between w-full px-6 py-4 bg-[#6BFFD5] text-black font-medium">
-                    <span className='text-2xl font-semibold'>Add New Article</span>
-                    <span className="border-2 border-black rounded-full p-2 flex items-center justify-center">
-                      <i className="fas fa-plus text-xl"></i>
-                    </span>
-                  </button>
+                  <button
+                      onClick={() => setShowModal(true)}
+                      className="cursor-pointer flex items-center justify-between w-full px-6 py-4 bg-[#6BFFD5] text-black font-medium"
+                    >
+                      <span className='text-2xl font-semibold'>Add New Article</span>
+                      <span className="border-2 border-black rounded-full p-2 flex items-center justify-center">
+                        <i className="fas fa-plus text-xl"></i>
+                      </span>
+                    </button>
                 </div>
               </div>
             </div>
@@ -105,23 +173,21 @@ const Article = () => {
                 </div>
               </div>
 
-              <div className='min-w-[94rem] w-full font-semibold h-fit grid grid-cols-6 justify-between'>
+              <div className='min-w-[160rem] w-full font-semibold h-fit grid grid-cols-6 justify-between'>
                 {/* table headers */}
                 <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Date</span>
                 </div>
                 <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Visitor Name</span>
+                  <span>Title</span>
                 </div>
                 <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Title</span>
+                  <span>Author</span>
                 </div>
                 <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
                   <span>Status</span>
                 </div>
-                <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 cols-span-1'>
-                  <span>Transfer Status</span>
-                </div>
+                
                 <div className='text-[#727272] justify-between flex text-2xl border-l-1 pl-3 cols-span-1'>
                   <span className='my-2'>Updated</span>
                   <div className='text-[#727272] text-2xl border-l-1 px-3 py-2 w-[7rem] cols-span-1'>
@@ -130,24 +196,22 @@ const Article = () => {
                 </div>
               </div>
 
-              <div className='w-full min-w-[94rem] h-auto flex flex-col border-t-1 border-t-gray-400'>
+              <div className='w-full min-w-[160rem] h-auto flex flex-col border-t-1 border-t-gray-400'>
                 {/* table data rows */}
                 <div className='min-w-[94rem] text-xl h-fit font-semibold grid grid-cols-6 justify-between cursor-pointer hover:bg-gray-300'>
                   <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 cols-span-1'>
                     <span>02-19-2024</span>
                   </div>
                   <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 cols-span-1'>
-                    <span>Olivia Harper</span>
-                  </div>
-                  <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 cols-span-1'>
                     <span>Perlas ng silanganan</span>
                   </div>
-                  <div className='px-4 py-4 border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
+                  <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400 cols-span-1'>
+                    <span>Olivia Harper</span>
                   </div>
                   <div className='px-4 py-4 border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Accepted</span>
+                    <span className='text-white bg-[#9C7744] border-1 border-black rounded-md px-15 py-1'>Posted</span>
                   </div>
+                  
                   <div className='pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
                     <span className='w-full truncate'>02-19-2024</span>
                     <div className='min-w-[7rem] flex gap-x-2 pl-3 items-center'>
@@ -162,9 +226,92 @@ const Article = () => {
             </div>
           </div>
         </div>
+        {showModal && (
+        <div className="fixed inset-0 z-50 backdrop-blur-sm bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white w-[40rem] p-6 rounded-lg shadow-xl relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-2xl text-gray-600 hover:text-black"
+            >
+              &times;
+            </button>
+            <h2 className="text-3xl font-bold mb-6">Add New Article</h2>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-4">
+        <input
+          type="text"
+          placeholder="Title"
+          className="border-2 border-gray-300 px-4 py-2 rounded text-xl"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Author"
+            className="border-2 border-gray-300 px-4 py-2 rounded text-xl"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+          />
+          <input
+            type="date"
+            className="border-2 border-gray-300 px-4 py-2 rounded text-xl"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Address"
+            className="border-2 border-gray-300 px-4 py-2 rounded text-xl"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+          <select
+            className="border-2 border-gray-300 px-4 py-2 rounded text-xl"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+          >
+            <option value="" disabled>Select Category</option>
+            <option value="education">Education</option>
+            <option value="exhibition">Exhibition</option>
+            <option value="contest">Contest</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+
+        {/* <input
+          type="file"
+          accept="image/*"
+          className="border-2 border-gray-300 px-4 py-2 rounded text-xl"
+          onChange={(e) => setCoverImage(e.target.files[0])}
+        /> */}
+
+        <textarea
+          placeholder="Description"
+          rows={4}
+          className="border-2 border-gray-300 px-4 py-2 rounded text-xl"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
+        <button
+          type="submit"
+          className="mt-4 bg-[#6BFFD5] px-6 py-2 text-xl font-semibold text-black rounded hover:bg-[#5deac2]"
+        >
+          Submit Article
+        </button>
+      </form>
+
+          </div>
+        </div>
+      )}
+
       </div>
     </>
   )
 }
 
-export default Article
