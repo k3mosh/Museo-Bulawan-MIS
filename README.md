@@ -34,6 +34,10 @@ The Museo Bulawan Management Information System is a system developed to comply 
    ```sh
    npm run dev
    ```
+5. Run the backend server:
+   ```sh
+   node src/utils/server
+   ```
 
 ## Contribution Guidelines
 - Fork the repository and create a new branch for your feature/fix.
