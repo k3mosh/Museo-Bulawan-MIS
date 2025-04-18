@@ -35,13 +35,13 @@ const AdminNav = () => {
           {},
           {
             headers: { Authorization: `Bearer ${token}` },
-            withCredentials: true, // Include credentials (cookies)
+            withCredentials: true, 
           }
         );
       } catch (error) {
         console.error('Logout error:', error.response ? error.response.data : error.message);
       } finally {
-        localStorage.clear();  // Clears all localStorage items in one go.
+        localStorage.clear();  
         navigate('/login');
       }
     };
@@ -50,7 +50,6 @@ const AdminNav = () => {
   const token = localStorage.getItem('token');
   let role = 'unknown', first_name = 'unknown', last_name = 'unknown', position = 'unknown';
 
-  // Decode the token only if it exists
   if (token) {
     try {
       const decodedToken = jwtDecode(token);
@@ -63,11 +62,9 @@ const AdminNav = () => {
     }
   }
 
-  // First and last name initials for avatar background color
   const firstInitial = first_name.charAt(0).toUpperCase();
   const lastInitial = last_name.charAt(0).toUpperCase();
 
-  // Mapping of initials to background colors
   const colorMap = {
     A: "#FF6666", B: "#FF9933", C: "#FFD700", D: "#66CC66", E: "#0099CC",
     F: "#9933CC", G: "#FF3399", H: "#6666FF", I: "#00CC99", J: "#FF6600",
@@ -77,7 +74,6 @@ const AdminNav = () => {
     Z: "#33CCCC"
   };
 
-  // Determine the background color based on the first initial
   const bgColor = colorMap[firstInitial] || "#FFFFFF"; 
 
   return (

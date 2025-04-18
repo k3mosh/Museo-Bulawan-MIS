@@ -1,15 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react'
-import UserUpdate from '../../components/modals/UserUpdate'
-import UserView from '../../components/modals/userView'
-import AdminNav from '../../components/navbar/AdminNav'
-import { connectWebSocket, closeWebSocket } from '../../utils/websocket'
-import axios from 'axios'
+import React, { useEffect, useState, useRef } from 'react';
+import UserUpdate from '../../components/modals/UserUpdate';
+import UserView from '../../components/modals/userView';
+import AdminNav from '../../components/navbar/AdminNav';
+import InviteModal from '../../components/modals/InviteModal'; // Import the new component
+import { connectWebSocket, closeWebSocket } from '../../utils/websocket';
+import axios from 'axios';
 
 const User = () => {
-  const [users, setUsers] = useState([])
-  const [selectedUserId, setSelectedUserId] = useState(null)
-  const [showUpdate, setShowUpdate] = useState(false)
-  const [showUser, setShowUser] = useState(false)
+  const [users, setUsers] = useState([]);
+  const [pendingInvitations, setPendingInvitations] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [showUser, setShowUser] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [processingAction, setProcessingAction] = useState(null);
+  const [inviteError, setInviteError] = useState(null);
 
   const colorMap = {
     A: '#FF6666',
@@ -38,9 +42,9 @@ const User = () => {
     X: '#9966FF',
     Y: '#FF0000',
     Z: '#33CCCC',
-  }
+  };
 
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token');
 
   const fetchUsers = () => {
     axios
@@ -50,34 +54,103 @@ const User = () => {
         },
       })
       .then((response) => {
-        setUsers(response.data)
+        setUsers(response.data);
       })
       .catch((error) => {
         console.error(
           'Error fetching users:',
           error.response?.data || error.message
-        )
+        );
+      });
+  };
+
+  const fetchPendingInvitations = () => {
+    setInviteError(null);
+    axios
+      .get('http://localhost:5000/api/auth/invitations', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-  }
+      .then((response) => {
+        setPendingInvitations(response.data || []);
+      })
+      .catch((error) => {
+        console.error('Error fetching invitations:', error.response?.data || error);
+        setInviteError('Failed to load pending invitations');
+      });
+  };
+
+  const handleInviteSubmit = (invitation) => {
+    setPendingInvitations([invitation, ...pendingInvitations]);
+  };
+
+  const handleResendInvite = async (id) => {
+    setProcessingAction(id);
+    try {
+      await axios.post(
+        `http://localhost:5000/api/auth/invitations/${id}/resend`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchPendingInvitations();
+    } catch (error) {
+      console.error('Failed to resend invitation:', error);
+    } finally {
+      setProcessingAction(null);
+    }
+  };
+
+  const handleRevokeInvite = async (id) => {
+    setProcessingAction(id);
+    try {
+      await axios.delete(`http://localhost:5000/api/auth/invitations/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setPendingInvitations(pendingInvitations.filter(inv => inv.id !== id));
+    } catch (error) {
+      console.error('Failed to revoke invitation:', error);
+    } finally {
+      setProcessingAction(null);
+    }
+  };
 
   useEffect(() => {
-    fetchUsers()
+    fetchUsers();
+    fetchPendingInvitations();
+    
     const handleDataChange = () => {
-      // console.log('WebSocket: Data changed, refreshing users...');
-      fetchUsers()
-    }
+      fetchUsers();
+      fetchPendingInvitations();
+    };
 
     const handleRefresh = () => {
-      // console.log('WebSocket: Refresh command received, refreshing component...');
-      fetchUsers()
-    }
+      fetchUsers();
+      fetchPendingInvitations();
+    };
 
-    connectWebSocket(handleDataChange, handleRefresh)
+    connectWebSocket(handleDataChange, handleRefresh);
 
     return () => {
-      closeWebSocket()
-    }
-  }, [])
+      closeWebSocket();
+    };
+  }, []);
+
+  const viewUser = (id) => {
+    setSelectedUserId(id);
+    setShowUser(true);
+  };
+
+
+  console.log(users)
 
   return (
     <>
@@ -88,12 +161,11 @@ const User = () => {
           onClose={() => setShowUser(false)}
         />
       )}
-      {/* {showUser && (<UserView userId={selectedUserId} onClose={() => setShowUser(false)}/>)} */}
-      {showUpdate && (
-        <UserUpdate
-          key={selectedUserId} // This will ensure the component remounts
-          userId={selectedUserId}
-          onClose={() => setShowUpdate(false)}
+      
+      {showInviteModal && (
+        <InviteModal
+          onClose={() => setShowInviteModal(false)}
+          onInvite={handleInviteSubmit}
         />
       )}
 
@@ -115,39 +187,31 @@ const User = () => {
                   Manage system by users by assigning roles, updating account
                   details, and controlling access levels.
                 </span>
-                <button className="cursor-pointer w-fit h-fit rounded-md px-4 py-2 bg-[#6F3FFF] text-white font-semibold">
+                <button 
+                  onClick={() => setShowInviteModal(true)}
+                  className="cursor-pointer w-fit h-fit rounded-md px-4 py-2 bg-[#6F3FFF] text-white font-semibold"
+                >
                   Invite People
                 </button>
               </div>
               <div className="w-full sm:min-w-[70rem] h-full rounded-xl bg-[#1C1B19] border-1 border-[#373737] overflow-y-scroll">
                 {users.map((user) => {
-                  const id = user.Credential.id
-                  const fullName = `${user.Credential.first_name} ${user.Credential.last_name}`
-                  const email = user.Credential.email
-                  const status = user.status
+                  const id = user.Credential.id;
+                  const fullName = `${user.Credential.first_name} ${user.Credential.last_name}`;
+                  const email = user.Credential.email;
+                  const status = user.status;
                   const role =
                     user.Credential.role.charAt(0).toUpperCase() +
-                    user.Credential.role.slice(1).toLowerCase()
+                    user.Credential.role.slice(1).toLowerCase();
                   const initials = `${user.Credential.first_name.charAt(
                     0
-                  )}${user.Credential.last_name.charAt(0)}`
-                  const firstInitial = initials.charAt(0)
-                  const bgColor = colorMap[firstInitial] || '#FFFFFF'
-
-                  const viewUpdate = (id) => {
-                    setSelectedUserId(id)
-                    setShowUpdate(true)
-                  }
-                  const viewUser = (id) => {
-                    setSelectedUserId(id)
-                    setShowUser(true)
-                  }
+                  )}${user.Credential.last_name.charAt(0)}`;
+                  const firstInitial = initials.charAt(0);
+                  const bgColor = colorMap[firstInitial] || '#FFFFFF';
 
                   return (
                     <div
                       key={user.Credential.id}
-                      // onClick={() => viewUpdate(id)}
-                      
                       className="hover:bg-gray-800 cursor-pointer w-full h-[5rem] flex justify-between px-4 sm:pl-20 sm:pr-10 border-b-1 border-[#373737]"
                     >
                       <div onClick={() => viewUser(id)} className="w-full h-full flex gap-x-2 sm:gap-x-7 items-center">
@@ -180,16 +244,14 @@ const User = () => {
                           </span>
                         </div>
                         <i
-                          
                           className="hover:ring-3 fa-solid fa-trash text-xl sm:text-3xl cursor-pointer text-[#999999]"
                         ></i>
                         <i
-                          onClick={() => viewUpdate(id)}
                           className="hover:ring-3 fa-solid fa-user-pen text-xl sm:text-3xl cursor-pointer text-[#999999]"
                         ></i>
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -205,37 +267,73 @@ const User = () => {
               </div>
 
               <div className="w-full sm:min-w-[70rem] h-[15rem] sm:h-full rounded-xl bg-[#1C1B19] border-1 border-[#373737]">
-                <div className="w-full h-[5rem] flex justify-between px-4 sm:px-20 border-b-1 border-[#373737]">
-                  <div className="w-fit h-full flex gap-x-2 sm:gap-x-7 items-center">
-                    <div className="w-[3rem] h-[3rem] rounded-full bg-amber-200 flex items-center justify-center">
-                      <span className="text-2xl font-semibold">JT</span>
-                    </div>
-                    <div className="w-fit h-full justify-center flex flex-col">
-                      <span className="text-white text-xl sm:text-2xl font-semibold">
-                        Jefferson Talagtag
-                      </span>
-                      <span className="text-lg sm:text-lg font-semibold text-[#9C9C9C]">
-                        jeffersontalagtag06@gmail.com
-                      </span>
-                    </div>
+                {inviteError ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-red-400 text-xl">{inviteError}</span>
                   </div>
+                ) : pendingInvitations && pendingInvitations.length > 0 ? (
+                  pendingInvitations.map((invitation) => {
+                    // Check if invitation has the necessary properties
+                    if (!invitation || !invitation.first_name || !invitation.last_name || !invitation.email) {
+                      return null;
+                    }
+                    
+                    const fullName = `${invitation.first_name} ${invitation.last_name}`;
+                    const initials = `${invitation.first_name.charAt(0)}${invitation.last_name.charAt(0)}`;
+                    const firstInitial = initials.charAt(0);
+                    const bgColor = colorMap[firstInitial] || '#FFFFFF';
+                    const isProcessing = processingAction === invitation.id;
 
-                  <div className="w-fit gap-x-3 h-full flex items-center">
-                    <button className="cursor-pointer w-fit h-fit rounded-md px-4 py-2 bg-[#3A3A3A] border-[#A6A6A6] border-1 text-white font-semibold">
-                      Resend Invite
-                    </button>
-                    <button className="cursor-pointer w-fit h-fit rounded-md px-4 py-2 border-[#FF8080] border-1 text-[#FF8080] font-semibold">
-                      Revoke Invite
-                    </button>
+                    return (
+                      <div key={invitation.id} className="w-full h-[5rem] flex justify-between px-4 sm:px-20 border-b-1 border-[#373737]">
+                        <div className="w-fit h-full flex gap-x-2 sm:gap-x-7 items-center">
+                          <div
+                            className="w-[3rem] h-[3rem] rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: bgColor }}
+                          >
+                            <span className="text-2xl font-semibold">{initials}</span>
+                          </div>
+                          <div className="w-fit h-full justify-center flex flex-col">
+                            <span className="text-white text-xl sm:text-2xl font-semibold">
+                              {fullName}
+                            </span>
+                            <span className="text-lg sm:text-lg font-semibold text-[#9C9C9C]">
+                              {invitation.email}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="w-fit gap-x-3 h-full flex items-center">
+                          <button 
+                            onClick={() => handleResendInvite(invitation.id)} 
+                            disabled={isProcessing}
+                            className="cursor-pointer w-fit h-fit rounded-md px-4 py-2 bg-[#3A3A3A] border-[#A6A6A6] border-1 text-white font-semibold flex items-center justify-center min-w-[8rem]"
+                          >
+                            {isProcessing ? <i className="fa-solid fa-spinner fa-spin"></i> : 'Resend Invite'}
+                          </button>
+                          <button 
+                            onClick={() => handleRevokeInvite(invitation.id)}
+                            disabled={isProcessing}
+                            className="cursor-pointer w-fit h-fit rounded-md px-4 py-2 border-[#FF8080] border-1 text-[#FF8080] font-semibold flex items-center justify-center min-w-[8rem]"
+                          >
+                            {isProcessing ? <i className="fa-solid fa-spinner fa-spin"></i> : 'Revoke Invite'}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-[#9C9C9C] text-xl">No pending invitations</span>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default User
+export default User;

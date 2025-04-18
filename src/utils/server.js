@@ -9,20 +9,24 @@ import jwt from 'jsonwebtoken';
 import User from './models/Users.js'; 
 import Credential from './models/Credential.js';
 import Appointment from './models/Appointment.js';
-// Import other models you want to track
+import Invitation from './models/Invitation.js';
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
 
 const JWT_SECRET = process.env.JWT_SECRET || 'hachsinail';
 
-// Track connections per user
 const userConnections = new Map();
 
-// Database change tracking setup
 const setupModelHooks = () => {
-  const models = [User, Credential, Appointment];
+  const models = [User, Credential, Appointment, Invitation];
   
   models.forEach(model => {
     model.addHook('afterCreate', (instance, options) => {
@@ -75,7 +79,6 @@ const broadcastDataChange = (changeData) => {
   console.log(`Broadcasted ${changeData.table} ${changeData.action} to ${totalSent} connections`);
 };
 
-// WebSocket connection handler
 wss.on('connection', (ws, req) => {
   const token = new URL(req.url, `ws://${req.headers.host}`).searchParams.get('token');
   
@@ -128,52 +131,25 @@ wss.on('connection', (ws, req) => {
   }
 });
 
-// Keep existing broadcast functions for compatibility
-// export const broadcastUpdate = () => {
-//   const message = 'refresh';
-//   let totalSent = 0;
-  
-//   userConnections.forEach((connections) => {
-//     connections.forEach(ws => {
-//       if (ws.readyState === ws.OPEN) {
-//         ws.send(message);
-//         totalSent++;
-//       }
-//     });
-//   });
-  
-//   console.log(`Broadcasted update to ${totalSent} connections`);
-// };
 
-// export const broadcastToUser = (userId, message = 'refresh') => {
-//   if (!userConnections.has(userId)) {
-//     console.log(`No active connections for user ${userId}`);
-//     return;
-//   }
-
-//   let sentCount = 0;
-//   userConnections.get(userId).forEach(ws => {
-//     if (ws.readyState === ws.OPEN) {
-//       ws.send(message);
-//       sentCount++;
-//     }
-//   });
-  
-//   console.log(`Sent update to ${sentCount}/${userConnections.get(userId).size} connections for user ${userId}`);
-// };
-
-// Express middleware
 app.use(express.json());
 app.use(cors({
   origin: 'http://localhost:5173', 
   credentials: true,
 }));
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
-// Routes
 app.use('/api/auth', authRoutes);
+app.get('/api/auth/currentUser', (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
+  // `req.user` might be set by your auth middleware
+  return res.json({ id: req.user.id});
+});
 
-// Start server
+
 const startServer = async () => {
   try {
     await sequelize.authenticate();  
@@ -183,8 +159,10 @@ const startServer = async () => {
     
     server.listen(5000, () => console.log('Server and WebSocket running on port 5000'));
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    // console.error('Unable to connect to the database:', error);
+    console.error('Unable to connect to the database');
   }
 };
 
 startServer();
+import './cronCleanup.js';

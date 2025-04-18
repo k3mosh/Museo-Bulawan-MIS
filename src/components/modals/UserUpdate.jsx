@@ -85,7 +85,7 @@ const UserUpdate = ({ userId, onClose }) => {
                   id="first-name"
                   type="text"
                   defaultValue={user?.Credential?.first_name}
-                  className="bg-[#242424] w-full h-15 rounded-sm border-[#373737] border px-4 text-lg text-white font-semibol hover:border-purple-500"
+                  className="bg-[#242424] w-full h-15 rounded-sm border-[#373737] border px-4 text-lg text-white font-semibold hover:border-purple-500"
                 />
               </div>
 
