@@ -10,6 +10,7 @@ import img2 from '../../../src/assets/nae_img_2.png';
 import img3 from '../../../src/assets/nae_img_3.png';
 import img4 from '../../../src/assets/nae_img_4.png';
 import bgImage3 from '../../../src/assets/img_1.png';
+import dhome2 from '../../../src/assets/dhome2.png';
 
 const Home = () => {
   return (
@@ -161,7 +162,7 @@ const Home = () => {
                       </div>
                     <div className="xl:w-1/2 h-[60em] w-full">
                         <img 
-                          src="./src/assets/dhome2.png" 
+                          src={dhome2} 
                           className="w-full h-full object-contain" 
                           alt="" 
                         />
@@ -343,7 +344,7 @@ const Home = () => {
               </div>
               
               <div className='w-full h-1/2 py-3 px-20 flex flex-col gap-6 xl:flex-row'>
-                <div className='w-full h-1/2 xl:h-full xl:order-2 bg-no-repeat bg-cover bg-center p-5' style={{ backgroundImage: "url('./src/assets/img_2.png')" }}>
+                <div className='w-full h-1/2 xl:h-full xl:order-2 bg-no-repeat bg-cover bg-center p-5' style={{ backgroundImage: `url(${img2})` }}>
                     <div className='w-full h-full  outline-2 outline-white'></div>
                 </div>
 
