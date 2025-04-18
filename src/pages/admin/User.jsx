@@ -79,6 +79,9 @@ const User = () => {
     }
   }, [])
 
+
+  console.log(users)
+
   return (
     <>
       {showUser && (

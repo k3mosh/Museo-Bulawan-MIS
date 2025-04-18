@@ -133,6 +133,14 @@ app.use(cors({
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
+app.get('/api/auth/currentUser', (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
+  // `req.user` might be set by your auth middleware
+  return res.json({ id: req.user.id});
+});
+
 
 const startServer = async () => {
   try {
