@@ -2,6 +2,7 @@ import express from 'express';
 import { login, logout, autoLogout, refreshToken, verifyCookie  } from '../controller/authController.js';
 import { displayUsers, displaySpecificUser, getUserLoginLogs } from '../controller/userController.js';
 import { createAppointment, getAllAppointments } from '../controller/appointmentController.js';
+import { createForm } from '../controller/formController.js';
 
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.get('/refresh-token', refreshToken);
 // in routes/auth.js or wherever you handle routes
 router.get('/verify-cookie', verifyCookie);
 
+router.post('/form', createForm);
 
 export default router;
