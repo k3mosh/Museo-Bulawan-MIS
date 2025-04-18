@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
+import UserUpdate from '../../components/modals/UserUpdate'
 import UserView from '../../components/modals/userView'
 import AdminNav from '../../components/navbar/AdminNav'
 import { connectWebSocket, closeWebSocket } from '../../utils/websocket'
@@ -7,8 +8,8 @@ import axios from 'axios'
 const User = () => {
   const [users, setUsers] = useState([])
   const [selectedUserId, setSelectedUserId] = useState(null)
+  const [showUpdate, setShowUpdate] = useState(false)
   const [showUser, setShowUser] = useState(false)
-
 
   const colorMap = {
     A: '#FF6666',
@@ -52,35 +53,52 @@ const User = () => {
         setUsers(response.data)
       })
       .catch((error) => {
-        console.error('Error fetching users:', error.response?.data || error.message)
+        console.error(
+          'Error fetching users:',
+          error.response?.data || error.message
+        )
       })
   }
 
-
-
   useEffect(() => {
     fetchUsers()
-    connectWebSocket(fetchUsers)
+    const handleDataChange = () => {
+      // console.log('WebSocket: Data changed, refreshing users...');
+      fetchUsers()
+    }
+
+    const handleRefresh = () => {
+      // console.log('WebSocket: Refresh command received, refreshing component...');
+      fetchUsers()
+    }
+
+    connectWebSocket(handleDataChange, handleRefresh)
 
     return () => {
       closeWebSocket()
     }
-
   }, [])
 
 
   console.log(users)
+
   return (
     <>
-      {/* {showUser && (<UserView userId={selectedUserId} onClose={() => setShowUser(false)}/>)} */}
       {showUser && (
         <UserView
-          key={selectedUserId} // This will ensure the component remounts
+          key={selectedUserId}
           userId={selectedUserId}
           onClose={() => setShowUser(false)}
         />
       )}
-
+      {/* {showUser && (<UserView userId={selectedUserId} onClose={() => setShowUser(false)}/>)} */}
+      {showUpdate && (
+        <UserUpdate
+          key={selectedUserId} // This will ensure the component remounts
+          userId={selectedUserId}
+          onClose={() => setShowUpdate(false)}
+        />
+      )}
 
       <div className="w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]">
         <div className="bg-[#1C1B19] w-auto min-h-full h-full min-w-[6rem] sm:min-w-auto">
@@ -120,7 +138,10 @@ const User = () => {
                   const bgColor = colorMap[firstInitial] || '#FFFFFF'
 
                   const viewUpdate = (id) => {
-                    
+                    setSelectedUserId(id)
+                    setShowUpdate(true)
+                  }
+                  const viewUser = (id) => {
                     setSelectedUserId(id)
                     setShowUser(true)
                   }
@@ -128,10 +149,11 @@ const User = () => {
                   return (
                     <div
                       key={user.Credential.id}
-                      onClick={() => viewUpdate(id)}
+                      // onClick={() => viewUpdate(id)}
+                      
                       className="hover:bg-gray-800 cursor-pointer w-full h-[5rem] flex justify-between px-4 sm:pl-20 sm:pr-10 border-b-1 border-[#373737]"
                     >
-                      <div className="w-fit h-full flex gap-x-2 sm:gap-x-7 items-center">
+                      <div onClick={() => viewUser(id)} className="w-full h-full flex gap-x-2 sm:gap-x-7 items-center">
                         <div
                           className="w-[3rem] h-[3rem] rounded-full flex items-center justify-center"
                           style={{ backgroundColor: bgColor }}
@@ -160,8 +182,14 @@ const User = () => {
                             {role}
                           </span>
                         </div>
-                        <i className="fa-solid fa-trash text-xl sm:text-3xl cursor-pointer text-[#999999]"></i>
-                        <i className="fa-solid fa-user-pen text-xl sm:text-3xl cursor-pointer text-[#999999]"></i>
+                        <i
+                          
+                          className="hover:ring-3 fa-solid fa-trash text-xl sm:text-3xl cursor-pointer text-[#999999]"
+                        ></i>
+                        <i
+                          onClick={() => viewUpdate(id)}
+                          className="hover:ring-3 fa-solid fa-user-pen text-xl sm:text-3xl cursor-pointer text-[#999999]"
+                        ></i>
                       </div>
                     </div>
                   )
