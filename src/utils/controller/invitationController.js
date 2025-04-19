@@ -68,7 +68,6 @@ export const sendInvitation = async (req, res, next) => {
         email,
         isUsed: false,
         expiresAt: { [sequelize.Sequelize.Op.gt]: new Date() },
-        deletedAt: null
       }
     });
 
@@ -124,17 +123,24 @@ export const sendInvitation = async (req, res, next) => {
     }
 
     try {
+      const emailHtml = `
+        <div style="font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f9f9f9; color: #333;">
+          <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <h2 style="color: #6F3FFF;">You're Invited to Museo Bulawan</h2>
+            <p>Hello <strong>${first_name}</strong>,</p>
+            <p>You have been invited to join <strong>Museo Bulawan</strong> as a <strong>${role}</strong>.</p>
+            <p>Please click the button below to complete your registration:</p>
+            <a href="${inviteUrl}" style="display: inline-block; padding: 12px 20px; background-color: #6F3FFF; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px;">Complete Registration</a>
+            <p style="margin-top: 30px; font-size: 14px; color: #777;">This invitation will expire on <strong>${expiresAt.toDateString()}</strong>.</p>
+          </div>
+        </div>
+      `;
+
       const info = await transporter.sendMail({
         from: '"Museo Bulawan" <museobulawanmis@gmail.com>',
         to: email,
         subject: 'Invitation to join Museo Bulawan',
-        html: `
-          <p>Hello ${first_name},</p>
-          <p>You have been invited to join Museo Bulawan as <strong>${role}</strong>.</p>
-          <p>Please click the link below to complete your registration:</p>
-          <a href="${inviteUrl}">${inviteUrl}</a>
-          <p>This invitation will expire on ${expiresAt.toDateString()}.</p>
-        `
+        html:emailHtml
       });
 
       console.log('Email sent:', info.response);
@@ -166,7 +172,6 @@ export const getPendingInvitations = async (req, res) => {
       where: {
         isUsed: false,
         expiresAt: { [sequelize.Sequelize.Op.gt]: new Date() },
-        deletedAt: null
       },
       order: [['createdAt', 'DESC']]
     });
@@ -241,29 +246,23 @@ export const revokeInvitation = async (req, res, next) => {
 
     const previousState = invitation.toJSON();
 
-    await invitation.update({ deletedAt: new Date() });
-
-    const newState = invitation.toJSON();
-
-    const invitationId = invitation.id;
-
+    await invitation.destroy(); // Hard delete
 
     req.logDetails = {
       previous: previousState,
-      new: newState,
-      message: `Invitation with ID ${invitationId} was revoked and marked for soft deletion in the Invitation table`
+      message: `Invitation with ID ${id} was hard deleted from the Invitation table`
     };
 
-    res.locals.newRecordId = invitation.id;
+    res.locals.newRecordId = id;
 
-   
-    res.json({ message: 'Invitation revoked' });
-    next(); 
+    res.json({ message: 'Invitation permanently deleted' });
+    next();
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 export const renderCompleteRegistration = async (req, res) => {
@@ -299,73 +298,127 @@ export const renderCompleteRegistration = async (req, res) => {
     
     // Send the registration form
     res.send(`
-      <html>
-        <head>
-          <title>Complete Registration</title>
-          <style>
-            body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-            .form-group { margin-bottom: 15px; }
-            label { display: block; margin-bottom: 5px; font-weight: bold; }
-            input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-            button { padding: 10px 15px; background-color: #6F3FFF; color: white; border: none; border-radius: 4px; cursor: pointer; }
-            .error { color: #ff0000; margin-top: 15px; }
-          </style>
-        </head>
-        <body>
-          <h1>Complete Your Registration</h1>
-          <p>Hello ${invitation.first_name}, set your password to complete your account setup.</p>
-          <form id="registrationForm">
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" id="password" name="password" required minlength="8">
-            </div>
-            <div class="form-group">
-              <label for="confirmPassword">Confirm Password</label>
-              <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8">
-            </div>
-            <button type="submit">Complete Registration</button>
-            <div id="error" class="error" style="display: none;"></div>
-          </form>
+     <html>
+  <head>
+    <title>Complete Registration</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #f4f4f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        max-width: 500px;
+        width: 100%;
+      }
+      h1 {
+        margin-bottom: 20px;
+        color: #6F3FFF;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        background: #6F3FFF;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .error {
+        color: red;
+        margin-top: 10px;
+        text-align: center;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>Complete Your Registration</h1>
+      <p>Hello ${invitation.first_name}, please set your password below:</p>
+      <form id="registrationForm">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required minlength="8" />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8" />
+        </div>
+        <button type="submit">Submit</button>
+        <div id="error" class="error"></div>
+      </form>
+    </div>
+
+    <script>
+      document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const errorDiv = document.getElementById('error');
+        
+        if (password !== confirmPassword) {
+          errorDiv.textContent = "Passwords do not match.";
+          errorDiv.style.display = "block";
+          return;
+        }
+
+        try {
+          const response = await fetch('/api/auth/complete-registration/${token}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+          });
+
+          const contentType = response.headers.get("content-type");
+
+          if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Error completing registration');
+          } else if (!response.ok) {
+            throw new Error("Unexpected server response. Please try again.");
+          }
+
+          // redirect if successful
           
-          <script>
-            document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-              e.preventDefault();
-              
-              const password = document.getElementById('password').value;
-              const confirmPassword = document.getElementById('confirmPassword').value;
-              const errorDiv = document.getElementById('error');
-              
-              if (password !== confirmPassword) {
-                errorDiv.textContent = "Passwords do not match";
-                errorDiv.style.display = "block";
-                return;
-              }
-              
-              try {
-                const response = await fetch('/api/auth/complete-registration/${token}', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({ password })
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                  throw new Error(data.message || "Error completing registration");
-                }
-                
-                window.location.href = '/api/auth/registration-success';
-                
-              } catch (error) {
-                errorDiv.textContent = error.message;
-                errorDiv.style.display = "block";
-              }
-            });
-          </script>
-        </body>
-      </html>
+
+
+          window.location.href = '/api/auth/registration-success';
+        } catch (error) {
+          errorDiv.textContent = error.message;
+          errorDiv.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>
+
     `);
     
   } catch (error) {
@@ -374,16 +427,15 @@ export const renderCompleteRegistration = async (req, res) => {
   }
 };
 
-// Complete registration
-export const completeRegistration = async (req, res) => {
+export const completeRegistration = async (req, res, next) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
-    
+
     if (!password) {
       return res.status(400).json({ message: 'Password is required' });
     }
-    
+
     const invitation = await Invitation.findOne({ 
       where: { 
         token,
@@ -391,15 +443,13 @@ export const completeRegistration = async (req, res) => {
         expiresAt: { [sequelize.Sequelize.Op.gt]: new Date() }
       }
     });
-    
+
     if (!invitation) {
       return res.status(400).json({ message: 'Invalid or expired invitation' });
     }
-    
-    // Hash password
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    // Create credential
+
     const credential = await Credential.create({
       first_name: invitation.first_name,
       last_name: invitation.last_name,
@@ -409,41 +459,75 @@ export const completeRegistration = async (req, res) => {
       position: invitation.position,
       contact_number: invitation.contact_number
     });
-    
-    // Create user with inactive status
+
     await User.create({
-      status: 'inactive',  // Changed from 'active' to 'inactive'
+      status: 'inactive',
       credential_id: credential.id
     });
-    
-    // Mark invitation as used
+
     invitation.isUsed = true;
     await invitation.save();
-    
-    res.status(201).json({ message: 'Registration completed successfully' });
-    
+
+    // Set data for the logging middleware
+    req.logDetails = {
+      new: credential.dataValues,
+      message: `User ${credential.email} has successfully completed registration.`,
+    };
+    res.locals.newRecordId = credential.id;
+
+    res.status(200).json({ message: 'Registration completed successfully' });
+
+    return next();
+
   } catch (error) {
     console.error('Error completing registration:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Registration success page
+
+
 export const registrationSuccess = (req, res) => {
   res.send(`
     <html>
       <head>
         <title>Registration Successful</title>
         <style>
-          body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; text-align: center; }
-          .success { color: #00a651; }
+          body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+          .card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+          }
+          .card h1 {
+            color: #4CAF50;
+            margin-bottom: 16px;
+          }
+          .card a {
+            color: #6F3FFF;
+            text-decoration: none;
+            font-weight: bold;
+          }
         </style>
       </head>
       <body>
-        <h1 class="success">Registration Successful!</h1>
-        <p>Your account has been created successfully.</p>
-        <p>Your account is pending approval from an administrator. You will be notified when your account is activated.</p>
-        <p>You can try to <a href="http://localhost:5173/login">login</a> once your account has been approved.</p>
+        <div class="card">
+          <h1>Registration Successful!</h1>
+          <p>Your account has been created successfully.</p>
+         
+          <p>Return to <a href="http://localhost:5173/login">Login</a></p>
+        </div>
       </body>
     </html>
   `);
