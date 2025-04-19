@@ -1,36 +1,25 @@
-// controller/invitationController.js
 import Invitation from '../models/Invitation.js';
 import User from '../models/Users.js';
 import Credential from '../models/Credential.js';
 import { v4 as uuidv4 } from 'uuid';
 import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
-import { sequelize } from '../database.js'; // Import sequelize instance
+import { sequelize } from '../database.js'; 
 
-// // Configure nodemailer
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'museobulawanmis@gmail.com',
-//     pass: 'zabj fmlp fnow rsse'
-//   }
-// });
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',  // Specify SMTP host explicitly
-  port: 465,  // Secure port
-  secure: true,  // Use SSL
+  host: 'smtp.gmail.com', 
+  port: 465,  
+  secure: true,  
   auth: {
     user: process.env.EMAIL_USER || 'museobulawanmis@gmail.com',
-    pass: process.env.EMAIL_APP_PASSWORD || 'zabj fmlp fnow rsse'  // Use App Password, not regular password
+    pass: process.env.EMAIL_APP_PASSWORD || 'zabj fmlp fnow rsse' 
   },
   tls: {
-    // Do not fail on invalid certs
     rejectUnauthorized: false
   }
 });
 
-// Verify connection configuration
 transporter.verify(function(error, success) {
   if (error) {
     console.log('SMTP Connection Error:', error);
@@ -40,7 +29,6 @@ transporter.verify(function(error, success) {
 });
 
 
-// Helper to format invitation for frontend
 const formatInvitation = (invitation) => {
   return {
     id: invitation.id,
