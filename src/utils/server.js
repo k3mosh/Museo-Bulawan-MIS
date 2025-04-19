@@ -10,6 +10,7 @@ import User from './models/Users.js';
 import Credential from './models/Credential.js';
 import Appointment from './models/Appointment.js';
 import Invitation from './models/Invitation.js';
+import Log from './models/Log.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -26,7 +27,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'hachsinail';
 const userConnections = new Map();
 
 const setupModelHooks = () => {
-  const models = [User, Credential, Appointment, Invitation];
+  const models = [User, Credential, Appointment, Invitation, Log];
   
   models.forEach(model => {
     model.addHook('afterCreate', (instance, options) => {

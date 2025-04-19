@@ -4,6 +4,9 @@ import UserView from '../../components/modals/userView';
 import AdminNav from '../../components/navbar/AdminNav';
 import InviteModal from '../../components/modals/InviteModal'; // Import the new component
 import { connectWebSocket, closeWebSocket } from '../../utils/websocket';
+import ConfirmationModal from '../../components/modals/ConfirmationModal'
+
+
 import axios from 'axios';
 
 const User = () => {
@@ -14,6 +17,10 @@ const User = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [processingAction, setProcessingAction] = useState(null);
   const [inviteError, setInviteError] = useState(null);
+  const [showConfirmation, setConfirmation] = useState(false)
+  const [invitationToRevoke, setInvitationToRevoke] = useState(null);
+
+  
 
   const colorMap = {
     A: '#FF6666',
@@ -100,7 +107,13 @@ const User = () => {
 
       fetchPendingInvitations();
     } catch (error) {
-      console.error('Failed to resend invitation:', error);
+      console.error('Failed to resend invitation:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        url: error.config?.url,
+        method: error.config?.method
+      });
     } finally {
       setProcessingAction(null);
     }
@@ -149,11 +162,30 @@ const User = () => {
     setShowUser(true);
   };
 
+  const handleConfirmation = async (result) => {
+    setConfirmation(false);
+    if (result && invitationToRevoke) {
+      await handleRevokeInvite(invitationToRevoke.id);
+      setInvitationToRevoke(null);
+    }
+    console.log('User confirmed?', result);
+  };
+  
 
   console.log(users)
 
   return (
     <>
+      {showConfirmation && (
+          <ConfirmationModal
+            title="Revoke Invite?"
+            description="Are you sure you want to revple the invitation to this email? This action will revoke the current invitaiton to the user."
+            icon="warning"
+            onClose={handleConfirmation}
+          />
+        )}
+
+
       {showUser && (
         <UserView
           key={selectedUserId}
@@ -312,7 +344,11 @@ const User = () => {
                             {isProcessing ? <i className="fa-solid fa-spinner fa-spin"></i> : 'Resend Invite'}
                           </button>
                           <button 
-                            onClick={() => handleRevokeInvite(invitation.id)}
+                            onClick={() => {
+                              setInvitationToRevoke(invitation);
+                              setConfirmation(true);}
+                            }
+
                             disabled={isProcessing}
                             className="cursor-pointer w-fit h-fit rounded-md px-4 py-2 border-[#FF8080] border-1 text-[#FF8080] font-semibold flex items-center justify-center min-w-[8rem]"
                           >
