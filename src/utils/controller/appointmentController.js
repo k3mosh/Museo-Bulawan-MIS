@@ -100,25 +100,7 @@ export const createAppointment = async (req, res) => {
   }
 };
 
-/**
- * Fetch all appointments, eagerly loading Visitor data.
- */
-export const getAllAppointments = async (req, res) => {
-  try {
-    const appointments = await Appointment.findAll({
-      include: [Visitor,AppointmentStatus]
-    });
-    return res.json(appointments);
-  } catch (error) {
-    console.error('Error fetching appointments:', error);
-    return res.status(500).json({ message: 'Server error retrieving appointments.' });
-  }
-};
 
-/**
- * Update an appointment's status in the appointment_status table.
- * Expects body: { status: "CONFIRMED" }
- */
 export const updateAppointmentStatus = async (req, res) => {
   try {
     const { id } = req.params
@@ -166,27 +148,75 @@ export const updateAppointmentStatus = async (req, res) => {
 
 export const getAppointmentStats = async (req, res) => {
   try {
-    // Count how many appointments are "confirmed", "rejected", or "completed"
+    // Get date from query param if provided
+    const filterDate = req.query.date ? new Date(req.query.date) : null;
+    
+    // Build the where clause for date filtering
+    const dateWhere = {};
+    if (filterDate) {
+      // Set start and end time for the selected date
+      const startDate = new Date(filterDate);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(filterDate);
+      endDate.setHours(23, 59, 59, 999);
+      
+      dateWhere.creation_date = {
+        [Op.between]: [startDate, endDate]
+      };
+    }
+
+    // Get appointment IDs that match the date filter
+    const appointments = filterDate ? 
+      await Appointment.findAll({ 
+        where: dateWhere,
+        attributes: ['appointment_id']
+      }) : 
+      await Appointment.findAll({ attributes: ['appointment_id'] });
+    
+    const appointmentIds = appointments.map(a => a.appointment_id);
+
+    // Count statuses for those appointments
     const approvedCount = await AppointmentStatus.count({
-      where: { status: 'CONFIRMED' }
+      where: { 
+        status: 'CONFIRMED',
+        appointment_id: { [Op.in]: appointmentIds }
+      }
     });
+    
     const rejectedCount = await AppointmentStatus.count({
-      where: { status: 'REJECTED' }
+      where: { 
+        status: 'REJECTED',
+        appointment_id: { [Op.in]: appointmentIds }
+      }
     });
+    
     const completedCount = await AppointmentStatus.count({
-      where: { status: 'COMPLETED' }
+      where: { 
+        status: 'COMPLETED',
+        appointment_id: { [Op.in]: appointmentIds }
+      }
+    });
+    
+    const failedCount = await AppointmentStatus.count({
+      where: { 
+        status: 'FAILED',
+        appointment_id: { [Op.in]: appointmentIds }
+      }
     });
 
-    // Sum population counts from Appointment
-    const expectedVisitors = await Appointment.sum('population_count');
+    // Sum population counts from filtered appointments
+    const expectedVisitors = await Appointment.sum('population_count', {
+      where: filterDate ? dateWhere : {}
+    });
 
-    // Sum present_count from AppointmentStatus
-    // This correctly uses the present_count field from your model
+    // Sum present_count from AppointmentStatus for filtered appointments
     const presentCount = await AppointmentStatus.sum('present_count', {
       where: {
         present_count: {
           [Op.not]: null  // Only include non-null values
-        }
+        },
+        appointment_id: { [Op.in]: appointmentIds }
       }
     });
 
@@ -194,8 +224,9 @@ export const getAppointmentStats = async (req, res) => {
       approved: approvedCount || 0,
       rejected: rejectedCount || 0,
       completed: completedCount || 0,
+      failed: failedCount || 0,
       expectedVisitors: expectedVisitors || 0,
-      present: presentCount || 0  // This will now be the sum of all present_count values
+      present: presentCount || 0
     });
   } catch (error) {
     console.error('Error retrieving appointment stats:', error);
@@ -206,10 +237,65 @@ export const getAppointmentStats = async (req, res) => {
   }
 };
 
+/**
+ * Fetch all appointments, eagerly loading Visitor data.
+ */
+export const getAllAppointments = async (req, res) => {
+  try {
+    // Get date from query param if provided
+    const filterDate = req.query.date ? new Date(req.query.date) : null;
+    
+    // Build the where clause for date filtering
+    let where = {};
+    if (filterDate) {
+      // Set start and end time for the selected date
+      const startDate = new Date(filterDate);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(filterDate);
+      endDate.setHours(23, 59, 59, 999);
+      
+      where.creation_date = {
+        [Op.between]: [startDate, endDate]
+      };
+    }
+
+    const appointments = await Appointment.findAll({
+      where,
+      include: [Visitor, AppointmentStatus]
+    });
+    return res.json(appointments);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    return res.status(500).json({ message: 'Server error retrieving appointments.' });
+  }
+};
+
+
+
 
 export const getAttendanceData = async (req, res) => {
   try {
+    // Get date from query param if provided
+    const filterDate = req.query.date ? new Date(req.query.date) : null;
+    
+    // Build the where clause for date filtering
+    const where = {};
+    if (filterDate) {
+      // Set start and end time for the selected date
+      const startDate = new Date(filterDate);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(filterDate);
+      endDate.setHours(23, 59, 59, 999);
+      
+      where.creation_date = {
+        [Op.between]: [startDate, endDate]
+      };
+    }
+    
     const data = await Appointment.findAll({
+      where,
       attributes: [
         'appointment_id',
         'purpose_of_visit',
@@ -227,7 +313,7 @@ export const getAttendanceData = async (req, res) => {
           attributes: ['status', 'present_count', 'updated_at']
         }
       ]
-    })
+    });
 
     // Transform for your front-end: rename fields, etc.
     const transformedData = data.map((appt) => ({
@@ -240,25 +326,43 @@ export const getAttendanceData = async (req, res) => {
       // If present_count is null, it's "ongoing" on the front-end
       present: appt.AppointmentStatus?.present_count ?? 'ongoing',
       status: appt.AppointmentStatus?.status || 'TO_REVIEW'
-    }))
+    }));
 
-    return res.json(transformedData)
+    return res.json(transformedData);
   } catch (error) {
-    console.error('Error fetching attendance data:', error)
+    console.error('Error fetching attendance data:', error);
     return res.status(500).json({
       message: 'Server error retrieving attendance data.',
       error: error.message
-    })
+    });
   }
 }
 
 export const getVisitorRecords = async (req, res) => {
   try {
+    // Get date from query param if provided
+    const filterDate = req.query.date ? new Date(req.query.date) : null;
+    
+    let appointmentWhere = {};
+    if (filterDate) {
+      // Set start and end time for the selected date
+      const startDate = new Date(filterDate);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(filterDate);
+      endDate.setHours(23, 59, 59, 999);
+      
+      appointmentWhere.creation_date = {
+        [Op.between]: [startDate, endDate]
+      };
+    }
+    
     // Load all visitors with their associated appointments and statuses
     const visitors = await Visitor.findAll({
       include: [
         {
           model: Appointment,
+          where: Object.keys(appointmentWhere).length > 0 ? appointmentWhere : undefined,
           include: [AppointmentStatus],
         },
       ],
@@ -272,13 +376,13 @@ export const getVisitorRecords = async (req, res) => {
         purpose: appt.purpose_of_visit,
         visitorCount: appt.population_count,
         present: appt.AppointmentStatus?.present_count || 0,
-        date: appt.preferred_date,         // e.g. '2024-02-19'
+        date: appt.preferred_date,
         status: appt.AppointmentStatus?.status || 'TO_REVIEW'
       }));
 
       return {
         id: visitor.visitor_id,
-        date: details.length > 0 ? details[0].date : null, // or get the first appointment date
+        date: details.length > 0 ? details[0].date : null,
         visitorName: `${visitor.first_name} ${visitor.last_name}`,
         visitCount: details.length,
         details,

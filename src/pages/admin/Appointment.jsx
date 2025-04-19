@@ -3,7 +3,7 @@ import axios from 'axios'
 import AdminNav from '../../components/navbar/AdminNav'
 import CustomDatePicker from '../../components/function/CustomDatePicker'
 import { connectWebSocket, closeWebSocket } from '../../utils/websocket'
-import { AppointmentModal, AttendanceModal } from '../../components/modals/AppointmentModal'
+import { AppointmentModal } from '../../components/modals/AppointmentModal'
 
 const Appointment = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -24,6 +24,8 @@ const Appointment = () => {
   const [stats, setStats] = useState({
     approved: 0,
     rejected: 0,
+    completed: 0,
+    failed: 0,
     expectedVisitors: 0,
     present: 0
   })
@@ -48,6 +50,25 @@ const Appointment = () => {
   const [toastMessage, setToastMessage] = useState('')
 
   const token = localStorage.getItem('token')
+
+  /**
+   * Format date to YYYY-MM-DD for API requests
+   */
+  const formatDateForAPI = (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  /**
+   * Format date for display in the UI
+   */
+  const formatDateForDisplay = (date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }
 
   /**
    * Standardize status naming - convert any status to the consistent format
@@ -116,190 +137,183 @@ const Appointment = () => {
   }
 
   /**
-   * Fetch visitor records from the backend
+   * Fetch visitor records from the backend with date filter
    */
   const fetchVisitorRecords = async () => {
     try {
+      const dateParam = formatDateForAPI(selectedDate);
       const response = await axios.get(
-        'http://localhost:5000/api/auth/visitor-records',
+        `http://localhost:5000/api/auth/visitor-records?date=${dateParam}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
-      setVisitorRecords(response.data)
+      );
+      setVisitorRecords(response.data);
     } catch (error) {
-      console.error('Error fetching visitor records:', error)
+      console.error('Error fetching visitor records:', error);
     }
   }
 
   /**
-   * Fetch appointments from the backend
+   * Fetch appointments from the backend with date filter
    */
+  /**
+ * Fetch appointments from the backend with date filter
+ */
   const fetchAppointments = async () => {
     try {
+      const dateParam = formatDateForAPI(selectedDate);
       const response = await axios.get(
-        'http://localhost:5000/api/auth/appointment',
+        `http://localhost:5000/api/auth/appointment?date=${dateParam}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
-      setAppointments(response.data)
+      );
+      setAppointments(response.data);
     } catch (error) {
-      console.error('Error fetching appointments:', error)
+      console.error('Error fetching appointments:', error);
     }
   }
 
+
   /**
-   * Fetch attendance data
+   * Fetch attendance data with date filter
    */
   const fetchAttendanceData = async () => {
     try {
+      const dateParam = formatDateForAPI(selectedDate);
       const response = await axios.get(
-        'http://localhost:5000/api/auth/attendance',
+        `http://localhost:5000/api/auth/attendance?date=${dateParam}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
-      setAttendanceData(response.data)
+      );
+      setAttendanceData(response.data);
     } catch (error) {
-      console.error('Error fetching attendance data:', error)
+      console.error('Error fetching attendance data:', error);
     }
   }
 
   /**
-   * Fetch stats from the backend (approved, rejected, expectedVisitors, present)
+   * Fetch stats from the backend with date filter
    */
   const fetchStats = async () => {
     try {
+      const dateParam = formatDateForAPI(selectedDate);
       const response = await axios.get(
-        'http://localhost:5000/api/auth/appointment/stats',
+        `http://localhost:5000/api/auth/appointment/stats?date=${dateParam}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
-      setStats(response.data)
+      );
+      setStats(response.data);
     } catch (error) {
-      console.error('Error fetching stats:', error)
+      console.error('Error fetching stats:', error);
     }
   }
 
   /**
    * Update appointment status in the backend
    */
-  const updateAppointmentStatus = async (appointmentId, newStatus) => {
+  const updateAppointmentStatus = async (appointmentId, newStatus, presentCount = undefined) => {
     try {
+      const requestData = { status: newStatus };
+
+      // If presentCount is provided, include it in the request
+      if (presentCount !== undefined) {
+        requestData.present_count = presentCount;
+      }
+
       await axios.patch(
         `http://localhost:5000/api/auth/appointment/${appointmentId}/status`,
-        { status: newStatus },
+        requestData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
-      console.log(`Appointment ${appointmentId} updated to: ${newStatus}`)
-      fetchAppointments()
-      fetchStats()
+      );
+
+      console.log(`Appointment ${appointmentId} updated to: ${newStatus}`);
+      fetchAppointments();
+      fetchStats();
+      fetchAttendanceData();
     } catch (error) {
-      console.error('Error updating appointment status:', error)
+      console.error('Error updating appointment status:', error);
     }
   }
 
   /**
-   * Update present count for an appointment
+   * Handle date change - refresh all data with the new date filter
    */
-  const updatePresentCount = async (appointmentId, presentCount) => {
-    try {
-      await axios.patch(
-        `http://localhost:5000/api/auth/appointment/${appointmentId}/status`,
-        { present_count: presentCount },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      console.log(`Present count for appointment ${appointmentId} updated to: ${presentCount}`)
-      // Refresh data
-      fetchAttendanceData()
-      fetchStats()
-
-      // Show success toast
-      setToastMessage(`Present count updated successfully!`)
-      setShowToast(true)
-
-      // Auto-hide toast after 3 seconds
-      setTimeout(() => {
-        setShowToast(false)
-      }, 3000)
-
-    } catch (error) {
-      console.error('Error updating present count:', error)
-
-      // Show error toast
-      setToastMessage('Error updating present count')
-      setShowToast(true)
-
-      // Auto-hide toast after 3 seconds
-      setTimeout(() => {
-        setShowToast(false)
-      }, 3000)
-    }
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    // Data will be refreshed via useEffect when selectedDate changes
   }
 
   /**
    * useEffect: Initial data + websocket
    */
   useEffect(() => {
-    fetchAppointments()
-    fetchStats()
-    fetchAttendanceData()
-    fetchVisitorRecords()
+    fetchAppointments();
+    fetchStats();
+    fetchAttendanceData();
+    fetchVisitorRecords();
 
     const handleDataChange = () => {
-      console.log('WebSocket: Data changed, refreshing...')
-      fetchAppointments()
-      fetchStats()
-      fetchAttendanceData()
-      fetchVisitorRecords()
+      console.log('WebSocket: Data changed, refreshing...');
+      fetchAppointments();
+      fetchStats();
+      fetchAttendanceData();
+      fetchVisitorRecords();
     }
 
     const handleRefresh = () => {
-      console.log('WebSocket: Refresh command received, refreshing...')
-      fetchAppointments()
-      fetchStats()
-      fetchAttendanceData()
-      fetchVisitorRecords()
+      console.log('WebSocket: Refresh command received, refreshing...');
+      fetchAppointments();
+      fetchStats();
+      fetchAttendanceData();
+      fetchVisitorRecords();
     }
 
-    connectWebSocket(handleDataChange, handleRefresh)
+    connectWebSocket(handleDataChange, handleRefresh);
     return () => {
-      closeWebSocket()
+      closeWebSocket();
     }
-  }, [])
+  }, []);
+
+  /**
+   * useEffect: Refresh data when selected date changes
+   */
+  useEffect(() => {
+    fetchAppointments();
+    fetchStats();
+    fetchAttendanceData();
+    fetchVisitorRecords();
+  }, [selectedDate]);
 
   /**
    * useEffect: Fetch data based on active tab
    */
   useEffect(() => {
     if (activeTab === 'forms') {
-      fetchAppointments()
-      fetchStats()
+      fetchAppointments();
+      fetchStats();
     } else if (activeTab === 'attendance') {
-      fetchAttendanceData()
-      fetchStats()
+      fetchAttendanceData();
+      fetchStats();
     } else if (activeTab === 'visitorRecords') {
-      fetchVisitorRecords()
+      fetchVisitorRecords();
     }
-  }, [activeTab])
+  }, [activeTab]);
 
   /**
    * useEffect: Apply filters when filter conditions or data change
@@ -473,7 +487,7 @@ const Appointment = () => {
     if (!attendancePopupData?.appointment_id) return
 
     const presentCount = parseInt(attendancePopupData.present, 10) || 0
-    updatePresentCount(attendancePopupData.appointment_id, presentCount)
+    updateAppointmentStatus(attendancePopupData.appointment_id, 'COMPLETED', presentCount)
     setShowAttendancePopup(false)
   }
 
@@ -557,18 +571,24 @@ const Appointment = () => {
                 {/* More stats */}
                 <div className="w-full h-auto flex flex-col gap-y-7">
                   <span className="text-2xl font-semibold text-[#727272]">
-                    January 8, 2025
+                    {formatDateForDisplay(selectedDate)}
                   </span>
                   <div className="w-full h-fit flex justify-between items-center">
-                    <span className="text-2xl font-semibold">Approved</span>
+                    <span className="text-2xl font-semibold">Approved/Completed</span>
                     <div className="w-[5rem] h-[2rem] flex items-center bg-[#D4DBFF] rounded-md justify-center">
-                      <span className="text-2xl font-semibold">{stats.approved}</span>
+                      <span className="text-2xl font-semibold">{stats.approved + stats.completed}</span>
                     </div>
                   </div>
                   <div className="w-full h-fit flex justify-between items-center">
                     <span className="text-2xl font-semibold">Rejected</span>
                     <div className="w-[5rem] h-[2rem] flex items-center bg-[#D4DBFF] rounded-md justify-center">
                       <span className="text-2xl font-semibold">{stats.rejected}</span>
+                    </div>
+                  </div>
+                  <div className="w-full h-fit flex justify-between items-center">
+                    <span className="text-2xl font-semibold">Failed</span>
+                    <div className="w-[5rem] h-[2rem] flex items-center bg-[#D4DBFF] rounded-md justify-center">
+                      <span className="text-2xl font-semibold">{stats.failed || 0}</span>
                     </div>
                   </div>
                   <div className="w-full h-fit flex justify-between items-center">
@@ -594,7 +614,7 @@ const Appointment = () => {
                 <div className="flex-shrink-0">
                   <CustomDatePicker
                     selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)}
+                    onChange={(date) => handleDateChange(date)}
                     popperPlacement="bottom-start"
                     popperClassName="z-50"
                     customInput={
@@ -838,18 +858,72 @@ const Appointment = () => {
         updateAppointmentStatus={updateAppointmentStatus}
       />
 
-      <AttendanceModal
-        show={showAttendancePopup}
-        popupPosition={popupPosition}
-        attendanceData={attendancePopupData}
-        onClose={() => setShowAttendancePopup(false)}
-        onConfirm={(presentCount) => {
-          if (attendancePopupData?.appointment_id) {
-            updatePresentCount(attendancePopupData.appointment_id, parseInt(presentCount, 10) || 0);
-            setShowAttendancePopup(false);
-          }
-        }}
-      />
+      {/* Attendance Modal (if you need it separately) */}
+      {showAttendancePopup && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          onClick={() => setShowAttendancePopup(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 w-80"
+            style={{
+              position: 'absolute',
+              top: popupPosition.y,
+              left: popupPosition.x,
+              transform: 'translate(-50%, -50%)'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-bold mb-3">{attendancePopupData?.visitorName}</h3>
+            <p className="text-gray-600 mb-2">Purpose: {attendancePopupData?.purpose}</p>
+
+            <div className="mt-4 mb-4">
+              <div className="flex justify-between mb-1">
+                <span>Expected:</span>
+                <span className="font-semibold">{attendancePopupData?.expectedVisitor}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>Present:</span>
+                <input
+                  type="number"
+                  className="border border-gray-300 rounded p-1 w-20"
+                  value={attendancePopupData?.present || ''}
+                  onChange={(e) => setAttendancePopupData({
+                    ...attendancePopupData,
+                    present: e.target.value
+                  })}
+                  max={attendancePopupData?.expectedVisitor}
+                  min="0"
+                />
+                <button
+                  onClick={() => setAttendancePopupData({
+                    ...attendancePopupData,
+                    present: attendancePopupData.expectedVisitor
+                  })}
+                  className="bg-green-500 text-white p-1 rounded text-xs"
+                >
+                  All
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+                onClick={() => setShowAttendancePopup(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                onClick={handleConfirmAttendance}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast Message */}
       {showToast && (
