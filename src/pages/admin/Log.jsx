@@ -1,7 +1,52 @@
 import React from 'react'
 import AdminNav from '../../components/navbar/AdminNav'
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { connectWebSocket, closeWebSocket } from '../../utils/websocket';
+
 
 const Log = () => {
+  const [logs, setLogs] = useState([]);
+  
+  const token = localStorage.getItem('token');
+  const fetchLogs = () => {
+    axios
+      .get('http://localhost:5000/api/auth/fetchLogs', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setLogs(response.data);
+      })
+      .catch((error) => {
+        console.error(
+          'Error fetching users:',
+          error.response?.data || error.message
+        );
+      });
+  };
+
+    useEffect(() => {
+      fetchLogs();
+      
+      const handleDataChange = () => {
+        fetchLogs();
+      };
+  
+      const handleRefresh = () => {
+        fetchLogs();
+      };
+  
+      connectWebSocket(handleDataChange, handleRefresh);
+  
+      return () => {
+        closeWebSocket();
+      };
+    }, []);
+
+    console.log(logs);
+
   return (
     <>
       <div className='w-screen min-h-[79.8rem] h-screen bg-[#F0F0F0] select-none flex pt-[7rem]'>
@@ -10,7 +55,7 @@ const Log = () => {
         </div>
 
         <div className='w-full bg-[#151515] min-h-full h-full flex flex-col gap-y-10 px-7 pb-7 pt-[4rem] overflow-scroll'>
-          <span className=' text-5xl font-semibold text-white'>Donation and Lending Management</span>
+          <span className=' text-5xl font-semibold text-white'>Logging</span>
           <div className='w-full h-full flex flex-col xl:flex-row gap-y-5 xl:gap-y-0 xl:gap-x-5 '>
            
             <div className=' w-full h-full flex flex-col gap-y-7 overflow-x-scroll overflow-y-scroll'>
@@ -65,32 +110,77 @@ const Log = () => {
                   <span>Description</span>
                 </div>
               </div>
-              <div className='w-full min-w-[94rem] h-auto flec flex-col border-t-1 border-t-gray-400'>
+              <div className='w-full min-w-[94rem] h-[55rem] overflow-y-scroll flec flex-col border-t-1 border-t-gray-400'>
                 {/* table data */}
-                <div className='min-w-[94rem] text-white text-xl h-fit font-semibold grid grid-cols-7 justify-between cursor-pointer hover:bg-gray-800'>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>02-19-2024</span>
-                  </div>
-                  <div className='  px-4 pt-1 pb-3 flex-col flex border-b-1 border-gray-400 cols-span-1'>
-                    <span>Olivia Harper</span>
-                    <span className='text-xs bg-[#6F3FFF] pb-1 rounded-md w-fit px-1'>Administrator</span>
-                  </div>
-                  <div className='  px-4 pt-1 pb-3  border-b-1 border-gray-400 cols-span-1'>
-                    <span>18:37:21</span>
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span>Articles</span>
-                  </div>
-                  <div className='  px-4 py-4  border-b-1 border-gray-400 cols-span-1'>
-                    <span className='text-white bg-[#FF6666] border-1 border-black rounded-md px-15 py-1'>Deleted</span>
-                  </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
-                    <span>resource</span>
-                  </div>
-                  <div className=' pl-4 pt-1 pb-3 flex justify-between border-b-1 border-gray-400 cols-span-1'>
-                    <span>Description</span>
-                  </div>
-                </div>
+                {logs.map((log) => {
+                  const { createdAt, action, model, details } = log;
+                  const parsedDetails = details ? JSON.parse(details) : {};
+                  const user = log.Credential || {}; 
+                  const dateObj = new Date(createdAt);
+                  
+                  
+
+                  const date = dateObj.toLocaleDateString();
+                  const time = dateObj.toLocaleTimeString();
+
+                  let affectedResource, tab;
+
+                  switch (model) {
+                    case 'Invitation':
+                      affectedResource = parsedDetails.new?.email || 'N/A';
+                      tab = 'User';
+                      break;
+                  
+                    default:
+
+                      break;
+                  }
+
+                  return (
+                    <div key={log.id} className='min-w-[94rem] text-white text-xl h-fit font-semibold grid grid-cols-7 justify-between cursor-pointer hover:bg-gray-800'>
+                      <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400'>{date}</div>
+
+                      <div className='px-4 pt-1 pb-3 flex-col flex border-b-1 border-gray-400'>
+                        <span>{user.first_name || "Unknown"} {user.last_name || ""}</span>
+                        <span className='text-xs bg-[#6F3FFF] pb-1 rounded-md w-fit px-1'>{user.role || "User"}</span>
+                      </div>
+
+                      <div className='px-4 pt-1 pb-3 border-b-1 border-gray-400'>{time}</div>
+
+                      <div className='px-4 py-4 border-b-1 border-gray-400'>{tab}</div>
+
+                      <div className='px-4 py-4 border-b-1 border-gray-400'>
+                        <span className={` border-1 border-black rounded-md w-[10rem] items-center justify-center flex py-1 capitalize ${
+                            action === 'soft_delete'
+                              ? 'bg-[#FFD966] text-black' 
+                              : action === 'create'
+                              ? 'bg-[#66CC66] text-black' 
+                              : action === 'update'
+                              ? 'bg-[#66B2FF] text-white' 
+                              : action === 'delete'
+                              ? 'bg-[#FF6666] text-white' 
+                              : 'bg-gray-500 text-white'  
+                          }`} >
+                          {action.replace('_', ' ')}
+                        </span>
+                      </div>
+
+                      <div className='pl-4 pt-1 pb-3 border-b-1 border-gray-400'>
+                        <span>{affectedResource || '-'}</span>
+                      </div>
+
+                      <div className='pl-4 pt-1 pb-3 border-b-1 border-gray-400'>
+                      <span
+    className="block w-full overflow-hidden text-ellipsis whitespace-nowrap"
+    title={parsedDetails?.message || '-'}
+  >
+    {parsedDetails?.message || '-'}
+  </span>
+
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
             </div>

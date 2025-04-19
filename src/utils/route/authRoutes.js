@@ -3,7 +3,14 @@
 import express from 'express';
 import { login, logout, autoLogout, refreshToken, verifyCookie } from '../controller/authController.js';
 import { displayUsers, displaySpecificUser, getUserLoginLogs } from '../controller/userController.js';
-import { createAppointment, getAllAppointments, updateAppointmentStatus, getAppointmentStats, getAttendanceData , getVisitorRecords} from '../controller/appointmentController.js';
+import { 
+  createAppointment, 
+  getAllAppointments, 
+  updateAppointmentStatus, 
+  getAppointmentStats, 
+  getAttendanceData,
+  getVisitorRecords 
+} from '../controller/appointmentController.js';
 import { 
   sendInvitation, 
   getPendingInvitations, 
@@ -13,6 +20,7 @@ import {
   completeRegistration,
   registrationSuccess
 } from '../controller/invitationController.js';
+import { logAction, fetchLog } from '../controller/LogService.js';
 
 const router = express.Router();
 
@@ -27,23 +35,22 @@ router.post('/appointment', createAppointment);
 router.get('/appointment', autoLogout, getAllAppointments);
 router.patch('/appointment/:id/status', autoLogout, updateAppointmentStatus);
 router.get('/appointment/stats', autoLogout, getAppointmentStats);
-router.get('/attendance', autoLogout, getAttendanceData)
+router.get('/attendance', autoLogout, getAttendanceData);
 router.get('/visitor-records', autoLogout, getVisitorRecords);
 
+router.get('/fetchLogs', autoLogout, fetchLog);
 router.get('/refresh-token', refreshToken);
 router.get('/verify-cookie', verifyCookie);
 
 // Invitation endpoints
-router.post('/invitations', autoLogout, sendInvitation);
+router.post('/invitations', autoLogout, sendInvitation, logAction('create', 'Invitation'));
 router.get('/invitations', autoLogout, getPendingInvitations);
-router.post('/invitations/:id/resend', autoLogout, resendInvitation);
-router.delete('/invitations/:id', autoLogout, revokeInvitation);
+router.post('/invitations/:id/resend', autoLogout, resendInvitation, logAction('update', 'Invitation'));
+router.delete('/invitations/:id', autoLogout, revokeInvitation, logAction('soft_delete', 'Invitation'));
 
 // Registration completion endpoints
 router.get('/complete-registration/:token', renderCompleteRegistration);
 router.post('/complete-registration/:token', completeRegistration);
 router.get('/registration-success', registrationSuccess);
-
-
 
 export default router;

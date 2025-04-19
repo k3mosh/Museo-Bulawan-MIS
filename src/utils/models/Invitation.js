@@ -3,6 +3,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../database.js';
 
 const Invitation = sequelize.define('Invitation', {
+  
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -48,7 +49,12 @@ const Invitation = sequelize.define('Invitation', {
   position: {
     type: DataTypes.STRING(255),
     allowNull: true
+  },
+  deletedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
+  
 }, {
   tableName: 'invitations',
   timestamps: true
