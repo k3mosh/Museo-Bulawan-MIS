@@ -9,7 +9,7 @@ import AppointmentStatus from '../models/AppointmentStatus.js';
 /**
  * Create a new appointment, reusing or creating the visitor.
  */
-export const createAppointment = async (req, res) => {
+export const createAppointment = async (req, res, next) => {
   try {
     const {
       first_name,
@@ -87,10 +87,19 @@ export const createAppointment = async (req, res) => {
     //   status: 'TO_REVIEW'
     // });
 
-    return res.status(201).json({
+    req.logDetails = {
+      new: appointment.dataValues,
+      message: `a visitor has successfully created an appoinment.`,
+    };
+    res.locals.newRecordId = appointment.appointment_id;
+
+    res.status(201).json({
       message: 'Appointment created successfully',
       appointment_id: appointment.appointment_id
     });
+
+    return next();
+
   } catch (error) {
     console.error('Error creating appointment:', error);
     return res.status(500).json({

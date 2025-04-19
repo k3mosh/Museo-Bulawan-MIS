@@ -247,10 +247,16 @@ const User = () => {
                       className="hover:bg-gray-800 cursor-pointer w-full h-[5rem] flex justify-between px-4 sm:pl-20 sm:pr-10 border-b-1 border-[#373737]"
                     >
                       <div onClick={() => viewUser(id)} className="w-full h-full flex gap-x-2 sm:gap-x-7 items-center">
+                      <div
+                          className={`w-6 h-6 rounded-full ${
+                            status === 'active' ? 'bg-green-600' : 'bg-amber-50'
+                          }`}
+                        ></div>
                         <div
                           className="w-[3rem] h-[3rem] rounded-full flex items-center justify-center"
                           style={{ backgroundColor: bgColor }}
                         >
+                          
                           <span className="text-2xl font-semibold">
                             {initials}
                           </span>
@@ -263,11 +269,7 @@ const User = () => {
                             {email}
                           </span>
                         </div>
-                        <div
-                          className={`w-6 h-6 rounded-full ${
-                            status === 'active' ? 'bg-green-600' : 'bg-amber-50'
-                          }`}
-                        ></div>
+                        
                       </div>
                       <div className="w-fit gap-x-3 h-full flex items-center">
                         <div className="w-25 h-full flex items-center justify-center">
@@ -281,6 +283,7 @@ const User = () => {
                         <i
                           className="hover:ring-3 fa-solid fa-user-pen text-xl sm:text-3xl cursor-pointer text-[#999999]"
                         ></i>
+                        
                       </div>
                     </div>
                   );

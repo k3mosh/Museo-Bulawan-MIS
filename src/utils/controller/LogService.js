@@ -11,7 +11,7 @@ export const createLog = async (action, model, modelId, details, userId) => {
       details: details || null,
       userId
     });
-    console.log('Log created successfully');  // Check if this is logged
+    // console.log('Log created successfully');  // Check if this is logged
   } catch (error) {
     console.error('Error creating log:', error);
   }
@@ -21,16 +21,18 @@ export const createLog = async (action, model, modelId, details, userId) => {
 export const logAction = (action, modelName) => 
   async (req, res, next) => {
     try {
+      //improtant
+      //in prod modify this to match the system account
+      const system = 5;
       const modelId = req.params.id || res.locals.newRecordId;
       const details = req.logDetails || null;
-      const userId = req.user.id;
-
+      const userId = res.locals.userId || (req.user ? req.user.id : system);
       // console.log('Logging action:', { action, modelName, modelId, details, userId });
 
       await createLog(action, modelName, modelId, details, userId);
       
       // console.log('Log created for action:', action);  
-      next();  // Proceed to the next middleware
+      next(); 
     } catch (error) {
       console.error('Logging middleware error:', error);
       next(error); 
