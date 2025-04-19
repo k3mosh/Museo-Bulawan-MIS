@@ -1,8 +1,9 @@
 // models/AppointmentStatus.js
 
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../database.js'; // Update the path to your database instance if needed
-import Appointment from './Appointment.js'; // Adjust path/file name
+import { sequelize } from '../database.js'; 
+import Appointment from './Appointment.js';
+
 
 const AppointmentStatus = sequelize.define('AppointmentStatus', {
   status_id: {
@@ -20,12 +21,15 @@ const AppointmentStatus = sequelize.define('AppointmentStatus', {
     onDelete: 'CASCADE'
   },
   status: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.ENUM('TO_REVIEW', 'CONFIRMED', 'REJECTED', 'FAILED', 'COMPLETED'),
     allowNull: false,
     defaultValue: 'TO_REVIEW'
   },
-  // creation_date omitted since you prefer to rely on 'appointment.creation_date'
-  // but you can add it if you need a timestamp for when the status was created
+  present_count: {
+    type: DataTypes.INTEGER,
+    allowNull: true, // no default, NULL means "ongoing" in the front-end
+    comment: 'Number of visitors who actually showed up'
+  },
   updated_at: {
     type: DataTypes.DATE,
     allowNull: false,
@@ -33,11 +37,9 @@ const AppointmentStatus = sequelize.define('AppointmentStatus', {
   }
 }, {
   tableName: 'appointment_status',
-  // Disable Sequelize's automatic timestamps
   timestamps: false
 });
 
-// Link back to `appointment` table
 Appointment.hasOne(AppointmentStatus, { foreignKey: 'appointment_id' });
 AppointmentStatus.belongsTo(Appointment, { foreignKey: 'appointment_id' });
 

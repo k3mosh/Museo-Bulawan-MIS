@@ -3,7 +3,7 @@
 import express from 'express';
 import { login, logout, autoLogout, refreshToken, verifyCookie } from '../controller/authController.js';
 import { displayUsers, displaySpecificUser, getUserLoginLogs } from '../controller/userController.js';
-import { createAppointment, getAllAppointments } from '../controller/appointmentController.js';
+import { createAppointment, getAllAppointments, updateAppointmentStatus, getAppointmentStats, getAttendanceData , getVisitorRecords} from '../controller/appointmentController.js';
 import { 
   sendInvitation, 
   getPendingInvitations, 
@@ -25,6 +25,11 @@ router.get('/login-logs/:userId', autoLogout, getUserLoginLogs);
 
 router.post('/appointment', createAppointment);
 router.get('/appointment', autoLogout, getAllAppointments);
+router.patch('/appointment/:id/status', autoLogout, updateAppointmentStatus);
+router.get('/appointment/stats', autoLogout, getAppointmentStats);
+router.get('/attendance', autoLogout, getAttendanceData)
+router.get('/visitor-records', autoLogout, getVisitorRecords);
+
 router.get('/refresh-token', refreshToken);
 router.get('/verify-cookie', verifyCookie);
 
@@ -38,5 +43,7 @@ router.delete('/invitations/:id', autoLogout, revokeInvitation);
 router.get('/complete-registration/:token', renderCompleteRegistration);
 router.post('/complete-registration/:token', completeRegistration);
 router.get('/registration-success', registrationSuccess);
+
+
 
 export default router;
