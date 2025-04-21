@@ -157,6 +157,7 @@ app.use(express.json());
 app.use(cors(corsOptions)); 
 app.use(cookieParser());
 
+
 // API routes come BEFORE the catch-all route
 app.use('/api/auth', authRoutes);
 app.get('/api/auth/currentUser', (req, res) => {
@@ -167,12 +168,16 @@ app.get('/api/auth/currentUser', (req, res) => {
 });
 
 // AFTER all API routes are defined, then serve static files
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, '../../dist')));
 
 // The catch-all handler comes LAST
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(__dirname, '../../dist/index.html'));
 });
+
+
+console.log("Serving static files from:", path.join(__dirname, '../dist'));
+
 
 const startServer = async () => {
   try {
