@@ -42,14 +42,16 @@ export default function ArticleForm() {
       
     });
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/article", formData, {
+      const res = await axios.post(`${API_URL}/api/auth/article`, formData, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
-
+    
       alert("Article submitted!");
       setTitle("");
       setCategory("");
@@ -67,8 +69,7 @@ export default function ArticleForm() {
       }
       console.error(error);
     }
-  };
-  
+  };    
   
   
   

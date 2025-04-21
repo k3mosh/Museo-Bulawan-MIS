@@ -13,9 +13,11 @@ const Log = () => {
 
 
   const token = localStorage.getItem('token');
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchLogs = () => {
     axios
-      .get('http://localhost:5000/api/auth/fetchLogs', {
+      .get(`${API_URL}/api/auth/fetchLogs`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -30,40 +32,38 @@ const Log = () => {
         );
       });
   };
-
+  
   const fetchAppointments = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:5000/api/auth/appointment',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      setAppointments(response.data)
+      const response = await axios.get(`${API_URL}/api/auth/appointment`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAppointments(response.data);
     } catch (error) {
-      console.error('Error fetching appointments:', error)
+      console.error('Error fetching appointments:', error);
     }
-  }
-
-   const fetchUsers = () => {
-      axios
-        .get('http://localhost:5000/api/auth/fetchCredential', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setUsers(response.data);
-        })
-        .catch((error) => {
-          console.error(
-            'Error fetching users:',
-            error.response?.data || error.message
-          );
-        });
-    };
+  };
+  
+  const fetchUsers = () => {
+    axios
+      .get(`${API_URL}/api/auth/fetchCredential`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error(
+          'Error fetching users:',
+          error.response?.data || error.message
+        );
+      });
+  };
+  
 
 
     useEffect(() => {

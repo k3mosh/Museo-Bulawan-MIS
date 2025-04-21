@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import axiosInstance from '../../utils/middleware/axiosInstance';
 // import UserUpdate from '../../components/modals/UserUpdate';
 import UserView from '../../components/modals/UserView';
 import AdminNav from '../../components/navbar/AdminNav';
@@ -53,9 +54,11 @@ const User = () => {
 
   const token = localStorage.getItem('token');
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchUsers = () => {
     axios
-      .get('http://localhost:5000/api/auth/fetchUsers', {
+      .get(`${API_URL}/api/auth/fetchUsers`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -64,17 +67,14 @@ const User = () => {
         setUsers(response.data);
       })
       .catch((error) => {
-        console.error(
-          'Error fetching users:',
-          error.response?.data || error.message
-        );
+        console.error('Error fetching users:', error.response?.data || error.message);
       });
   };
-
+  
   const fetchPendingInvitations = () => {
     setInviteError(null);
     axios
-      .get('http://localhost:5000/api/auth/invitations', {
+      .get(`${API_URL}/api/auth/invitations`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -87,16 +87,16 @@ const User = () => {
         setInviteError('Failed to load pending invitations');
       });
   };
-
+  
   const handleInviteSubmit = (invitation) => {
     setPendingInvitations([invitation, ...pendingInvitations]);
   };
-
+  
   const handleResendInvite = async (id) => {
     setProcessingAction(id);
     try {
       await axios.post(
-        `http://localhost:5000/api/auth/invitations/${id}/resend`,
+        `${API_URL}/api/auth/invitations/${id}/resend`,
         {},
         {
           headers: {
@@ -104,7 +104,6 @@ const User = () => {
           },
         }
       );
-
       fetchPendingInvitations();
     } catch (error) {
       console.error('Failed to resend invitation:', {
@@ -118,16 +117,16 @@ const User = () => {
       setProcessingAction(null);
     }
   };
-
+  
   const handleRevokeInvite = async (id) => {
     setProcessingAction(id);
     try {
-      await axios.delete(`http://localhost:5000/api/auth/invitations/${id}`, {
+      await axios.delete(`${API_URL}/api/auth/invitations/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       setPendingInvitations(pendingInvitations.filter(inv => inv.id !== id));
     } catch (error) {
       console.error('Failed to revoke invitation:', error);
@@ -135,6 +134,7 @@ const User = () => {
       setProcessingAction(null);
     }
   };
+  
 
   useEffect(() => {
     fetchUsers();

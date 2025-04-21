@@ -118,142 +118,123 @@ const Appointment = () => {
   /**
    * Fetch visitor records from the backend
    */
-  const fetchVisitorRecords = async () => {
-    try {
-      const response = await axios.get(
-        'http://localhost:5000/api/auth/visitor-records',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      setVisitorRecords(response.data)
-    } catch (error) {
-      console.error('Error fetching visitor records:', error)
-    }
+  const API_URL = import.meta.env.VITE_API_URL;
+
+const fetchVisitorRecords = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/auth/visitor-records`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setVisitorRecords(response.data);
+  } catch (error) {
+    console.error('Error fetching visitor records:', error);
   }
+};
 
-  /**
-   * Fetch appointments from the backend
-   */
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get(
-        'http://localhost:5000/api/auth/appointment',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      setAppointments(response.data)
-    } catch (error) {
-      console.error('Error fetching appointments:', error)
-    }
+/**
+ * Fetch appointments from the backend
+ */
+const fetchAppointments = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/auth/appointment`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setAppointments(response.data);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
   }
+};
 
-  /**
-   * Fetch attendance data
-   */
-  const fetchAttendanceData = async () => {
-    try {
-      const response = await axios.get(
-        'http://localhost:5000/api/auth/attendance',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      setAttendanceData(response.data)
-    } catch (error) {
-      console.error('Error fetching attendance data:', error)
-    }
+/**
+ * Fetch attendance data
+ */
+const fetchAttendanceData = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/auth/attendance`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setAttendanceData(response.data);
+  } catch (error) {
+    console.error('Error fetching attendance data:', error);
   }
+};
 
-  /**
-   * Fetch stats from the backend (approved, rejected, expectedVisitors, present)
-   */
-  const fetchStats = async () => {
-    try {
-      const response = await axios.get(
-        'http://localhost:5000/api/auth/appointment/stats',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      setStats(response.data)
-    } catch (error) {
-      console.error('Error fetching stats:', error)
-    }
+/**
+ * Fetch stats from the backend (approved, rejected, expectedVisitors, present)
+ */
+const fetchStats = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/auth/appointment/stats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setStats(response.data);
+  } catch (error) {
+    console.error('Error fetching stats:', error);
   }
+};
 
-  /**
-   * Update appointment status in the backend
-   */
-  const updateAppointmentStatus = async (appointmentId, newStatus) => {
-    try {
-      await axios.patch(
-        `http://localhost:5000/api/auth/appointment/${appointmentId}/status`,
-        { status: newStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      console.log(`Appointment ${appointmentId} updated to: ${newStatus}`)
-      fetchAppointments()
-      fetchStats()
-    } catch (error) {
-      console.error('Error updating appointment status:', error)
-    }
+/**
+ * Update appointment status in the backend
+ */
+const updateAppointmentStatus = async (appointmentId, newStatus) => {
+  try {
+    await axios.patch(
+      `${API_URL}/api/auth/appointment/${appointmentId}/status`,
+      { status: newStatus },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(`Appointment ${appointmentId} updated to: ${newStatus}`);
+    fetchAppointments();
+    fetchStats();
+  } catch (error) {
+    console.error('Error updating appointment status:', error);
   }
+};
 
-  /**
-   * Update present count for an appointment
-   */
-  const updatePresentCount = async (appointmentId, presentCount) => {
-    try {
-      await axios.patch(
-        `http://localhost:5000/api/auth/appointment/${appointmentId}/status`,
-        { present_count: presentCount },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      console.log(`Present count for appointment ${appointmentId} updated to: ${presentCount}`)
-      // Refresh data
-      fetchAttendanceData()
-      fetchStats()
+/**
+ * Update present count for an appointment
+ */
+const updatePresentCount = async (appointmentId, presentCount) => {
+  try {
+    await axios.patch(
+      `${API_URL}/api/auth/appointment/${appointmentId}/status`,
+      { present_count: presentCount },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(`Present count for appointment ${appointmentId} updated to: ${presentCount}`);
+    fetchAttendanceData();
+    fetchStats();
 
-      // Show success toast
-      setToastMessage(`Present count updated successfully!`)
-      setShowToast(true)
-
-      // Auto-hide toast after 3 seconds
-      setTimeout(() => {
-        setShowToast(false)
-      }, 3000)
-
-    } catch (error) {
-      console.error('Error updating present count:', error)
-
-      // Show error toast
-      setToastMessage('Error updating present count')
-      setShowToast(true)
-
-      // Auto-hide toast after 3 seconds
-      setTimeout(() => {
-        setShowToast(false)
-      }, 3000)
-    }
+    setToastMessage(`Present count updated successfully!`);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  } catch (error) {
+    console.error('Error updating present count:', error);
+    setToastMessage('Error updating present count');
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
   }
+};
 
   /**
    * useEffect: Initial data + websocket
