@@ -16,9 +16,11 @@ const UserView = ({ userId, onClose }) => {
     Z: '#33CCCC',
   }
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchLogs = () => {
     axios
-      .get(`http://localhost:5000/api/auth/login-logs/${userId}`, {
+      .get(`${API_URL}/api/auth/login-logs/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -29,9 +31,10 @@ const UserView = ({ userId, onClose }) => {
       })
   }
 
+
   const fetchUsers = () => {
     axios
-      .get(`http://localhost:5000/api/auth/fetchUser/${userId}`, {
+      .get(`${API_URL}/api/auth/fetchUser/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {

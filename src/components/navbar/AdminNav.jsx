@@ -40,11 +40,11 @@ const AdminNav = () => {
     }
 
     try {
+      const API_URL = import.meta.env.VITE_API_URL;
       document.cookie =
         'fallback_token=; Max-Age=0; path=/; domain=' + window.location.hostname
 
-      await axios.post(
-        'http://localhost:5000/api/auth/logout',
+       await axios.post(`${API_URL}/api/auth/logout`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

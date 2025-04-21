@@ -20,11 +20,11 @@ const PrivateRoute = () => {
           clearTimeout(logoutTimer);
           logoutTimer = null;
         }
-        
+        const API_URL = import.meta.env.VITE_API_URL;
         // Use axios for consistency and better error handling
-        await axios.post('http://localhost:5000/api/auth/logout', {
+        await axios.post(`${API_URL}/api/auth/logout`, {
           isExpired: isExpired // Let the server know if this was due to token expiration
-        }, {
+        },  {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

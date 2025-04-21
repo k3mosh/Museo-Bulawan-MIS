@@ -13,9 +13,11 @@ const UserUpdate = ({ userId, onClose }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-
+    const API_URL = import.meta.env.VITE_API_URL;
     axios
-      .get(`http://localhost:5000/api/auth/fetchUser/${userId}`, {
+      .get(`${API_URL}/api/auth/fetchUser/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
