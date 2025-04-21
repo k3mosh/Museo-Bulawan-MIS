@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axiosInstance from '../../utils/middleware/axiosInstance';
-// import UserUpdate from '../../components/modals/UserUpdate';
 import UserView from '../../components/modals/UserView';
 import AdminNav from '../../components/navbar/AdminNav';
 import InviteModal from '../../components/modals/InviteModal'; // Import the new component
