@@ -30,8 +30,8 @@ const __dirname = path.dirname(__filename);
 
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173', // Default to localhost if not set
-  credentials: process.env.CORS_CREDENTIALS === 'true', // Convert string to boolean
+  origin: process.env.CORS_ORIGIN, 
+  credentials: process.env.CORS_CREDENTIALS === 'true', 
   methods: process.env.CORS_METHODS ? process.env.CORS_METHODS.split(',') : ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: process.env.CORS_ALLOWED_HEADERS ? process.env.CORS_ALLOWED_HEADERS.split(',') : ['Content-Type', 'Authorization'],
 };
