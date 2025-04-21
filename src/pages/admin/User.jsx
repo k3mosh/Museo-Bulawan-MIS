@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import UserUpdate from '../../components/modals/UserUpdate';
-import UserView from '../../components/modals/userView';
+// import UserUpdate from '../../components/modals/UserUpdate';
+import UserView from '../../components/modals/UserView';
 import AdminNav from '../../components/navbar/AdminNav';
 import InviteModal from '../../components/modals/InviteModal'; // Import the new component
 import { connectWebSocket, closeWebSocket } from '../../utils/websocket';
