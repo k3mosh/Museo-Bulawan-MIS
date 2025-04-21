@@ -160,7 +160,10 @@ const startServer = async () => {
     setupModelHooks(); // Initialize database change tracking
     console.log('Database connected and models synchronized');
     
-    server.listen(5000, () => console.log('Server and WebSocket running on port 5000'));
+
+    server.listen(5000, '0.0.0.0', () => console.log('Server and WebSocket running on port 5000'));
+
+    // server.listen(5000, () => console.log('Server and WebSocket running on port 5000'));
   } catch (error) {
      console.error('Unable to connect to the database:', error);
     //console.error('Unable to connect to the database');
