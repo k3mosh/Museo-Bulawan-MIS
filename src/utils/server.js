@@ -146,7 +146,7 @@ wss.on('connection', (ws, req) => {
     ws.close(1008, 'Unauthorized: Invalid token');
   }
 });
-
+app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(cors(corsOptions)); // Use the CORS options from the .env
