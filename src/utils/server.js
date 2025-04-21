@@ -7,6 +7,10 @@ import http from 'http';
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'; // Ensure dotenv is imported
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
 
 // Import all models
 import User from './models/Users.js'; // Ensure you import the models
@@ -20,6 +24,10 @@ dotenv.config(); // Load environment variables from .env
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || 'http://localhost:5173', // Default to localhost if not set
@@ -144,15 +152,27 @@ app.use(express.json());
 app.use(cors(corsOptions)); // Use the CORS options from the .env
 app.use(cookieParser());
 
+
+app.use(express.json());
+app.use(cors(corsOptions)); 
+app.use(cookieParser());
+
+// API routes come BEFORE the catch-all route
 app.use('/api/auth', authRoutes);
 app.get('/api/auth/currentUser', (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Not authenticated' });
   }
-  // `req.user` might be set by your auth middleware
   return res.json({ id: req.user.id});
 });
 
+// AFTER all API routes are defined, then serve static files
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// The catch-all handler comes LAST
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
 
 const startServer = async () => {
   try {
@@ -162,9 +182,9 @@ const startServer = async () => {
     console.log('Database connected and models synchronized');
     
 
-    server.listen(5000, '0.0.0.0', () => console.log('Server and WebSocket running on port 5000'));
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, '0.0.0.0', () => console.log(`Server and WebSocket running on port ${PORT}`));
 
-    // server.listen(5000, () => console.log('Server and WebSocket running on port 5000'));
   } catch (error) {
      console.error('Unable to connect to the database:', error);
     //console.error('Unable to connect to the database');
