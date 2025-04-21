@@ -89,6 +89,7 @@ const broadcastDataChange = (changeData) => {
 wss.on('connection', (ws, req) => {
   const token = new URL(req.url, `ws://${req.headers.host}`).searchParams.get('token');
   
+  
   if (!token) {
     ws.close(1008, 'Unauthorized: No token provided');
     return;
