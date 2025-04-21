@@ -6,20 +6,26 @@ import authRoutes from './route/authRoutes.js';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
-import User from './models/Users.js'; 
+import dotenv from 'dotenv'; // Ensure dotenv is imported
+
+// Import all models
+import User from './models/Users.js'; // Ensure you import the models
 import Credential from './models/Credential.js';
 import Appointment from './models/Appointment.js';
 import Invitation from './models/Invitation.js';
 import Log from './models/Log.js';
 
+dotenv.config(); // Load environment variables from .env
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
+
 const corsOptions = {
-  origin: 'http://localhost:5173',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173', // Default to localhost if not set
+  credentials: process.env.CORS_CREDENTIALS === 'true', // Convert string to boolean
+  methods: process.env.CORS_METHODS ? process.env.CORS_METHODS.split(',') : ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: process.env.CORS_ALLOWED_HEADERS ? process.env.CORS_ALLOWED_HEADERS.split(',') : ['Content-Type', 'Authorization'],
 };
 
 const JWT_SECRET = process.env.JWT_SECRET || 'hachsinail';
@@ -134,11 +140,7 @@ wss.on('connection', (ws, req) => {
 
 
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:5173', 
-  credentials: true,
-}));
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // Use the CORS options from the .env
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
@@ -160,8 +162,8 @@ const startServer = async () => {
     
     server.listen(5000, () => console.log('Server and WebSocket running on port 5000'));
   } catch (error) {
-    // console.error('Unable to connect to the database:', error);
-    console.error('Unable to connect to the database');
+     console.error('Unable to connect to the database:', error);
+    //console.error('Unable to connect to the database');
   }
 };
 
