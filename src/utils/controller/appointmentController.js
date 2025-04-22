@@ -156,86 +156,71 @@ export const updateAppointmentStatus = async (req, res) => {
 }
 
 export const getAppointmentStats = async (req, res) => {
-  try {
-    // Get date from query param if provided
-    const filterDate = req.query.date ? new Date(req.query.date) : null;
-    
-    // Build the where clause for date filtering
-    const dateWhere = {};
-    if (filterDate) {
-      // Set start and end time for the selected date
-      const startDate = new Date(filterDate);
-      startDate.setHours(0, 0, 0, 0);
+    try {
+      // Default should load all data without date filtering
+      // Only filter when date is explicitly provided
+      const filterDate = req.query.date ? new Date(req.query.date) : null;
       
-      const endDate = new Date(filterDate);
-      endDate.setHours(23, 59, 59, 999);
+      // Build the where clause for date filtering (only if date is provided)
+      const dateWhere = {};
+      if (filterDate) {
+        const startDate = new Date(filterDate);
+        startDate.setHours(0, 0, 0, 0);
+        
+        const endDate = new Date(filterDate);
+        endDate.setHours(23, 59, 59, 999);
+        
+        dateWhere.creation_date = {
+          [Op.between]: [startDate, endDate]
+        };
+      }
+  
+      // Get all appointment data without filtering by default
+      const appointments = await Appointment.findAll({
+        where: Object.keys(dateWhere).length > 0 ? dateWhere : {},
+        include: [
+          {
+            model: AppointmentStatus,
+            required: false
+          }
+        ],
+        attributes: ['appointment_id', 'population_count']
+      });
+    
+    // Calculate stats in memory
+    let approvedCount = 0;
+    let rejectedCount = 0;
+    let completedCount = 0;
+    let failedCount = 0;
+    let expectedVisitors = 0;
+    let presentCount = 0;
+    
+    appointments.forEach(appointment => {
+      // Sum expected visitors
+      expectedVisitors += appointment.population_count || 0;
       
-      dateWhere.creation_date = {
-        [Op.between]: [startDate, endDate]
-      };
-    }
-
-    // Get appointment IDs that match the date filter
-    const appointments = filterDate ? 
-      await Appointment.findAll({ 
-        where: dateWhere,
-        attributes: ['appointment_id']
-      }) : 
-      await Appointment.findAll({ attributes: ['appointment_id'] });
-    
-    const appointmentIds = appointments.map(a => a.appointment_id);
-
-    // Count statuses for those appointments
-    const approvedCount = await AppointmentStatus.count({
-      where: { 
-        status: 'CONFIRMED',
-        appointment_id: { [Op.in]: appointmentIds }
-      }
-    });
-    
-    const rejectedCount = await AppointmentStatus.count({
-      where: { 
-        status: 'REJECTED',
-        appointment_id: { [Op.in]: appointmentIds }
-      }
-    });
-    
-    const completedCount = await AppointmentStatus.count({
-      where: { 
-        status: 'COMPLETED',
-        appointment_id: { [Op.in]: appointmentIds }
-      }
-    });
-    
-    const failedCount = await AppointmentStatus.count({
-      where: { 
-        status: 'FAILED',
-        appointment_id: { [Op.in]: appointmentIds }
-      }
-    });
-
-    // Sum population counts from filtered appointments
-    const expectedVisitors = await Appointment.sum('population_count', {
-      where: filterDate ? dateWhere : {}
-    });
-
-    // Sum present_count from AppointmentStatus for filtered appointments
-    const presentCount = await AppointmentStatus.sum('present_count', {
-      where: {
-        present_count: {
-          [Op.not]: null  // Only include non-null values
-        },
-        appointment_id: { [Op.in]: appointmentIds }
+      // Process status counts
+      if (appointment.AppointmentStatus) {
+        const status = (appointment.AppointmentStatus.status || '').toUpperCase();
+        
+        if (status.includes('CONFIRM')) approvedCount++;
+        else if (status.includes('REJECT')) rejectedCount++;
+        else if (status.includes('COMPLET')) completedCount++;
+        else if (status.includes('FAIL')) failedCount++;
+        
+        // Sum present count - safely handle null values
+        const present = appointment.AppointmentStatus.present_count;
+        presentCount += present !== null && present !== undefined ? Number(present) : 0;
       }
     });
 
     return res.json({
-      approved: approvedCount || 0,
-      rejected: rejectedCount || 0,
-      completed: completedCount || 0,
-      failed: failedCount || 0,
-      expectedVisitors: expectedVisitors || 0,
-      present: presentCount || 0
+      approved: approvedCount,
+      rejected: rejectedCount,
+      completed: completedCount,
+      failed: failedCount,
+      expectedVisitors,
+      present: presentCount // Keep this name to match what the frontend expects
     });
   } catch (error) {
     console.error('Error retrieving appointment stats:', error);
@@ -245,6 +230,8 @@ export const getAppointmentStats = async (req, res) => {
     });
   }
 };
+
+
 
 /**
  * Fetch all appointments, eagerly loading Visitor data.
@@ -381,13 +368,16 @@ export const getVisitorRecords = async (req, res) => {
     // Transform data for the frontend
     const records = visitors.map((visitor) => {
       // Gather all appointments
-      const details = visitor.Appointments.map((appt) => ({
-        purpose: appt.purpose_of_visit,
-        visitorCount: appt.population_count,
-        present: appt.AppointmentStatus?.present_count || 0,
-        date: appt.preferred_date,
-        status: appt.AppointmentStatus?.status || 'TO_REVIEW'
-      }));
+      // Update this part in the getVisitorRecords function in appointmentController.js
+const details = visitor.Appointments.map((appt) => ({
+  appointment_id: appt.appointment_id, // Add this line
+  purpose: appt.purpose_of_visit,
+  visitorCount: appt.population_count,
+  present: appt.AppointmentStatus?.present_count || 0,
+  date: appt.preferred_date,
+  status: appt.AppointmentStatus?.status || 'TO_REVIEW'
+}));
+
 
       return {
         id: visitor.visitor_id,
@@ -407,3 +397,137 @@ export const getVisitorRecords = async (req, res) => {
     });
   }
 };
+
+
+// Add these new controller functions to your appointmentController.js
+
+/**
+ * Get detailed information for a specific attendance record
+ */
+export const getAttendanceDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Find the appointment with its related visitor and status
+    const appointment = await Appointment.findByPk(id, {
+      include: [
+        {
+          model: Visitor,
+          attributes: [
+            'visitor_id', 'first_name', 'last_name', 'email', 
+            'phone', 'organization', 'street', 'barangay',
+            'city_municipality', 'province'
+          ]
+        },
+        {
+          model: AppointmentStatus,
+          attributes: ['status', 'present_count', 'updated_at']
+        }
+      ]
+    });
+    
+    if (!appointment) {
+      return res.status(404).json({ message: 'Attendance record not found.' });
+    }
+
+    // Format the data for the frontend
+    const detailData = {
+      appointment_id: appointment.appointment_id,
+      purpose: appointment.purpose_of_visit,
+      populationCount: appointment.population_count,
+      preferredDate: appointment.preferred_date,
+      preferredTime: appointment.preferred_time,
+      notes: appointment.additional_notes,
+      creation_date: appointment.creation_date,
+      status: appointment.AppointmentStatus?.status || 'TO_REVIEW',
+      present: appointment.AppointmentStatus?.present_count,
+      
+      // Visitor information
+      fromFirstName: appointment.Visitor?.first_name || '',
+      fromLastName: appointment.Visitor?.last_name || '',
+      email: appointment.Visitor?.email || '',
+      phone: appointment.Visitor?.phone || '',
+      organization: appointment.Visitor?.organization || '',
+      street: appointment.Visitor?.street || '',
+      barangay: appointment.Visitor?.barangay || '',
+      city_municipality: appointment.Visitor?.city_municipality || '',
+      province: appointment.Visitor?.province || ''
+    };
+
+    return res.json(detailData);
+  } catch (error) {
+    console.error('Error fetching attendance detail:', error);
+    return res.status(500).json({
+      message: 'Server error retrieving attendance detail.',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Get visitor record detail by visitor ID and appointment ID
+ */
+export const getVisitorRecordDetail = async (req, res) => {
+  try {
+    const { visitorId, appointmentId } = req.params;
+    
+    // Find the specific visitor
+    const visitor = await Visitor.findByPk(visitorId);
+    
+    if (!visitor) {
+      return res.status(404).json({ message: 'Visitor record not found.' });
+    }
+    
+    // Find the specific appointment for this visitor
+    const appointment = await Appointment.findOne({
+      where: {
+        visitor_id: visitorId,
+        appointment_id: appointmentId
+      },
+      include: [
+        {
+          model: AppointmentStatus,
+          attributes: ['status', 'present_count', 'updated_at']
+        }
+      ]
+    });
+    
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment record not found for this visitor.' });
+    }
+    
+    // Format the data for the frontend
+    const detailData = {
+      appointment_id: appointment.appointment_id,
+      purpose: appointment.purpose_of_visit,
+      populationCount: appointment.population_count,
+      preferredDate: appointment.preferred_date,
+      preferredTime: appointment.preferred_time,
+      notes: appointment.additional_notes,
+      creation_date: appointment.creation_date,
+      status: appointment.AppointmentStatus?.status || 'TO_REVIEW',
+      present: appointment.AppointmentStatus?.present_count,
+      
+      // Visitor information
+      fromFirstName: visitor.first_name || '',
+      fromLastName: visitor.last_name || '',
+      email: visitor.email || '',
+      phone: visitor.phone || '',
+      organization: visitor.organization || '',
+      street: visitor.street || '',
+      barangay: visitor.barangay || '',
+      city_municipality: visitor.city_municipality || '',
+      province: visitor.province || ''
+    };
+    
+    return res.json(detailData);
+  } catch (error) {
+    console.error('Error fetching visitor record detail:', error);
+    return res.status(500).json({
+      message: 'Server error retrieving visitor record detail.',
+      error: error.message
+    });
+  }
+};
+
+

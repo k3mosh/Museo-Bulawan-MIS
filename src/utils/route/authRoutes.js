@@ -9,7 +9,7 @@ import {
   updateAppointmentStatus, 
   getAppointmentStats, 
   getAttendanceData,
-  getVisitorRecords 
+  getVisitorRecords,getAttendanceDetail,getVisitorRecordDetail 
 } from '../controller/appointmentController.js';
 import { 
   sendInvitation, 
@@ -38,6 +38,12 @@ router.patch('/appointment/:id/status', autoLogout, updateAppointmentStatus);
 router.get('/appointment/stats', autoLogout, getAppointmentStats);
 router.get('/attendance', autoLogout, getAttendanceData);
 router.get('/visitor-records', autoLogout, getVisitorRecords);
+
+router.get('/attendance/:id', autoLogout, getAttendanceDetail);
+
+// Get visitor record detail by visitor ID and appointment ID
+router.get('/visitor-record/:visitorId/:appointmentId', autoLogout, getVisitorRecordDetail);
+
 
 router.get('/fetchLogs', autoLogout, fetchLog);
 router.get('/refresh-token', refreshToken);

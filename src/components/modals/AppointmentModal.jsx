@@ -5,7 +5,8 @@ export const AppointmentModal = ({
   modalData,
   onClose,
   onSend,
-  updateAppointmentStatus
+  updateAppointmentStatus,
+  showRespondSection = true // New prop with default true for backward compatibility
 }) => {
   // Local state to track user's selection
   const [approveVisit, setApproveVisit] = useState('');
@@ -19,6 +20,7 @@ export const AppointmentModal = ({
   const [presentCount, setPresentCount] = useState('');
   // Track if present count needs validation
   const [presentCountError, setPresentCountError] = useState(false);
+
 
   // Reset approval state and error state when modal data changes
   useEffect(() => {
@@ -195,184 +197,198 @@ export const AppointmentModal = ({
 
         <hr className="border-gray-300 my-6" />
 
-        {/* Response section - conditionally rendered based on appointment phase */}
-        <div>
-          <h3 className="text-xl font-bold mb-6">Respond</h3>
+        {/* Response section - conditionally rendered based on appointment phase AND showRespondSection */}
+        {showRespondSection && (
+          <div>
+            <h3 className="text-xl font-bold mb-6">Respond</h3>
 
-          {/* FIRST PHASE: TO_REVIEW - Show Yes/No approval options */}
-          {isToReview && (
-            <>
-              <div className="mb-6">
-                <div className="text-base mb-3">Approve Visit?</div>
-                <div className="flex gap-4">
-                  <button
-                    className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'yes' ?
-                      'bg-[#6F3FFF] text-white' : 'bg-gray-200 text-gray-800'}`}
-                    onClick={() => {
-                      setApproveVisit('yes');
-                      setApprovalError(false);
+            {/* FIRST PHASE: TO_REVIEW - Show Yes/No approval options */}
+            {isToReview && (
+              <>
+                <div className="mb-6">
+                  <div className="text-base mb-3">Approve Visit?</div>
+                  <div className="flex gap-4">
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'yes' ?
+                        'bg-[#6F3FFF] text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => {
+                        setApproveVisit('yes');
+                        setApprovalError(false);
+                      }}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'no' ?
+                        'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => {
+                        setApproveVisit('no');
+                        setApprovalError(false);
+                      }}
+                    >
+                      No
+                    </button>
+                  </div>
+                  {approvalError && (
+                    <p className="text-sm text-red-500 mt-2">
+                      Please select Yes or No before continuing.
+                    </p>
+                  )}
+                </div>
+
+                {/* Message area - mandatory for first phase */}
+                <div className="mb-6">
+                  <div className="text-base mb-3">Leave a message</div>
+                  <textarea
+                    className={`w-full p-4 border ${messageError ? 'border-red-500' : 'border-gray-300'} 
+                      rounded-md h-[120px] overflow-y-auto resize-none text-base`}
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                      if (e.target.value.trim()) {
+                        setMessageError(false);
+                      }
                     }}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'no' ?
-                      'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-                    onClick={() => {
-                      setApproveVisit('no');
-                      setApprovalError(false);
-                    }}
-                  >
-                    No
-                  </button>
+                    placeholder="Enter message here (required)"
+                  />
+                  {messageError && (
+                    <p className="text-sm text-red-500 mt-1">
+                      Please enter a message for the visitor.
+                    </p>
+                  )}
+                  <div className="text-sm text-gray-500 mt-2">
+                    This will automatically send to {modalData.email}
+                  </div>
                 </div>
-                {approvalError && (
-                  <p className="text-sm text-red-500 mt-2">
-                    Please select Yes or No before continuing.
-                  </p>
-                )}
-              </div>
+              </>
+            )}
 
-              {/* Message area - mandatory for first phase */}
-              <div className="mb-6">
-                <div className="text-base mb-3">Leave a message</div>
-                <textarea
-                  className={`w-full p-4 border ${messageError ? 'border-red-500' : 'border-gray-300'} 
-                    rounded-md h-[120px] overflow-y-auto resize-none text-base`}
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                    if (e.target.value.trim()) {
-                      setMessageError(false);
-                    }
-                  }}
-                  placeholder="Enter message here (required)"
-                />
-                {messageError && (
-                  <p className="text-sm text-red-500 mt-1">
-                    Please enter a message for the visitor.
-                  </p>
-                )}
-                <div className="text-sm text-gray-500 mt-2">
-                  This will automatically send to {modalData.email}
+            {/* SECOND PHASE: CONFIRMED - Show Cancel/Arrive options */}
+            {isConfirmed && (
+              <>
+                <div className="mb-6">
+                  <div className="text-base mb-3">Appointment Action</div>
+                  <div className="flex gap-4">
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'cancel' ?
+                        'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => setApproveVisit('cancel')}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'arrive' ?
+                        'bg-green-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => setApproveVisit('arrive')}
+                    >
+                      Arrive
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
 
-          {/* SECOND PHASE: CONFIRMED - Show Cancel/Arrive options */}
-          {isConfirmed && (
-            <>
-              <div className="mb-6">
-                <div className="text-base mb-3">Appointment Action</div>
-                <div className="flex gap-4">
-                  <button
-                    className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'cancel' ?
-                      'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-                    onClick={() => setApproveVisit('cancel')}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'arrive' ?
-                      'bg-green-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-                    onClick={() => setApproveVisit('arrive')}
-                  >
-                    Arrive
-                  </button>
-                </div>
-              </div>
+                {/* Attendance Section - Only shown when status is confirmed and arrive is selected */}
+                {approveVisit === 'arrive' && (
+                  <div className="mb-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h4 className="text-xl font-bold mb-4">Attendance Details</h4>
 
-              {/* Attendance Section - Only shown when status is confirmed and arrive is selected */}
-              {approveVisit === 'arrive' && (
-                <div className="mb-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
-                  <h4 className="text-xl font-bold mb-4">Attendance Details</h4>
-
-                  <div className="grid grid-cols-2 gap-x-6 mb-4">
-                    <div>
-                      <div className="text-gray-600 mb-2">Expected Visitors:</div>
-                      <div className="text-2xl font-semibold">{modalData.populationCount || '0'}</div>
-                    </div>
-
-                    <div>
-                      <div className="text-gray-600 mb-2">Present:</div>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="number"
-                          className={`border ${presentCountError ? 'border-red-500' : 'border-gray-300'} rounded-md p-3 w-full text-lg`}
-                          value={presentCount}
-                          onChange={(e) => {
-                            setPresentCount(e.target.value);
-                            setPresentCountError(false);
-                          }}
-                          placeholder="Enter present count"
-                          min="0"
-                          max={modalData.populationCount}
-                        />
-                        <button
-                          onClick={handleAllPresent}
-                          className="bg-green-500 hover:bg-green-600 text-white rounded-md px-3 py-3 whitespace-nowrap"
-                        >
-                          All Present
-                        </button>
+                    <div className="grid grid-cols-2 gap-x-6 mb-4">
+                      <div>
+                        <div className="text-gray-600 mb-2">Expected Visitors:</div>
+                        <div className="text-2xl font-semibold">{modalData.populationCount || '0'}</div>
                       </div>
-                      {presentCountError && (
-                        <p className="text-sm text-red-500 mt-1">
-                          Please enter how many visitors attended
-                        </p>
-                      )}
+
+                      <div>
+                        <div className="text-gray-600 mb-2">Present:</div>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="number"
+                            className={`border ${presentCountError ? 'border-red-500' : 'border-gray-300'} rounded-md p-3 w-full text-lg`}
+                            value={presentCount}
+                            onChange={(e) => {
+                              setPresentCount(e.target.value);
+                              setPresentCountError(false);
+                            }}
+                            placeholder="Enter present count"
+                            min="0"
+                            max={modalData.populationCount}
+                          />
+                          <button
+                            onClick={handleAllPresent}
+                            className="bg-green-500 hover:bg-green-600 text-white rounded-md px-3 py-3 whitespace-nowrap"
+                          >
+                            All Present
+                          </button>
+                        </div>
+                        {presentCountError && (
+                          <p className="text-sm text-red-500 mt-1">
+                            Please enter how many visitors attended
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="text-sm text-gray-500 mt-4">
+                      Enter the number of visitors who actually attended. Click "All Present" if everyone arrived.
                     </div>
                   </div>
+                )}
+              </>
+            )}
 
-                  <div className="text-sm text-gray-500 mt-4">
-                    Enter the number of visitors who actually attended. Click "All Present" if everyone arrived.
-                  </div>
+            {/* For REJECTED status - No actions needed */}
+            {isRejected && (
+              <div className="mb-6 text-center text-xl">
+                <div className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700">
+                  This appointment has been rejected. No further actions are available.
                 </div>
+              </div>
+            )}
+
+            {/* THIRD PHASE: COMPLETED or FAILED - Just show view-only mode */}
+            {isCompletedOrFailed && (
+              <div className="mb-6 text-center text-xl">
+                <div className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700">
+                  This appointment is {modalData.status.toLowerCase()}. No further actions are available.
+                </div>
+              </div>
+            )}
+
+            {/* Action buttons based on state */}
+            <div className="flex justify-end mt-6">
+              {/* Done button - shown for active states */}
+              {(isToReview || isConfirmed) && (
+                <button
+                  className="bg-[#6F3FFF] text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
+                  onClick={handleSend}
+                >
+                  Done
+                </button>
               )}
-            </>
-          )}
 
-          {/* For REJECTED status - No actions needed */}
-          {isRejected && (
-            <div className="mb-6 text-center text-xl">
-              <div className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700">
-                This appointment has been rejected. No further actions are available.
-              </div>
+              {/* Close button - shown for view-only states */}
+              {(isCompletedOrFailed || isRejected) && (
+                <button
+                  className="bg-gray-500 text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
+                  onClick={onClose}
+                >
+                  Close
+                </button>
+              )}
             </div>
-          )}
-
-          {/* THIRD PHASE: COMPLETED or FAILED - Just show view-only mode */}
-          {isCompletedOrFailed && (
-            <div className="mb-6 text-center text-xl">
-              <div className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700">
-                This appointment is {modalData.status.toLowerCase()}. No further actions are available.
-              </div>
-            </div>
-          )}
-
-          {/* Action buttons based on state */}
-          <div className="flex justify-end mt-6">
-            {/* Done button - shown for active states */}
-            {(isToReview || isConfirmed) && (
-              <button
-                className="bg-[#6F3FFF] text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
-                onClick={handleSend}
-              >
-                Done
-              </button>
-            )}
-
-            {/* Close button - shown for view-only states */}
-            {(isCompletedOrFailed || isRejected) && (
-              <button
-                className="bg-gray-500 text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
-                onClick={onClose}
-              >
-                Close
-              </button>
-            )}
           </div>
-        </div>
+        )}
+
+        {/* If showRespondSection is false, just show a Close button */}
+        {!showRespondSection && (
+          <div className="flex justify-end mt-6">
+            <button
+              className="bg-gray-500 text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
+              onClick={onClose}
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -382,3 +398,5 @@ export const AppointmentModal = ({
 export default {
   AppointmentModal
 };
+
+
