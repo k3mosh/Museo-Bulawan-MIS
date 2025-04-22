@@ -6,10 +6,9 @@ import authRoutes from './route/authRoutes.js';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv'; // Ensure dotenv is imported
+import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
 
 
 // Import all models
@@ -19,15 +18,14 @@ import Appointment from './models/Appointment.js';
 import Invitation from './models/Invitation.js';
 import Log from './models/Log.js';
 
-dotenv.config(); // Load environment variables from .env
+dotenv.config(); 
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
+app.set('trust proxy', process.env.NODE_ENV === 'production');
 
 const corsOptions = {
   origin: process.env.CORS_ORIGIN, 
@@ -146,34 +144,28 @@ wss.on('connection', (ws, req) => {
     ws.close(1008, 'Unauthorized: Invalid token');
   }
 });
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 
 app.use(express.json());
-app.use(cors(corsOptions)); // Use the CORS options from the .env
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 
-app.use(express.json());
-app.use(cors(corsOptions)); 
-app.use(cookieParser());
-
-
-// API routes come BEFORE the catch-all route
 app.use('/api/auth', authRoutes);
 app.get('/api/auth/currentUser', (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Not authenticated' });
   }
-  return res.json({ id: req.user.id});
+  return res.json({ id: req.user.id });
 });
 
-// AFTER all API routes are defined, then serve static files
-app.use(express.static(path.join(__dirname, '../../dist')));
 
-// The catch-all handler comes LAST
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.join(__dirname, '../../dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../dist/index.html'));
 });
+
 
 
 console.log("Serving static files from:", path.join(__dirname, '../dist'));
@@ -181,18 +173,19 @@ console.log("Serving static files from:", path.join(__dirname, '../dist'));
 
 const startServer = async () => {
   try {
-    await sequelize.authenticate();  
+    await sequelize.authenticate();
     await sequelize.sync();
-    setupModelHooks(); // Initialize database change tracking
-    console.log('Database connected and models synchronized');
-    
+    setupModelHooks();
 
     const PORT = process.env.PORT || 5000;
-    server.listen(PORT, '0.0.0.0', () => console.log(`Server and WebSocket running on port ${PORT}`));
+    server.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode`);
+      console.log(`HTTP server listening on port ${PORT}`);
+    });
 
   } catch (error) {
-     console.error('Unable to connect to the database:', error);
-    //console.error('Unable to connect to the database');
+    console.error('Database connection error:', error);
+    process.exit(1);
   }
 };
 

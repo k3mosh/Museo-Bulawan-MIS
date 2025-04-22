@@ -24,12 +24,15 @@ const UserView = ({ userId, onClose }) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setLoginLogs(res.data.logs || [])
+        const logs = res.data.logs
+        setLoginLogs(logs && logs.length > 0 ? logs : [])
       })
       .catch((err) => {
         console.error('Error fetching login logs:', err.response?.data || err.message)
       })
   }
+  
+  
 
 
   const fetchUsers = () => {
