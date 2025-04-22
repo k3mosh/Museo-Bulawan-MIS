@@ -93,7 +93,7 @@ const broadcastDataChange = (changeData) => {
 };
 
 wss.on('connection', (ws, req) => {
-  const token = new URL(req.url, `ws://${req.headers.host}`).searchParams.get('token');
+  const token = new URL(req.url, `wss://${req.headers.host}`).searchParams.get('token');
   
   
   if (!token) {
