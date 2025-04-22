@@ -20,7 +20,7 @@ export const connectWebSocket = (onDataChange, onRefresh) => {
     socketRef.close();
   }
 
-  const isDev = import.meta.env?.MODE === 'development' || process.env.NODE_ENV === 'production';
+  const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production';
 
   const protocol = isDev ? 'ws' : 'wss';
   const hostname = isDev ? 'localhost' : window.location.hostname;
