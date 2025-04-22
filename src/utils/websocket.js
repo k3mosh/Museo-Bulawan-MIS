@@ -20,7 +20,7 @@ export const connectWebSocket = (onDataChange, onRefresh) => {
     socketRef.close();
   }
 
-  const socket = new WebSocket(`ws://${window.location.hostname}:5000/?token=${token}`);
+  const socket = new WebSocket(`wss://${window.location.hostname}:5000/?token=${token}`);
 
   socket.onopen = () => {
     console.log('WebSocket connected successfully');
