@@ -17,7 +17,6 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ where: { credential_id: credential.id } });
 
-    // Check if account is already active
     if (user && user.status === 'active') {
       return res.status(403).json({ message: 'Account is already active on another session' });
     }
@@ -54,10 +53,9 @@ export const login = async (req, res) => {
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '4h' });
 
-    // ✅ Add fallback token as cookie here
     res.cookie('fallback_token', token, {
       httpOnly: true,
-      secure: true, // set to false if testing locally without HTTPS
+      secure: true, 
       sameSite: 'Strict',
       maxAge: 4 * 60 * 60 * 1000 // 4 hours in ms
     });

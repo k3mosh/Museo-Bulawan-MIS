@@ -16,22 +16,28 @@ const UserView = ({ userId, onClose }) => {
     Z: '#33CCCC',
   }
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchLogs = () => {
     axios
-      .get(`http://localhost:5000/api/auth/login-logs/${userId}`, {
+      .get(`${API_URL}/api/auth/login-logs/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setLoginLogs(res.data.logs || [])
+        const logs = res.data.logs
+        setLoginLogs(logs && logs.length > 0 ? logs : [])
       })
       .catch((err) => {
         console.error('Error fetching login logs:', err.response?.data || err.message)
       })
   }
+  
+  
+
 
   const fetchUsers = () => {
     axios
-      .get(`http://localhost:5000/api/auth/fetchUser/${userId}`, {
+      .get(`${API_URL}/api/auth/fetchUser/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -49,17 +55,17 @@ const UserView = ({ userId, onClose }) => {
     fetchUsers()
   }, [userId])
 
+  // console.log(loginLogs);
   const formatLogs = () => {
     if (!loginLogs.length) return []
   
     const sorted = [...loginLogs].sort(
-      (a, b) => new Date(a.last_login) - new Date(b.last_login)
+      (a, b) => new Date(a.start) - new Date(b.start)
     )
   
-    return sorted.map((log, i) => {
-      const loginTime = new Date(log.last_login)
-      const logoutTime =
-        i < sorted.length - 1 ? new Date(sorted[i + 1].last_login) : null
+    return sorted.map((log) => {
+      const loginTime = new Date(log.start)
+      const logoutTime = log.end ? new Date(log.end) : null
   
       const dateOptions = {
         year: 'numeric',
@@ -84,9 +90,15 @@ const UserView = ({ userId, onClose }) => {
         }`
       }
   
-      return { id: log.id, start, end, duration }
+      return {
+        id: log.id,
+        start,
+        end,
+        duration,
+      }
     })
   }
+  
   
 
   const firstInitial = user?.Credential?.first_name?.charAt(0).toUpperCase()

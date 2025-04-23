@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import ConfirmationModal from './ConfirmationModal'
+import ConfirmationModal from '../../components/modals/ConfirmationModal'
 
 const UserUpdate = ({ userId, onClose }) => {
   const [showConfirmation, setConfirmation] = useState(false)
@@ -13,9 +13,11 @@ const UserUpdate = ({ userId, onClose }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-
+    const API_URL = import.meta.env.VITE_API_URL;
     axios
-      .get(`http://localhost:5000/api/auth/fetchUser/${userId}`, {
+      .get(`${API_URL}/api/auth/fetchUser/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +87,7 @@ const UserUpdate = ({ userId, onClose }) => {
                   id="first-name"
                   type="text"
                   defaultValue={user?.Credential?.first_name}
-                  className="bg-[#242424] w-full h-15 rounded-sm border-[#373737] border px-4 text-lg text-white font-semibol hover:border-purple-500"
+                  className="bg-[#242424] w-full h-15 rounded-sm border-[#373737] border px-4 text-lg text-white font-semibold hover:border-purple-500"
                 />
               </div>
 
