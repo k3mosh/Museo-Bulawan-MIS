@@ -20,6 +20,9 @@ const ContributionType = sequelize.define('ContributionType', {
   condition: {
     type: DataTypes.TEXT
   },
+  reason: {
+    type: DataTypes.TEXT
+  },
   status: {
     type: DataTypes.STRING(50) // e.g., "accepted", "declined"
   },

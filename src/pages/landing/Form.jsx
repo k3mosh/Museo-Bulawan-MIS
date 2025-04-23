@@ -197,6 +197,7 @@ const Form = () => {
       images,
       documents,
       related_images: relatedImages,
+      transfer_status: 'on_progress', // Set fixed value here
 
       // If formType is 'lending', include the relevant fields
       formType, // either "donation" or "lending"
@@ -553,16 +554,16 @@ const Form = () => {
                         Reason for lending <span className="text-red-500">*</span>
                       </label>
                       <div className="col-span-9">
-                        <input
-                          type="text"
-                          id="reason"
-                          name="reason"
-                          placeholder="Reason"
-                          required
-                          value={reason}
-                          onChange={(e) => setReason(e.target.value)}
-                          className="w-full px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
-                        />
+                      <input
+                        type="text"
+                        id="reason"
+                        name="reason"
+                        placeholder="Reason"
+                        required
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                        className="w-full px-4 py-2 border-2 border-black rounded-2xl placeholder-gray-500 text-sm"
+                      />
                       </div>
                     </div>
                   </div>

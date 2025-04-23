@@ -43,7 +43,7 @@ const Form = sequelize.define('Form', {
     type: DataTypes.TEXT
   },
   acquired: {
-    type: DataTypes.STRING(255)  // e.g. "Inherited from grandparents"
+    type: DataTypes.STRING(255)
   },
   additional_info: {
     type: DataTypes.TEXT
@@ -52,26 +52,30 @@ const Form = sequelize.define('Form', {
     type: DataTypes.TEXT
   },
   images: {
-    type: DataTypes.TEXT         // Could store comma-separated URLs or JSON
+    type: DataTypes.TEXT
   },
   documents: {
-    type: DataTypes.TEXT         // Could store comma-separated URLs or file paths
+    type: DataTypes.TEXT
   },
   related_images: {
     type: DataTypes.TEXT
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
   }
 }, {
   tableName: 'form',
   timestamps: false
 });
 
-// Now define the relationships, similar to how Appointment references Visitor:
+
+
+// Define relationships
 Donator.hasMany(Form, { foreignKey: 'donator_id' });
 Form.belongsTo(Donator, { foreignKey: 'donator_id' });
 
-// Form -> ContributionType (one-to-many or one-to-one, whichever you prefer)
 ContributionType.hasMany(Form, { foreignKey: 'contribution_id' });
 Form.belongsTo(ContributionType, { foreignKey: 'contribution_id' });
 
 export default Form;
-

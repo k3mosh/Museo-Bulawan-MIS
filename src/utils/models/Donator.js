@@ -15,6 +15,10 @@ const Donator = sequelize.define('Donator', {
   age: {
     type: DataTypes.INTEGER
   },
+  phone: {
+    type: DataTypes.STRING(20),  // or however many characters you need
+    allowNull: true
+  },
   sex: {
     type: DataTypes.STRING(10)
   },
