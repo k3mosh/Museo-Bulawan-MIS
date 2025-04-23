@@ -5,14 +5,22 @@ export const AppointmentModal = ({
   modalData,
   onClose,
   onSend,
-  updateAppointmentStatus
+  updateAppointmentStatus,
+  showRespondSection = true // New prop with default true for backward compatibility
 }) => {
-  // local state to track user's radio selection
+  // Local state to track user's selection
   const [approveVisit, setApproveVisit] = useState('');
   // Track the message content
   const [message, setMessage] = useState("");
   // Track if message is empty
   const [messageError, setMessageError] = useState(false);
+  // Track if approval selection is made
+  const [approvalError, setApprovalError] = useState(false);
+  // Attendance present count
+  const [presentCount, setPresentCount] = useState('');
+  // Track if present count needs validation
+  const [presentCountError, setPresentCountError] = useState(false);
+
 
   // Reset approval state and error state when modal data changes
   useEffect(() => {
@@ -21,6 +29,10 @@ export const AppointmentModal = ({
         setApproveVisit('yes');
       } else if (modalData.status === 'REJECTED' || modalData.status === 'Rejected') {
         setApproveVisit('no');
+      } else if (modalData.status === 'COMPLETED' || modalData.status === 'Completed') {
+        setApproveVisit('arrive');
+      } else if (modalData.status === 'FAILED' || modalData.status === 'Failed') {
+        setApproveVisit('cancel');
       } else {
         setApproveVisit('');
       }
@@ -28,28 +40,51 @@ export const AppointmentModal = ({
       setApproveVisit('');
     }
     setMessageError(false);
+    setApprovalError(false);
+    setPresentCountError(false);
     setMessage("");
+    setPresentCount('');
   }, [modalData]);
 
   if (!showModal || !modalData) return null;
 
   // Determine the current phase of the appointment process
   const isToReview = modalData.status === 'TO_REVIEW' || modalData.status === 'To Review';
-  const isConfirmedOrRejected =
-    modalData.status === 'CONFIRMED' || modalData.status === 'Confirmed' ||
-    modalData.status === 'REJECTED' || modalData.status === 'Rejected';
-  const isCompletedOrFailed =
-    modalData.status === 'COMPLETED' || modalData.status === 'Completed' ||
-    modalData.status === 'FAILED' || modalData.status === 'Failed';
+  const isConfirmed = modalData.status === 'CONFIRMED' || modalData.status === 'Confirmed';
+  const isRejected = modalData.status === 'REJECTED' || modalData.status === 'Rejected';
+  const isFailed = modalData.status === 'FAILED' || modalData.status === 'Failed';
+  const isCompleted = modalData.status === 'COMPLETED' || modalData.status === 'Completed';
+
+  const isCompletedOrFailed = isCompleted || isFailed;
 
   const handleSend = async () => {
-    // Validate that message is not empty for the first phase only
-    if (isToReview && !message.trim()) {
-      setMessageError(true);
+    // First phase validation: approval selection + message required
+    if (isToReview) {
+      let hasError = false;
+
+      // Validate approval selection
+      if (!approveVisit) {
+        setApprovalError(true);
+        hasError = true;
+      }
+
+      // Validate message
+      if (!message.trim()) {
+        setMessageError(true);
+        hasError = true;
+      }
+
+      if (hasError) return;
+    }
+
+    // For arrival action, validate present count
+    if (isConfirmed && approveVisit === 'arrive' && !presentCount) {
+      setPresentCountError(true);
       return;
     }
 
-    let newStatus = 'TO_REVIEW';
+    // Determine the new status based on action
+    let newStatus = modalData.status;
     if (approveVisit === 'yes') {
       newStatus = 'CONFIRMED';
     } else if (approveVisit === 'no') {
@@ -61,11 +96,27 @@ export const AppointmentModal = ({
     }
 
     try {
-      await updateAppointmentStatus(modalData.appointmentId, newStatus);
+      // Handle the present count update when completing an appointment
+      if (approveVisit === 'arrive') {
+        const presentValue = parseInt(presentCount, 10) || 0;
+
+        // Send both status and present_count in the same update
+        await updateAppointmentStatus(modalData.appointmentId, newStatus, presentValue);
+      } else {
+        // For other status changes, just update the status
+        await updateAppointmentStatus(modalData.appointmentId, newStatus);
+      }
+
+      // Trigger parent component update and close modal
       onSend && onSend();
     } catch (err) {
       console.error('Error while updating status:', err);
     }
+  };
+
+  const handleAllPresent = () => {
+    setPresentCount(modalData.populationCount || '0');
+    setPresentCountError(false);
   };
 
   return (
@@ -146,207 +197,198 @@ export const AppointmentModal = ({
 
         <hr className="border-gray-300 my-6" />
 
-        {/* Response section - conditionally rendered based on appointment phase */}
-        <div>
-          <h3 className="text-xl font-bold mb-6">Respond</h3>
+        {/* Response section - conditionally rendered based on appointment phase AND showRespondSection */}
+        {showRespondSection && (
+          <div>
+            <h3 className="text-xl font-bold mb-6">Respond</h3>
 
-          {/* FIRST PHASE: TO_REVIEW - Show Yes/No approval options */}
-          {isToReview && (
-            <>
-              <div className="mb-6">
-                <div className="text-base mb-3">Approve Visit?</div>
-                <div className="flex gap-4">
-                  <button
-                    className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'yes' ?
-                      'bg-[#6F3FFF] text-white' : 'bg-gray-200 text-gray-800'}`}
-                    onClick={() => setApproveVisit('yes')}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'no' ?
-                      'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-                    onClick={() => setApproveVisit('no')}
-                  >
-                    No
-                  </button>
+            {/* FIRST PHASE: TO_REVIEW - Show Yes/No approval options */}
+            {isToReview && (
+              <>
+                <div className="mb-6">
+                  <div className="text-base mb-3">Approve Visit?</div>
+                  <div className="flex gap-4">
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'yes' ?
+                        'bg-[#6F3FFF] text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => {
+                        setApproveVisit('yes');
+                        setApprovalError(false);
+                      }}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'no' ?
+                        'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => {
+                        setApproveVisit('no');
+                        setApprovalError(false);
+                      }}
+                    >
+                      No
+                    </button>
+                  </div>
+                  {approvalError && (
+                    <p className="text-sm text-red-500 mt-2">
+                      Please select Yes or No before continuing.
+                    </p>
+                  )}
                 </div>
-              </div>
 
-              {/* Message area - mandatory for first phase */}
-              <div className="mb-6">
-                <div className="text-base mb-3">Leave a message</div>
-                <textarea
-                  className={`w-full p-4 border ${messageError ? 'border-red-500' : 'border-gray-300'} 
-                    rounded-md h-[120px] overflow-y-auto resize-none text-base`}
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                    if (e.target.value.trim()) {
-                      setMessageError(false);
-                    }
-                  }}
-                  placeholder="Enter message here (required)"
-                />
-                {messageError && (
-                  <p className="text-sm text-red-500 mt-1">
-                    Please enter a message for the visitor.
-                  </p>
+                {/* Message area - mandatory for first phase */}
+                <div className="mb-6">
+                  <div className="text-base mb-3">Leave a message</div>
+                  <textarea
+                    className={`w-full p-4 border ${messageError ? 'border-red-500' : 'border-gray-300'} 
+                      rounded-md h-[120px] overflow-y-auto resize-none text-base`}
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                      if (e.target.value.trim()) {
+                        setMessageError(false);
+                      }
+                    }}
+                    placeholder="Enter message here (required)"
+                  />
+                  {messageError && (
+                    <p className="text-sm text-red-500 mt-1">
+                      Please enter a message for the visitor.
+                    </p>
+                  )}
+                  <div className="text-sm text-gray-500 mt-2">
+                    This will automatically send to {modalData.email}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* SECOND PHASE: CONFIRMED - Show Cancel/Arrive options */}
+            {isConfirmed && (
+              <>
+                <div className="mb-6">
+                  <div className="text-base mb-3">Appointment Action</div>
+                  <div className="flex gap-4">
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'cancel' ?
+                        'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => setApproveVisit('cancel')}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'arrive' ?
+                        'bg-green-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                      onClick={() => setApproveVisit('arrive')}
+                    >
+                      Arrive
+                    </button>
+                  </div>
+                </div>
+
+                {/* Attendance Section - Only shown when status is confirmed and arrive is selected */}
+                {approveVisit === 'arrive' && (
+                  <div className="mb-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h4 className="text-xl font-bold mb-4">Attendance Details</h4>
+
+                    <div className="grid grid-cols-2 gap-x-6 mb-4">
+                      <div>
+                        <div className="text-gray-600 mb-2">Expected Visitors:</div>
+                        <div className="text-2xl font-semibold">{modalData.populationCount || '0'}</div>
+                      </div>
+
+                      <div>
+                        <div className="text-gray-600 mb-2">Present:</div>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="number"
+                            className={`border ${presentCountError ? 'border-red-500' : 'border-gray-300'} rounded-md p-3 w-full text-lg`}
+                            value={presentCount}
+                            onChange={(e) => {
+                              setPresentCount(e.target.value);
+                              setPresentCountError(false);
+                            }}
+                            placeholder="Enter present count"
+                            min="0"
+                            max={modalData.populationCount}
+                          />
+                          <button
+                            onClick={handleAllPresent}
+                            className="bg-green-500 hover:bg-green-600 text-white rounded-md px-3 py-3 whitespace-nowrap"
+                          >
+                            All Present
+                          </button>
+                        </div>
+                        {presentCountError && (
+                          <p className="text-sm text-red-500 mt-1">
+                            Please enter how many visitors attended
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="text-sm text-gray-500 mt-4">
+                      Enter the number of visitors who actually attended. Click "All Present" if everyone arrived.
+                    </div>
+                  </div>
                 )}
-                <div className="text-sm text-gray-500 mt-2">
-                  This will automatically send to {modalData.email}
+              </>
+            )}
+
+            {/* For REJECTED status - No actions needed */}
+            {isRejected && (
+              <div className="mb-6 text-center text-xl">
+                <div className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700">
+                  This appointment has been rejected. No further actions are available.
                 </div>
               </div>
-            </>
-          )}
+            )}
 
-          {/* SECOND PHASE: CONFIRMED or REJECTED - Show Cancel/Arrive options */}
-          {isConfirmedOrRejected && (
-            <div className="mb-6">
-              <div className="text-base mb-3">Appointment Action</div>
-              <div className="flex gap-4">
-                <button
-                  className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'cancel' ?
-                    'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-                  onClick={() => setApproveVisit('cancel')}
-                >
-                  Cancel
-                </button>
-                <button
-                  className={`px-8 py-3 rounded-md text-lg ${approveVisit === 'arrive' ?
-                    'bg-green-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-                  onClick={() => setApproveVisit('arrive')}
-                >
-                  Arrive
-                </button>
+            {/* THIRD PHASE: COMPLETED or FAILED - Just show view-only mode */}
+            {isCompletedOrFailed && (
+              <div className="mb-6 text-center text-xl">
+                <div className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700">
+                  This appointment is {modalData.status.toLowerCase()}. No further actions are available.
+                </div>
               </div>
+            )}
+
+            {/* Action buttons based on state */}
+            <div className="flex justify-end mt-6">
+              {/* Done button - shown for active states */}
+              {(isToReview || isConfirmed) && (
+                <button
+                  className="bg-[#6F3FFF] text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
+                  onClick={handleSend}
+                >
+                  Done
+                </button>
+              )}
+
+              {/* Close button - shown for view-only states */}
+              {(isCompletedOrFailed || isRejected) && (
+                <button
+                  className="bg-gray-500 text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
+                  onClick={onClose}
+                >
+                  Close
+                </button>
+              )}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* THIRD PHASE: COMPLETED or FAILED - Just show view-only mode */}
-          {isCompletedOrFailed && (
-            <div className="mb-6 text-center text-xl">
-              <div className="px-6 py-3 bg-gray-100 rounded-lg text-gray-700">
-                This appointment is {modalData.status.toLowerCase()}. No further actions are available.
-              </div>
-            </div>
-          )}
-
-          {/* Done button - only shown when actions are possible */}
-          {(isToReview || isConfirmedOrRejected) && (
-            <div className="flex justify-end">
-              <button
-                className="bg-[#6F3FFF] text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
-                onClick={handleSend}
-              >
-                Done
-              </button>
-            </div>
-          )}
-
-          {/* Close button - only shown in view-only mode */}
-          {isCompletedOrFailed && (
-            <div className="flex justify-end">
-              <button
-                className="bg-gray-500 text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
-                onClick={onClose}
-              >
-                Close
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const AttendanceModal = ({
-  show,
-  popupPosition,
-  attendanceData,
-  onClose,
-  onConfirm
-}) => {
-  // Use null as the initial state for "ongoing" attendance
-  const [presentCount, setPresentCount] = useState(
-    attendanceData?.present === null || attendanceData?.present === 'ongoing' ? '' : attendanceData?.present || ''
-  );
-
-  if (!show || !attendanceData) return null;
-
-  const handleAllPresent = () => {
-    setPresentCount(attendanceData.expectedVisitor);
-  };
-
-  const handleConfirm = () => {
-    // If the input is empty, we'll pass null to match the database schema
-    // where null represents "ongoing"
-    const valueToSend = presentCount === '' ? null : parseInt(presentCount, 10);
-    onConfirm(valueToSend);
-  };
-
-  return (
-    <div className="fixed inset-0 z-50">
-      {/* Semi-transparent background for closing popup */}
-      <div
-        className="fixed inset-0 bg-opacity-50"
-        onClick={onClose}
-      ></div>
-
-      {/* Popup positioned near mouse click */}
-      <div
-        className="fixed bg-white rounded shadow-lg p-6 w-[25rem] border border-gray-300 z-[51]"
-        style={{
-          top: `${popupPosition.y}px`,
-          left: `${popupPosition.x}px`,
-          transform: 'translate(-50%, -50%)'
-        }}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-2xl font-bold text-gray-600"
-        >
-          &times;
-        </button>
-        <h2 className="text-2xl font-bold mb-4">Attendance Details</h2>
-        <div className="mb-2 text-lg">
-          <strong>Visitor:</strong> {attendanceData.visitorName}
-        </div>
-        <div className="mb-2 text-lg">
-          <strong>Purpose:</strong> {attendanceData.purpose}
-        </div>
-        <div className="mb-2 text-lg">
-          <strong>Expected:</strong> {attendanceData.expectedVisitor}
-        </div>
-
-        <label className="block mb-1 text-lg font-semibold">
-          Present Count:
-        </label>
-        <input
-          type="number"
-          className="border p-2 w-full mb-4 text-xl"
-          value={presentCount}
-          onChange={(e) => setPresentCount(e.target.value)}
-          placeholder="Leave empty for 'ongoing'"
-        />
-
-        {/* All Present button */}
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={handleAllPresent}
-            className="bg-green-500 hover:bg-green-600 text-white rounded py-2 px-4 flex-1"
-          >
-            All Present
-          </button>
-        </div>
-
-        <button
-          onClick={handleConfirm}
-          className="bg-blue-500 hover:bg-blue-600 text-white rounded py-2 px-4 w-full"
-        >
-          Confirm
-        </button>
+        {/* If showRespondSection is false, just show a Close button */}
+        {!showRespondSection && (
+          <div className="flex justify-end mt-6">
+            <button
+              className="bg-gray-500 text-white px-10 py-3 rounded-md hover:opacity-90 text-lg font-medium"
+              onClick={onClose}
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -354,6 +396,7 @@ export const AttendanceModal = ({
 
 // Default export for backward compatibility
 export default {
-  AppointmentModal,
-  AttendanceModal
+  AppointmentModal
 };
+
+

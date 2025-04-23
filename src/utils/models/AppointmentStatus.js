@@ -3,6 +3,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database.js'; 
 import Appointment from './Appointment.js';
+import { Op } from 'sequelize';
 
 
 const AppointmentStatus = sequelize.define('AppointmentStatus', {
